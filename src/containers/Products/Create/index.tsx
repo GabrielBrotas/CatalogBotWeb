@@ -19,6 +19,7 @@ import { Sidebar } from '../../../components/Sidebar';
 import { FormInput } from '../../../components/Form/input';
 import { FormTextArea } from '../../../components/Form/textarea';
 import { FormSelect } from '../../../components/Form/select';
+import Upload, { UploadedImages } from '../../../components/Upload';
 
 export type OptionAdditional = {
   name: string;
@@ -83,6 +84,9 @@ export const CreateProductContainer = () => {
   });
 
   const [productOptions, setProductsOptions] = useState<ProductOption[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<Array<UploadedImages>>(
+    [],
+  );
 
   const addMoreProductOptions = () => {
     setProductsOptions(
@@ -177,6 +181,10 @@ export const CreateProductContainer = () => {
           <Divider my="6" borderColor="gray.700" />
 
           <VStack spacing="8">
+            <Upload
+              uploadedImages={uploadedImages}
+              setUploadedImages={setUploadedImages}
+            />
             <FormInput
               name="name"
               label="Nome do produto"

@@ -24,6 +24,7 @@ import { Header } from '../../../components/Header';
 import { FormInput } from '../../../components/Form/input';
 import { FormTextArea } from '../../../components/Form/textarea';
 import { CompanyBenefitsTag } from '../../../components/Tags/companyBenefitsTag';
+import { FormSelect } from '../../../components/Form/select';
 
 const updateCompanySchema = yup.object().shape({
   name: yup.string().required('Nome obrigatório'),
@@ -125,7 +126,37 @@ export const UpdateProfileContainer = () => {
 
               <CompanyBenefitsTag tags={['Entrega gratis']} canRemove={true} />
 
-              <Box></Box>
+              <Flex w="100%" flexDir="column" mt={10}>
+                <Text color="gray.300" fontSize="2xl">
+                  Horário de funcionamento
+                </Text>
+
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  p="3"
+                  bg="gray.600"
+                  marginRight={4}
+                  borderRadius="lg"
+                >
+                  <Text color="gray.300" fontSize="md">
+                    Domingo
+                  </Text>
+
+                  <Flex>
+                    <FormSelect
+                      name="from"
+                      options={[{ label: '07:00', value: 7 }]}
+                      containerStyle={{ mr: '4' }}
+                    />
+                    <FormSelect
+                      name="to"
+                      options={[{ label: '07:00', value: 7 }]}
+                    />
+                  </Flex>
+                </Box>
+              </Flex>
             </VStack>
           </Box>
         </Box>

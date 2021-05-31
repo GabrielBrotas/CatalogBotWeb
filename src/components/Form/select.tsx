@@ -16,7 +16,7 @@ interface SelectProps extends CharkaSelectProps {
   label?: string;
   error?: FieldError;
   containerStyle?: FormControlProps;
-  options: { value: string; label: string }[];
+  options: { value: string | number; label: string }[];
 }
 
 const SelectContainer: React.ForwardRefRenderFunction<
@@ -51,8 +51,12 @@ const SelectContainer: React.ForwardRefRenderFunction<
         placeholder={placeholder}
         {...rest}
       >
-        {options.map(option => (
-          <option style={{ backgroundColor: '#1F2029' }} value={option.value}>
+        {options.map((option, index) => (
+          <option
+            key={index}
+            style={{ backgroundColor: '#1F2029' }}
+            value={option.value}
+          >
             {option.label}
           </option>
         ))}
