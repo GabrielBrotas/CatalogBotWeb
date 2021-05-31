@@ -88,15 +88,17 @@ export const ProductsContainer = () => {
                 </Td>
 
                 <Td>
-                  <Button
-                    as="a"
-                    size="sm"
-                    fontSize="sm"
-                    colorScheme="purple"
-                    leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                  >
-                    Editar
-                  </Button>
+                  <Link href="/products/edit/:id" passHref>
+                    <Button
+                      as="a"
+                      size="sm"
+                      fontSize="sm"
+                      colorScheme="purple"
+                      leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                    >
+                      Editar
+                    </Button>
+                  </Link>
                   <Button
                     marginLeft="4"
                     as="a"
@@ -117,4 +119,4 @@ export const ProductsContainer = () => {
       </Flex>
     </Box>
   );
-}
+};
