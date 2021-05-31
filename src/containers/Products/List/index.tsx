@@ -13,7 +13,6 @@ import {
   Thead,
   Tr,
   Text,
-  useBreakpointValue,
 } from '@chakra-ui/react';
 import { Header } from '../../../components/Header';
 import { Sidebar } from '../../../components/Sidebar';
@@ -22,11 +21,6 @@ import { Pagination } from '../../../components/Pagination';
 import Link from 'next/link';
 
 export const ProductsContainer = () => {
-  const mobileView = useBreakpointValue({
-    base: true,
-    lg: false,
-  });
-
   return (
     <Box>
       <Header />

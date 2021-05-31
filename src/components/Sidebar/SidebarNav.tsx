@@ -3,8 +3,6 @@ import { Stack } from '@chakra-ui/react';
 import {
   RiContactsLine,
   RiDashboardLine,
-  RiGitMergeLine,
-  RiInputMethodLine,
 } from 'react-icons/ri';
 import { BsGraphUp, BsGrid1X2 } from 'react-icons/bs';
 import { NavLink } from './NavLink';

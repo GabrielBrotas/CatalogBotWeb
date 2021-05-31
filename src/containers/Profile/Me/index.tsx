@@ -1,33 +1,12 @@
 import React from 'react';
-import {
-  Box,
-  Button,
-  Image,
-  Flex,
-  Heading,
-  Icon,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  Text,
-  useBreakpointValue,
-  WrapItem,
-  Avatar,
-  Tag,
-  SimpleGrid,
-  Grid,
-} from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Icon } from '@chakra-ui/react';
 import { Header } from '../../../components/Header';
 import { Sidebar } from '../../../components/Sidebar';
-import { RiAddLine, RiEditLine, RiPencilLine } from 'react-icons/ri';
-import { Pagination } from '../../../components/Pagination';
+import { RiEditLine } from 'react-icons/ri';
 import Link from 'next/link';
 import { WorkTime } from './WorkTime';
-import { Benefits } from './Benefits';
 import { HeaderInfo } from './HeaderInfo';
+import { CompanyBenefitsTag } from '../../../components/Tags/companyBenefitsTag';
 
 export const ProfileContainer = () => {
   return (
@@ -58,7 +37,7 @@ export const ProfileContainer = () => {
 
           <Box>
             <HeaderInfo />
-            <Benefits />
+            <CompanyBenefitsTag tags={['Entrega gratis']} canRemove={true} />
             <WorkTime />
           </Box>
         </Box>

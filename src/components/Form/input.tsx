@@ -1,7 +1,4 @@
 import React, {
-  InputHTMLAttributes,
-  useState,
-  useCallback,
   forwardRef,
 } from 'react';
 

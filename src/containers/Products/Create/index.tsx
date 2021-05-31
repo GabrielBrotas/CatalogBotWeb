@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer, useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -25,7 +25,7 @@ export type OptionAdditional = {
   price: number;
 };
 
-type ProductOption = {
+export type ProductOption = {
   name: string;
   isRequired: boolean;
   maxQuantity: number;
@@ -81,7 +81,7 @@ export const CreateProductContainer = () => {
   } = useForm({
     resolver: yupResolver(createProductFormSchema),
   });
-  
+
   const [productOptions, setProductsOptions] = useState<ProductOption[]>([]);
 
   const addMoreProductOptions = () => {

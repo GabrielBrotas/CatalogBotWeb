@@ -19,21 +19,14 @@ import { Sidebar } from '../../../components/Sidebar';
 import { FormInput } from '../../../components/Form/input';
 import { FormTextArea } from '../../../components/Form/textarea';
 import { FormSelect } from '../../../components/Form/select';
+import { ProductOption } from '../Create';
 
 export type OptionAdditional = {
   name: string;
   price: number;
 };
 
-type ProductOption = {
-  name: string;
-  isRequired: boolean;
-  maxQuantity: number;
-  minQuantity: number;
-  additionals: OptionAdditional[];
-};
-
-type CreateProductFormData = {
+type EditProductFormData = {
   name: string;
   price: number;
   description?: string;
@@ -147,7 +140,7 @@ export const EditProductContainer = () => {
     ]);
   };
 
-  const handleCreateProduct: SubmitHandler<CreateProductFormData> = async (
+  const handleCreateProduct: SubmitHandler<EditProductFormData> = async (
     values,
     event,
   ) => {
