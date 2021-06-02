@@ -7,8 +7,10 @@ import Link from 'next/link';
 import { WorkTime } from './WorkTime';
 import { HeaderInfo } from './HeaderInfo';
 import { CompanyBenefitsTag } from '../../../components/Tags/companyBenefitsTag';
+import { useCompanyAuth } from '../../../contexts/authCompany';
+import { ProfileProps } from '../../../pages/profile';
 
-export const ProfileContainer = () => {
+export const ProfileContainer = ({ company }: ProfileProps) => {
   return (
     <Box>
       <Header />
@@ -36,9 +38,14 @@ export const ProfileContainer = () => {
           </Flex>
 
           <Box>
-            <HeaderInfo />
-            <CompanyBenefitsTag tags={['Entrega gratis']} canRemove={true} />
-            <WorkTime />
+            <HeaderInfo
+              name={company.name}
+              email={company.email}
+              description={company?.shortDescription}
+              mainImageUrl={company.mainImageUrl}
+            />
+            <CompanyBenefitsTag tags={company.benefits} />
+            <WorkTime workTime={company.workTime} />
           </Box>
         </Box>
       </Flex>

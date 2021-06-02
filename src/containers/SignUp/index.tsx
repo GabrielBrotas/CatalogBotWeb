@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { FiLogIn } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -8,6 +9,8 @@ import * as yup from 'yup';
 import { Box, Flex, FormControl, Image, Text } from '@chakra-ui/react';
 import { FormInput } from '../../components/Form/input';
 import { Button } from '../../components/Form/button';
+import { signUpCompany } from '../../services/apiFunctions/company';
+import { useToast } from '../../contexts/Toast';
 
 type SignUpFormData = {
   name: string;
@@ -25,6 +28,7 @@ const signUpFormSchema = yup.object().shape({
 });
 
 export const SignUpContainer = () => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -33,7 +37,26 @@ export const SignUpContainer = () => {
     resolver: yupResolver(signUpFormSchema),
   });
 
-  const handleSignIn = useCallback(async (data: SignUpFormData) => {}, []);
+  const { addToast } = useToast();
+
+  const handleSignIn = useCallback(async (data: SignUpFormData) => {
+    const { email, name, password } = data;
+    try {
+      await signUpCompany({ email, name, password });
+
+      addToast({
+        title: 'Conta criada com sucesso!',
+        status: 'success',
+      });
+      router.push('/');
+    } catch (err) {
+      addToast({
+        title: 'Error',
+        description: err.message,
+        status: 'error',
+      });
+    }
+  }, []);
 
   return (
     <Box height="100vh" display="flex" alignItems="center" justify="between">
@@ -97,7 +120,7 @@ export const SignUpContainer = () => {
             </Text>
           </Link>
 
-          <Link href="/login" passHref>
+          <Link href="/" passHref>
             <Flex alignItems="center" justify="center" cursor="pointer">
               <FiLogIn style={{ marginRight: '1rem' }} />
               <Text fontSize="md" textAlign="center" cursor="pointer">

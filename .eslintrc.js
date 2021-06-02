@@ -1,44 +1,47 @@
 module.exports = {
+  root: true,
   env: {
-    browser: true,
-    es2020: true,
-    jest: true,
     node: true,
+    es6: true,
   },
-  settings: {
-    react: {
-      version: 'detect',
+  parserOptions: { ecmaVersion: 8 }, // to enable features such as async/await
+  ignorePatterns: ['node_modules/*', '.next/*', '.out/*', '!.prettierrc.js'], // We don't want to lint generated files nor node_modules, but we want to lint .prettierrc.js (ignored by default by eslint)
+  extends: ['eslint:recommended'],
+  overrides: [
+    // This configuration will apply only to TypeScript files
+    {
+      files: ['**/*.ts', '**/*.tsx'],
+      parser: '@typescript-eslint/parser',
+      settings: { react: { version: 'detect' } },
+      env: {
+        browser: true,
+        node: true,
+        es6: true,
+      },
+      extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended', // TypeScript rules
+        'plugin:react/recommended', // React rules
+        'plugin:react-hooks/recommended', // React hooks rules
+        'plugin:jsx-a11y/recommended', // Accessibility rules
+        'plugin:prettier/recommended',
+      ],
+      rules: {
+        // We will use TypeScript's types for component props instead
+        'react/prop-types': 'off',
+
+        // No need to import React when using Next.js
+        'react/react-in-jsx-scope': 'off',
+
+        // This rule is not compatible with Next.js's <Link /> components
+        'jsx-a11y/anchor-is-valid': 'off',
+
+        // Why would you want unused vars?
+        '@typescript-eslint/no-unused-vars': ['warn'],
+
+        'prettier/prettier': ['error', {}, { usePrettierrc: true }],
+        "@typescript-eslint/explicit-module-boundary-types": ["off"]
+      },
     },
-  },
-  extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
-    'plugin:prettier/recommended',
   ],
-  globals: {
-    Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly',
-  },
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
-    ecmaVersion: 11,
-    sourceType: 'module',
-  },
-  plugins: ['react', '@typescript-eslint', 'react-hooks', 'prettier'],
-  rules: {
-    'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': 'warn',
-    'react/prop-types': 'off',
-    'react/react-in-jsx-scope': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    'prettier/prettier': 'error',
-    '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/ban-types': 'off',
-  },
-};
+}

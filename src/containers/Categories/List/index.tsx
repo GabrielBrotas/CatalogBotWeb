@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react'
 import {
   Box,
   Button,
@@ -12,15 +12,41 @@ import {
   Thead,
   Tr,
   Text,
-} from '@chakra-ui/react';
-import { Header } from '../../../components/Header';
-import { Sidebar } from '../../../components/Sidebar';
-import { RiAddLine, RiPencilLine } from 'react-icons/ri';
-import { Pagination } from '../../../components/Pagination';
-import Link from 'next/link';
+} from '@chakra-ui/react'
+import { Header } from '../../../components/Header'
+import { Sidebar } from '../../../components/Sidebar'
+import { RiAddLine, RiPencilLine } from 'react-icons/ri'
+import { Pagination } from '../../../components/Pagination'
+import Link from 'next/link'
+import { CategoriesProps } from '../../../pages/categories'
+import { deleteCategory } from '../../../services/apiFunctions/categories'
+import { useAlertModal } from '../../../contexts/AlertModal'
+import { useToast } from '../../../contexts/Toast'
 
-export const CategoriesContainer = () => {
+export const CategoriesContainer = ({ categories }: CategoriesProps) => {
+  const [companyCategories, setCompanyCategories] = useState(categories)
 
+  const { handleOpenAlertModal } = useAlertModal()
+  const { addToast } = useToast()
+
+  const handleDeleteCategory = async (categoryId: string) => {
+    try {
+      handleOpenAlertModal({
+        title: 'Deletar Categoria',
+        description: 'Você tem certeza que deseja deletar essa categoria?',
+        onConfirm: async () => {
+          await deleteCategory(categoryId)
+          setCompanyCategories(companyCategories.filter((category) => category._id !== categoryId))
+          addToast({
+            title: 'Categoria removida com sucesso',
+            status: 'info',
+          })
+        },
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  }
   return (
     <Box>
       <Header />
@@ -50,45 +76,49 @@ export const CategoriesContainer = () => {
           <Table colorScheme="whiteAlpha">
             <Thead>
               <Tr>
-                <Th>Nome</Th>
-                <Th>Criada em</Th>
-                <Th>Ações</Th>
+                <Th textAlign="center">Nome</Th>
+                <Th textAlign="center">Criada em</Th>
+                <Th textAlign="center">Ações</Th>
               </Tr>
             </Thead>
 
             <Tbody>
-              <Tr>
-                <Td>
-                  <Text fontWeight="bold">Nome do produto</Text>
-                </Td>
-                <Td>
-                  <Text fontSize="sm">tal diia</Text>
-                </Td>
+              {companyCategories.map((category) => (
+                <Tr key={category._id}>
+                  <Td textAlign="center">
+                    <Text fontWeight="bold">{category.name}</Text>
+                  </Td>
+                  <Td textAlign="center">
+                    <Text fontSize="sm">{category.dateFormated}</Text>
+                  </Td>
 
-                <Td>
-                  <Link href="/categories/edit/:id" passHref>
+                  <Td textAlign="center">
+                    <Link href={`/categories/edit/${category._id}`} passHref>
+                      <Button
+                        as="a"
+                        size="sm"
+                        fontSize="sm"
+                        colorScheme="purple"
+                        leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                      >
+                        Editar
+                      </Button>
+                    </Link>
                     <Button
+                      cursor="pointer"
+                      marginLeft="4"
                       as="a"
                       size="sm"
                       fontSize="sm"
-                      colorScheme="purple"
+                      colorScheme="red"
                       leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                      onClick={() => handleDeleteCategory(category._id)}
                     >
-                      Editar
+                      Deletar
                     </Button>
-                  </Link>
-                  <Button
-                    marginLeft="4"
-                    as="a"
-                    size="sm"
-                    fontSize="sm"
-                    colorScheme="red"
-                    leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                  >
-                    Deletar
-                  </Button>
-                </Td>
-              </Tr>
+                  </Td>
+                </Tr>
+              ))}
             </Tbody>
           </Table>
 
@@ -96,5 +126,5 @@ export const CategoriesContainer = () => {
         </Box>
       </Flex>
     </Box>
-  );
-};
+  )
+}

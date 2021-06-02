@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { FiLogIn } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -8,6 +9,9 @@ import * as yup from 'yup';
 import { Box, Flex, FormControl, Image, Text } from '@chakra-ui/react';
 import { FormInput } from '../../components/Form/input';
 import { Button } from '../../components/Form/button';
+import { signInCompany } from '../../services/apiFunctions/company';
+import { useToast } from '../../contexts/Toast';
+import { useCompanyAuth } from '../../contexts/authCompany';
 
 type SignInFormData = {
   email: string;
@@ -31,7 +35,21 @@ export const LoginContainer = () => {
     resolver: yupResolver(signInFormSchema),
   });
 
-  const handleSignIn = useCallback(async (data: SignInFormData) => {}, []);
+  const { addToast } = useToast();
+  const { loginCompany } = useCompanyAuth();
+
+  const handleSignIn = useCallback(async (data: SignInFormData) => {
+    try {
+      const { email, password } = data;
+      await loginCompany({ email, password });
+    } catch (err) {
+      addToast({
+        title: 'Error',
+        description: err.response.data.message,
+        status: 'error',
+      });
+    }
+  }, []);
 
   return (
     <Box height="100vh" display="flex" alignItems="center" justify="between">
@@ -100,4 +118,4 @@ export const LoginContainer = () => {
       </Flex>
     </Box>
   );
-}
+};

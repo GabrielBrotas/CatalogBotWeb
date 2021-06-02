@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import React from 'react';
 
 import { Header } from '../../components/Header';
+import { Section } from '../../components/Section';
 import { Sidebar } from '../../components/Sidebar';
 import { Chart } from './chart';
 
@@ -63,15 +64,25 @@ export const DashboardContainer = () => {
     <Flex direction="column" h="100vh">
       <Header />
 
-      <Flex w="100%" my="6" maxWidth="auto" px="6">
-        <Sidebar />
+      <Section>
+        <Flex w="100%" my="6" maxWidth="auto" px="6">
+          <Sidebar />
 
-        {/* o minChildWidht vai fazer com que se o elemento ter menos de 320px de largura vai jogar ele para baixo, deixando responsivo */}
-        <SimpleGrid flex="1" gap="4" minChildWidth="320px" align="flex-start">
-          <Chart title="Inscritos semanais" options={options} series={series} />
-          <Chart title="Taxa de abertura" options={options} series={series} />
-        </SimpleGrid>
-      </Flex>
+          {/* o minChildWidht vai fazer com que se o elemento ter menos de 320px de largura vai jogar ele para baixo, deixando responsivo */}
+          <SimpleGrid flex="1" gap="4" minChildWidth="320px" align="flex-start">
+            <Chart
+              title="Visitas ao catalogo"
+              options={options}
+              series={series}
+            />
+            <Chart
+              title="Quantidade de ordens"
+              options={options}
+              series={series}
+            />
+          </SimpleGrid>
+        </Flex>
+      </Section>
     </Flex>
   );
 };

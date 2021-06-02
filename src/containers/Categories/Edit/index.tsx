@@ -1,43 +1,55 @@
-import React from 'react';
-import Link from 'next/link';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import React from 'react'
+import Link from 'next/link'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
-import {
-  Box,
-  Button,
-  Divider,
-  Flex,
-  Heading,
-  HStack,
-  SimpleGrid,
-  VStack,
-} from '@chakra-ui/react';
-import { Header } from '../../../components/Header';
-import { Sidebar } from '../../../components/Sidebar';
-import { FormInput } from '../../../components/Form/input';
+import { Box, Button, Divider, Flex, Heading, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
+import { Header } from '../../../components/Header'
+import { Sidebar } from '../../../components/Sidebar'
+import { FormInput } from '../../../components/Form/input'
+import { EditCategoryProps } from '../../../pages/categories/edit/[cId]'
+import { useToast } from '../../../contexts/Toast'
+import { updateCategory } from '../../../services/apiFunctions/categories'
+import { useRouter } from 'next/router'
 
 type EditCategoryFormData = {
-  name: string;
-};
+  name: string
+}
 
 const editCategoryFormSchema = yup.object().shape({
   name: yup.string().required('Nome obrigatório'),
-});
+})
 
-export const EditCategoryContainer = () => {
+export const EditCategoryContainer = ({ category }: EditCategoryProps) => {
+  const router = useRouter()
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(editCategoryFormSchema),
-  });
+  })
 
-  const handleCreateCategory: SubmitHandler<EditCategoryFormData> = async values => {
-    await new Promise(resolve => setTimeout(() => resolve(true), 2000));
-  };
+  const { addToast } = useToast()
+
+  const handleCreateCategory: SubmitHandler<EditCategoryFormData> = async (values) => {
+    try {
+      const { name } = values
+      await updateCategory({ categoryId: category._id, name: name.trim() })
+      addToast({
+        status: 'success',
+        title: 'Categoria atualizada com sucesso!',
+      })
+      router.push('/categories')
+    } catch (err) {
+      addToast({
+        status: 'error',
+        title: 'Desculpe, algo deu errado!',
+        description: 'Tente novamente mais tarde',
+      })
+    }
+  }
 
   return (
     <Box>
@@ -67,6 +79,7 @@ export const EditCategoryContainer = () => {
                 label="Nome da categoria"
                 {...register('name')}
                 error={errors.name}
+                defaultValue={category.name}
               />
             </SimpleGrid>
           </VStack>
@@ -85,5 +98,5 @@ export const EditCategoryContainer = () => {
         </Box>
       </Flex>
     </Box>
-  );
+  )
 }

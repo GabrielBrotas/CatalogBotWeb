@@ -1,55 +1,46 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import React, { useState } from 'react'
+import Link from 'next/link'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
-import {
-  Box,
-  Button,
-  Divider,
-  Flex,
-  Heading,
-  HStack,
-  SimpleGrid,
-  VStack,
-} from '@chakra-ui/react';
-import { Header } from '../../../components/Header';
-import { Sidebar } from '../../../components/Sidebar';
-import { FormInput } from '../../../components/Form/input';
-import { FormTextArea } from '../../../components/Form/textarea';
-import { FormSelect } from '../../../components/Form/select';
-import Upload, { UploadedImages } from '../../../components/Upload';
+import { Box, Button, Divider, Flex, Heading, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
+import { Header } from '../../../components/Header'
+import { Sidebar } from '../../../components/Sidebar'
+import { FormInput } from '../../../components/Form/input'
+import { FormTextArea } from '../../../components/Form/textarea'
+import { FormSelect } from '../../../components/Form/select'
+import Upload, { UploadedImages } from '../../../components/Upload'
 
 export type OptionAdditional = {
-  name: string;
-  price: number;
-};
+  name: string
+  price: number
+}
 
 export type ProductOption = {
-  name: string;
-  isRequired: boolean;
-  maxQuantity: number;
-  minQuantity: number;
-  additionals: OptionAdditional[];
-};
+  name: string
+  isRequired: boolean
+  maxQuantity: number
+  minQuantity: number
+  additionals: OptionAdditional[]
+}
 
 type CreateProductFormData = {
-  name: string;
-  price: number;
-  description?: string;
-  options?: ProductOption[];
-  categoryId: string;
-};
+  name: string
+  price: number
+  description?: string
+  options?: ProductOption[]
+  categoryId: string
+}
 
 type RemoveProductAdditionalOptionProps = {
-  productOptionindex: number;
-  additionProductOptionindex: number;
-};
+  productOptionindex: number
+  additionProductOptionindex: number
+}
 
 type AddProductAdditionalOptionsProps = {
-  productOptionindex: number;
-};
+  productOptionindex: number
+}
 
 const createProductFormSchema = yup.object().shape({
   name: yup.string().required('Nome obrigatório'),
@@ -66,11 +57,11 @@ const createProductFormSchema = yup.object().shape({
         yup.object({
           name: yup.string().required('Nome obrigatório'),
           price: yup.string().required('Valor obrigatório'),
-        }),
+        })
       ),
-    }),
+    })
   ),
-});
+})
 
 export const CreateProductContainer = () => {
   const {
@@ -81,12 +72,10 @@ export const CreateProductContainer = () => {
     unregister,
   } = useForm({
     resolver: yupResolver(createProductFormSchema),
-  });
+  })
 
-  const [productOptions, setProductsOptions] = useState<ProductOption[]>([]);
-  const [uploadedImages, setUploadedImages] = useState<Array<UploadedImages>>(
-    [],
-  );
+  const [productOptions, setProductsOptions] = useState<ProductOption[]>([])
+  const [uploadedImages, setUploadedImages] = useState<Array<UploadedImages>>([])
 
   const addMoreProductOptions = () => {
     setProductsOptions(
@@ -96,9 +85,9 @@ export const CreateProductContainer = () => {
         maxQuantity: 1,
         minQuantity: 1,
         additionals: [{ name: '', price: 0 }],
-      }),
-    );
-  };
+      })
+    )
+  }
 
   const addProductAdditionalOptions = ({
     productOptionindex,
@@ -110,10 +99,10 @@ export const CreateProductContainer = () => {
           : {
               ...product,
               additionals: product.additionals.concat({ name: '', price: 0 }),
-            },
-      ),
-    );
-  };
+            }
+      )
+    )
+  }
 
   const removeProductAdditionalOptions = ({
     productOptionindex,
@@ -126,38 +115,28 @@ export const CreateProductContainer = () => {
           : {
               ...product,
               additionals: product.additionals.filter(
-                (_, aPOindex) => aPOindex !== additionProductOptionindex,
+                (_, aPOindex) => aPOindex !== additionProductOptionindex
               ),
-            },
-      ),
-    );
-    clearErrors();
+            }
+      )
+    )
+    clearErrors()
     unregister([
       `options.${productOptionindex}.additionals.${additionProductOptionindex}.name`,
       `options.${productOptionindex}.additionals.${additionProductOptionindex}.price`,
-    ]);
-  };
+    ])
+  }
 
   const removeProductOption = (productOptionindex: number) => {
-    setProductsOptions(
-      productOptions.filter(
-        (product, pOindex) => pOindex !== productOptionindex,
-      ),
-    );
-    clearErrors();
-    unregister([
-      `options.${productOptionindex}`,
-      `options.${productOptionindex}`,
-    ]);
-  };
+    setProductsOptions(productOptions.filter((product, pOindex) => pOindex !== productOptionindex))
+    clearErrors()
+    unregister([`options.${productOptionindex}`, `options.${productOptionindex}`])
+  }
 
-  const handleCreateProduct: SubmitHandler<CreateProductFormData> = async (
-    values,
-    event,
-  ) => {
-    event.preventDefault();
-    console.log(values);
-  };
+  const handleCreateProduct: SubmitHandler<CreateProductFormData> = async (values, event) => {
+    event.preventDefault()
+    console.log(values)
+  }
 
   return (
     <Box>
@@ -181,10 +160,7 @@ export const CreateProductContainer = () => {
           <Divider my="6" borderColor="gray.700" />
 
           <VStack spacing="8">
-            <Upload
-              uploadedImages={uploadedImages}
-              setUploadedImages={setUploadedImages}
-            />
+            <Upload uploadedImages={uploadedImages} setUploadedImages={setUploadedImages} />
             <FormInput
               name="name"
               label="Nome do produto"
@@ -234,9 +210,7 @@ export const CreateProductContainer = () => {
                     label="Nome da opção"
                     {...register(`options.${pOindex}.name`)}
                     error={
-                      errors.options &&
-                      errors.options[pOindex] &&
-                      errors.options[pOindex].name
+                      errors.options && errors.options[pOindex] && errors.options[pOindex].name
                     }
                   />
                   <FormSelect
@@ -254,12 +228,7 @@ export const CreateProductContainer = () => {
                     }
                   />
                 </SimpleGrid>
-                <SimpleGrid
-                  minChildWidth="240px"
-                  spacing={['6', '8']}
-                  w="100%"
-                  mt={4}
-                >
+                <SimpleGrid minChildWidth="240px" spacing={['6', '8']} w="100%" mt={4}>
                   <FormInput
                     name={`options.${pOindex}.minQuantity`}
                     label="Quantidade mínima"
@@ -286,99 +255,84 @@ export const CreateProductContainer = () => {
                   />
                 </SimpleGrid>
 
-                {productOption.additionals.map(
-                  (_, additionalProductOptionIndex) => (
-                    <Flex
-                      key={additionalProductOptionIndex}
-                      w="100%"
-                      alignItems="center"
-                      gridGap="6"
-                      mt={4}
-                    >
-                      <FormInput
-                        name={`options.${pOindex}.additionals.${additionalProductOptionIndex}.name`}
-                        label="Nome"
-                        {...register(
-                          `options.${pOindex}.additionals.${additionalProductOptionIndex}.name`,
-                        )}
-                        maxLength={20}
-                        error={
-                          errors.options &&
-                          errors.options[pOindex] &&
-                          errors.options[pOindex].additionals &&
-                          errors.options[pOindex].additionals[
-                            additionalProductOptionIndex
-                          ] &&
-                          errors.options[pOindex].additionals[
-                            additionalProductOptionIndex
-                          ].name
-                        }
-                      />
-                      <FormInput
-                        name={`options.${pOindex}.additionals.${additionalProductOptionIndex}.price`}
-                        label="Preço"
-                        {...register(
-                          `options.${pOindex}.additionals.${additionalProductOptionIndex}.price`,
-                        )}
-                        type="number"
-                        error={
-                          errors.options &&
-                          errors.options[pOindex] &&
-                          errors.options[pOindex].additionals &&
-                          errors.options[pOindex].additionals[
-                            additionalProductOptionIndex
-                          ] &&
-                          errors.options[pOindex].additionals[
-                            additionalProductOptionIndex
-                          ].price
-                        }
-                      />
+                {productOption.additionals.map((_, additionalProductOptionIndex) => (
+                  <Flex
+                    key={additionalProductOptionIndex}
+                    w="100%"
+                    alignItems="center"
+                    gridGap="6"
+                    mt={4}
+                  >
+                    <FormInput
+                      name={`options.${pOindex}.additionals.${additionalProductOptionIndex}.name`}
+                      label="Nome"
+                      {...register(
+                        `options.${pOindex}.additionals.${additionalProductOptionIndex}.name`
+                      )}
+                      maxLength={20}
+                      error={
+                        errors.options &&
+                        errors.options[pOindex] &&
+                        errors.options[pOindex].additionals &&
+                        errors.options[pOindex].additionals[additionalProductOptionIndex] &&
+                        errors.options[pOindex].additionals[additionalProductOptionIndex].name
+                      }
+                    />
+                    <FormInput
+                      name={`options.${pOindex}.additionals.${additionalProductOptionIndex}.price`}
+                      label="Preço"
+                      {...register(
+                        `options.${pOindex}.additionals.${additionalProductOptionIndex}.price`
+                      )}
+                      type="number"
+                      error={
+                        errors.options &&
+                        errors.options[pOindex] &&
+                        errors.options[pOindex].additionals &&
+                        errors.options[pOindex].additionals[additionalProductOptionIndex] &&
+                        errors.options[pOindex].additionals[additionalProductOptionIndex].price
+                      }
+                    />
 
+                    <Button
+                      type="button"
+                      colorScheme="pink"
+                      w="3"
+                      justifySelf="flex-end"
+                      mt={4}
+                      onClick={() =>
+                        addProductAdditionalOptions({
+                          productOptionindex: pOindex,
+                        })
+                      }
+                    >
+                      +
+                    </Button>
+
+                    {productOption.additionals.length > 1 && (
                       <Button
                         type="button"
-                        colorScheme="pink"
+                        colorScheme="red"
                         w="3"
                         justifySelf="flex-end"
                         mt={4}
                         onClick={() =>
-                          addProductAdditionalOptions({
+                          removeProductAdditionalOptions({
                             productOptionindex: pOindex,
+                            additionProductOptionindex: additionalProductOptionIndex,
                           })
                         }
                       >
-                        +
+                        -
                       </Button>
-
-                      {productOption.additionals.length > 1 && (
-                        <Button
-                          type="button"
-                          colorScheme="red"
-                          w="3"
-                          justifySelf="flex-end"
-                          mt={4}
-                          onClick={() =>
-                            removeProductAdditionalOptions({
-                              productOptionindex: pOindex,
-                              additionProductOptionindex:
-                                additionalProductOptionIndex,
-                            })
-                          }
-                        >
-                          -
-                        </Button>
-                      )}
-                    </Flex>
-                  ),
-                )}
+                    )}
+                  </Flex>
+                ))}
 
                 <Divider my="6" borderColor="gray.700" />
               </Box>
             ))}
-            <Button
-              type="button"
-              colorScheme="pink"
-              onClick={addMoreProductOptions}
-            >
+            <Button type="button" colorScheme="pink" onClick={addMoreProductOptions}>
               Adicionar opções adicionais
             </Button>
           </VStack>
@@ -397,5 +351,5 @@ export const CreateProductContainer = () => {
         </Box>
       </Flex>
     </Box>
-  );
-};
+  )
+}
