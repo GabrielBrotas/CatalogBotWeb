@@ -44,9 +44,14 @@ export const CategoriesContainer = ({ categories }: CategoriesProps) => {
         },
       })
     } catch (err) {
-      console.log(err)
+      addToast({
+        title: 'Algo deu errado!',
+        description: 'Desculpe, tente novamente mais tarde',
+        status: 'error',
+      })
     }
   }
+
   return (
     <Box>
       <Header />

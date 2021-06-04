@@ -1,7 +1,9 @@
+import { Company } from '../company/types'
+
 export type Category = {
   _id: string
   name: string
-  companyId: string
+  company: Company
   created_at: Date
   updated_at: Date
 }

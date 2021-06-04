@@ -1,43 +1,32 @@
-import {
-  Avatar,
-  Box,
-  Text,
-  Flex,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-} from '@chakra-ui/react';
-import React, { useCallback } from 'react';
-import { signOutCompany } from '../../contexts/authCompany';
+import { Avatar, Box, Text, Flex, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react'
+import React, { useCallback } from 'react'
+import { signOutCompany, useCompanyAuth } from '../../contexts/authCompany'
 
 interface ProfileProps {
-  mobileView: boolean;
+  mobileView: boolean
 }
 
 export function Profile({ mobileView }: ProfileProps) {
+  const { company } = useCompanyAuth()
+
   const handleLogout = useCallback(() => {
-    signOutCompany();
-  }, []);
+    signOutCompany()
+  }, [])
 
   return (
     <Flex align="center">
       <Menu>
         {!mobileView && (
           <Box mr="2">
-            <Text>Gabriel Brotas</Text>
+            <Text>{company?.name}</Text>
             <Text color="gray.300" fontSize="small">
-              gabrielbrotas22@gmail.com
+              {company?.email}
             </Text>
           </Box>
         )}
 
         <MenuButton>
-          <Avatar
-            size="md"
-            name="Gabriel Brotas"
-            src="https://github.com/GabrielBrotas.png"
-          />
+          <Avatar size="md" name={company?.name} src={company?.mainImageUrl} />
         </MenuButton>
 
         <MenuList bg="gray.600">
@@ -45,5 +34,5 @@ export function Profile({ mobileView }: ProfileProps) {
         </MenuList>
       </Menu>
     </Flex>
-  );
+  )
 }

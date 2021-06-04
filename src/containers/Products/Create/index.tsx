@@ -11,6 +11,10 @@ import { FormInput } from '../../../components/Form/input'
 import { FormTextArea } from '../../../components/Form/textarea'
 import { FormSelect } from '../../../components/Form/select'
 import Upload, { UploadedImages } from '../../../components/Upload'
+import { CreateProductProps } from '../../../pages/products/create'
+import { useToast } from '../../../contexts/Toast'
+import { useRouter } from 'next/router'
+import { createProduct, updateProductImage } from '../../../services/apiFunctions/products'
 
 export type OptionAdditional = {
   name: string
@@ -63,7 +67,7 @@ const createProductFormSchema = yup.object().shape({
   ),
 })
 
-export const CreateProductContainer = () => {
+export const CreateProductContainer = ({ categories }: CreateProductProps) => {
   const {
     register,
     handleSubmit,
@@ -73,6 +77,9 @@ export const CreateProductContainer = () => {
   } = useForm({
     resolver: yupResolver(createProductFormSchema),
   })
+
+  const router = useRouter()
+  const { addToast } = useToast()
 
   const [productOptions, setProductsOptions] = useState<ProductOption[]>([])
   const [uploadedImages, setUploadedImages] = useState<Array<UploadedImages>>([])
@@ -135,7 +142,25 @@ export const CreateProductContainer = () => {
 
   const handleCreateProduct: SubmitHandler<CreateProductFormData> = async (values, event) => {
     event.preventDefault()
-    console.log(values)
+    try {
+      const { name, price, description, categoryId, options } = values
+      const product = await createProduct({ name, price, description, categoryId, options })
+      if (uploadedImages[0] && uploadedImages[0].file) {
+        console.log('upload')
+        await updateProductImage({ productId: product._id, image: uploadedImages[0].file })
+      }
+      addToast({
+        status: 'success',
+        title: 'Produto criada com sucesso!',
+      })
+      router.push('/products')
+    } catch (err) {
+      addToast({
+        status: 'error',
+        title: 'Desculpe, algo deu errado!',
+        description: 'Tente novamente mais tarde',
+      })
+    }
   }
 
   return (
@@ -179,7 +204,10 @@ export const CreateProductContainer = () => {
                 name="categoryId"
                 label="Categoria"
                 {...register('categoryId')}
-                options={[{ value: 'id', label: 'ex' }]}
+                options={categories.map((category) => ({
+                  label: category.name,
+                  value: category._id,
+                }))}
                 error={errors.categoryId}
               />
             </SimpleGrid>

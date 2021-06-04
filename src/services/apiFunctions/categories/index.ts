@@ -2,7 +2,7 @@ import { api, setupAPIClient } from '../../api'
 import { Category, GetCategoryDTO, UpdateCategoryDTO } from './types'
 
 export const getMyCategories = async (ctx?: any): Promise<Category[]> => {
-  if (!ctx) return await api.get('/categories/me').then(({ data }) => data)
+  if (!ctx) return await api.get('/categories').then(({ data }) => data)
   return setupAPIClient(ctx)
     .get('/categories')
     .then(({ data }) => data)

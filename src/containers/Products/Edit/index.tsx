@@ -1,47 +1,43 @@
-import React, { useCallback, useReducer, useState } from 'react';
-import Link from 'next/link';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import React, { useCallback, useReducer, useState } from 'react'
+import Link from 'next/link'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
-import {
-  Box,
-  Button,
-  Divider,
-  Flex,
-  Heading,
-  HStack,
-  SimpleGrid,
-  VStack,
-} from '@chakra-ui/react';
-import { Header } from '../../../components/Header';
-import { Sidebar } from '../../../components/Sidebar';
-import { FormInput } from '../../../components/Form/input';
-import { FormTextArea } from '../../../components/Form/textarea';
-import { FormSelect } from '../../../components/Form/select';
-import { ProductOption } from '../Create';
+import { Box, Button, Divider, Flex, Heading, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
+import { Header } from '../../../components/Header'
+import { Sidebar } from '../../../components/Sidebar'
+import { FormInput } from '../../../components/Form/input'
+import { FormTextArea } from '../../../components/Form/textarea'
+import { FormSelect } from '../../../components/Form/select'
+import { ProductOption } from '../Create'
+import { EditProductProps } from '../../../pages/products/edit/[pId]'
+import { updateProduct } from '../../../services/apiFunctions/products'
+import { useToast } from '../../../contexts/Toast'
+import { useRouter } from 'next/router'
+import Upload, { UploadedImages } from '../../../components/Upload'
 
 export type OptionAdditional = {
-  name: string;
-  price: number;
-};
+  name: string
+  price: number
+}
 
 type EditProductFormData = {
-  name: string;
-  price: number;
-  description?: string;
-  options?: ProductOption[];
-  categoryId: string;
-};
+  name: string
+  price: number
+  description?: string
+  options?: ProductOption[]
+  categoryId: string
+}
 
 type RemoveProductAdditionalOptionProps = {
-  productOptionindex: number;
-  additionProductOptionindex: number;
-};
+  productOptionindex: number
+  additionProductOptionindex: number
+}
 
 type AddProductAdditionalOptionsProps = {
-  productOptionindex: number;
-};
+  productOptionindex: number
+}
 
 const createProductFormSchema = yup.object().shape({
   name: yup.string().required('Nome obrigatório'),
@@ -58,13 +54,13 @@ const createProductFormSchema = yup.object().shape({
         yup.object({
           name: yup.string().required('Nome obrigatório'),
           price: yup.string().required('Valor obrigatório'),
-        }),
+        })
       ),
-    }),
+    })
   ),
-});
+})
 
-export const EditProductContainer = () => {
+export const EditProductContainer = ({ product, categories }: EditProductProps) => {
   const {
     register,
     handleSubmit,
@@ -73,9 +69,22 @@ export const EditProductContainer = () => {
     unregister,
   } = useForm({
     resolver: yupResolver(createProductFormSchema),
-  });
-
-  const [productOptions, setProductsOptions] = useState<ProductOption[]>([]);
+  })
+  const { addToast } = useToast()
+  const router = useRouter()
+  const [productOptions, setProductsOptions] = useState<ProductOption[]>(product.options)
+  const [uploadedImages, setUploadedImages] = useState<Array<UploadedImages>>([
+    {
+      id: `${new Date().toString()}-${product.name}`,
+      name: null,
+      size: null,
+      preview: null,
+      progress: 100,
+      uploaded: true,
+      error: false,
+      url: product.imageUrl,
+    },
+  ])
 
   const addMoreProductOptions = () => {
     setProductsOptions(
@@ -85,9 +94,9 @@ export const EditProductContainer = () => {
         maxQuantity: 1,
         minQuantity: 1,
         additionals: [{ name: '', price: 0 }],
-      }),
-    );
-  };
+      })
+    )
+  }
 
   const addProductAdditionalOptions = ({
     productOptionindex,
@@ -99,10 +108,10 @@ export const EditProductContainer = () => {
           : {
               ...product,
               additionals: product.additionals.concat({ name: '', price: 0 }),
-            },
-      ),
-    );
-  };
+            }
+      )
+    )
+  }
 
   const removeProductAdditionalOptions = ({
     productOptionindex,
@@ -115,38 +124,42 @@ export const EditProductContainer = () => {
           : {
               ...product,
               additionals: product.additionals.filter(
-                (_, aPOindex) => aPOindex !== additionProductOptionindex,
+                (_, aPOindex) => aPOindex !== additionProductOptionindex
               ),
-            },
-      ),
-    );
-    clearErrors();
+            }
+      )
+    )
+    clearErrors()
     unregister([
       `options.${productOptionindex}.additionals.${additionProductOptionindex}.name`,
       `options.${productOptionindex}.additionals.${additionProductOptionindex}.price`,
-    ]);
-  };
+    ])
+  }
 
   const removeProductOption = (productOptionindex: number) => {
-    setProductsOptions(
-      productOptions.filter(
-        (product, pOindex) => pOindex !== productOptionindex,
-      ),
-    );
-    clearErrors();
-    unregister([
-      `options.${productOptionindex}`,
-      `options.${productOptionindex}`,
-    ]);
-  };
+    setProductsOptions(productOptions.filter((product, pOindex) => pOindex !== productOptionindex))
+    clearErrors()
+    unregister([`options.${productOptionindex}`, `options.${productOptionindex}`])
+  }
 
-  const handleCreateProduct: SubmitHandler<EditProductFormData> = async (
-    values,
-    event,
-  ) => {
-    event.preventDefault();
-    console.log(values);
-  };
+  const handleCreateProduct: SubmitHandler<EditProductFormData> = async (values, event) => {
+    event.preventDefault()
+    try {
+      const { name, price, description, categoryId, options } = values
+      await updateProduct({ name, categoryId, price, description, options, productId: product._id })
+      addToast({
+        status: 'success',
+        title: 'Produto atualizado com sucesso!',
+      })
+      router.push('/products')
+    } catch (err) {
+      addToast({
+        status: 'error',
+        title: 'Desculpe, algo deu errado!',
+        description: 'Tente novamente mais tarde',
+      })
+    }
+  }
 
   return (
     <Box>
@@ -170,11 +183,13 @@ export const EditProductContainer = () => {
           <Divider my="6" borderColor="gray.700" />
 
           <VStack spacing="8">
+            <Upload uploadedImages={uploadedImages} setUploadedImages={setUploadedImages} />
             <FormInput
               name="name"
               label="Nome do produto"
               {...register('name')}
               error={errors.name}
+              defaultValue={product.name}
             />
             <SimpleGrid minChildWidth="240px" spacing={['6', '8']} w="100%">
               <FormInput
@@ -183,12 +198,17 @@ export const EditProductContainer = () => {
                 type="number"
                 {...register('price')}
                 error={errors.price}
+                defaultValue={product.price}
               />
               <FormSelect
                 name="categoryId"
                 label="Categoria"
                 {...register('categoryId')}
-                options={[{ value: 'id', label: 'ex' }]}
+                defaultValue={product.category && product.category.name}
+                options={categories.map((category) => ({
+                  label: category.name,
+                  value: category._id,
+                }))}
                 error={errors.categoryId}
               />
             </SimpleGrid>
@@ -198,6 +218,7 @@ export const EditProductContainer = () => {
               label="Descrição"
               {...register('description')}
               error={errors.description}
+              defaultValue={product.description}
             />
 
             <Divider my="6" borderColor="gray.700" />
@@ -219,10 +240,9 @@ export const EditProductContainer = () => {
                     label="Nome da opção"
                     {...register(`options.${pOindex}.name`)}
                     error={
-                      errors.options &&
-                      errors.options[pOindex] &&
-                      errors.options[pOindex].name
+                      errors.options && errors.options[pOindex] && errors.options[pOindex].name
                     }
+                    defaultValue={productOption.name}
                   />
                   <FormSelect
                     name="isRequired"
@@ -237,42 +257,38 @@ export const EditProductContainer = () => {
                       errors.options[pOindex] &&
                       errors.options[pOindex].isRequired
                     }
+                    defaultValue={String(productOption.isRequired)}
                   />
                 </SimpleGrid>
-                <SimpleGrid
-                  minChildWidth="240px"
-                  spacing={['6', '8']}
-                  w="100%"
-                  mt={4}
-                >
+                <SimpleGrid minChildWidth="240px" spacing={['6', '8']} w="100%" mt={4}>
                   <FormInput
                     name={`options.${pOindex}.minQuantity`}
                     label="Quantidade mínima"
                     type="number"
-                    defaultValue={1}
                     {...register(`options.${pOindex}.minQuantity`)}
                     error={
                       errors.options &&
                       errors.options[pOindex] &&
                       errors.options[pOindex].minQuantity
                     }
+                    defaultValue={productOption.minQuantity}
                   />
                   <FormInput
                     label="Quantidade máxima"
                     name={`options.${pOindex}.maxQuantity`}
                     type="number"
-                    defaultValue={1}
                     {...register(`options.${pOindex}.maxQuantity`)}
                     error={
                       errors.options &&
                       errors.options[pOindex] &&
                       errors.options[pOindex].maxQuantity
                     }
+                    defaultValue={productOption.maxQuantity}
                   />
                 </SimpleGrid>
 
                 {productOption.additionals.map(
-                  (_, additionalProductOptionIndex) => (
+                  (additionalProductOption, additionalProductOptionIndex) => (
                     <Flex
                       key={additionalProductOptionIndex}
                       w="100%"
@@ -284,38 +300,32 @@ export const EditProductContainer = () => {
                         name={`options.${pOindex}.additionals.${additionalProductOptionIndex}.name`}
                         label="Nome"
                         {...register(
-                          `options.${pOindex}.additionals.${additionalProductOptionIndex}.name`,
+                          `options.${pOindex}.additionals.${additionalProductOptionIndex}.name`
                         )}
+                        defaultValue={additionalProductOption?.name}
                         maxLength={20}
                         error={
                           errors.options &&
                           errors.options[pOindex] &&
                           errors.options[pOindex].additionals &&
-                          errors.options[pOindex].additionals[
-                            additionalProductOptionIndex
-                          ] &&
-                          errors.options[pOindex].additionals[
-                            additionalProductOptionIndex
-                          ].name
+                          errors.options[pOindex].additionals[additionalProductOptionIndex] &&
+                          errors.options[pOindex].additionals[additionalProductOptionIndex].name
                         }
                       />
                       <FormInput
                         name={`options.${pOindex}.additionals.${additionalProductOptionIndex}.price`}
                         label="Preço"
+                        defaultValue={additionalProductOption?.price}
                         {...register(
-                          `options.${pOindex}.additionals.${additionalProductOptionIndex}.price`,
+                          `options.${pOindex}.additionals.${additionalProductOptionIndex}.price`
                         )}
                         type="number"
                         error={
                           errors.options &&
                           errors.options[pOindex] &&
                           errors.options[pOindex].additionals &&
-                          errors.options[pOindex].additionals[
-                            additionalProductOptionIndex
-                          ] &&
-                          errors.options[pOindex].additionals[
-                            additionalProductOptionIndex
-                          ].price
+                          errors.options[pOindex].additionals[additionalProductOptionIndex] &&
+                          errors.options[pOindex].additionals[additionalProductOptionIndex].price
                         }
                       />
 
@@ -344,8 +354,7 @@ export const EditProductContainer = () => {
                           onClick={() =>
                             removeProductAdditionalOptions({
                               productOptionindex: pOindex,
-                              additionProductOptionindex:
-                                additionalProductOptionIndex,
+                              additionProductOptionindex: additionalProductOptionIndex,
                             })
                           }
                         >
@@ -353,17 +362,13 @@ export const EditProductContainer = () => {
                         </Button>
                       )}
                     </Flex>
-                  ),
+                  )
                 )}
 
                 <Divider my="6" borderColor="gray.700" />
               </Box>
             ))}
-            <Button
-              type="button"
-              colorScheme="pink"
-              onClick={addMoreProductOptions}
-            >
+            <Button type="button" colorScheme="pink" onClick={addMoreProductOptions}>
               Adicionar opções adicionais
             </Button>
           </VStack>
@@ -382,5 +387,5 @@ export const EditProductContainer = () => {
         </Box>
       </Flex>
     </Box>
-  );
-};
+  )
+}
