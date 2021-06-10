@@ -46,7 +46,7 @@ const Upload: React.FC<UploadProps> = ({ setUploadedImages, uploadedImages }: Up
       </Flex>
     )
   }
-  console.log(uploadedImages)
+
   // const [newImages, setNewImages] = useState<Array<UploadedImages>>([])
   // const [changeProgress, setChangeProgress] = useState<[number, string] | []>([])
   // const [uploadFinish, setUploadFinish] = useState<[string, string, boolean] | []>([])

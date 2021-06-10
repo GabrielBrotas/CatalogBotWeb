@@ -2,7 +2,7 @@ import React from 'react'
 import { EditCategoryContainer } from '../../../containers/Categories/Edit'
 import { getCategory } from '../../../services/apiFunctions/categories'
 import { Category } from '../../../services/apiFunctions/categories/types'
-import { withSSRAuth } from '../../../utils/withSSRAuth'
+import { withCompanySSRAuth } from '../../../utils/withSSRAuth'
 
 export interface EditCategoryProps {
   category: Category
@@ -12,7 +12,7 @@ export default function EditCategory({ category }: EditCategoryProps) {
   return <EditCategoryContainer category={category} />
 }
 
-export const getServerSideProps = withSSRAuth(async (ctx) => {
+export const getServerSideProps = withCompanySSRAuth(async (ctx) => {
   try {
     const { cId } = ctx.params
 

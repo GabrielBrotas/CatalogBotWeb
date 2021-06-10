@@ -1,10 +1,25 @@
 import { api, setupAPIClient } from '../../api'
-import { CreateProductDTO, UpdateProductDTO, Product, GetProductDTO } from './types'
+import {
+  CreateProductDTO,
+  UpdateProductDTO,
+  Product,
+  GetProductDTO,
+  ListResultProps,
+  GetProductsDTO,
+} from './types'
 
-export const getMyProducts = async (ctx?: any): Promise<Product[]> => {
-  if (!ctx) return await api.get('/products').then(({ data }) => data)
+export const getProducts = async ({
+  page = 1,
+  limit = 10,
+  ctx,
+  companyId,
+}: GetProductsDTO): Promise<ListResultProps> => {
+  if (!ctx)
+    return await api
+      .get(`/products/${companyId}?page=${page}&limit=${limit}`)
+      .then(({ data }) => data)
   return setupAPIClient(ctx)
-    .get('/products')
+    .get(`/products/${companyId}?page=${page}&limit=${limit}`)
     .then(({ data }) => data)
 }
 
@@ -30,9 +45,9 @@ export const updateProduct = async ({
 }
 
 export const getProduct = async ({ productId, ctx }: GetProductDTO): Promise<Product> => {
-  if (!ctx) return await api.get(`/products/${productId}`).then(({ data }) => data)
+  if (!ctx) return await api.get(`/products/product/${productId}`).then(({ data }) => data)
   return setupAPIClient(ctx)
-    .get(`/products/${productId}`)
+    .get(`/products/product/${productId}`)
     .then(({ data }) => data)
 }
 

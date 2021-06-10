@@ -1,6 +1,6 @@
 import { Avatar, Box, Text, Flex, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react'
 import React, { useCallback } from 'react'
-import { signOutCompany, useCompanyAuth } from '../../contexts/authCompany'
+import { signOutCompany, useCompanyAuth } from '../../contexts/AuthCompany'
 
 interface ProfileProps {
   mobileView: boolean

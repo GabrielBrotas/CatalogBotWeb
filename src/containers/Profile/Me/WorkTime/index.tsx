@@ -1,14 +1,13 @@
-import React from 'react';
-import { Flex, Text, Box } from '@chakra-ui/react';
-import { CompanyWorkTime } from '../../../../services/apiFunctions/company/types';
-import { weekDayFormat } from '../../../../configs/dateTime';
+import React from 'react'
+import { Flex, Text, Box } from '@chakra-ui/react'
+import { CompanyWorkTime } from '../../../../services/apiFunctions/company/types'
+import { weekDayFormat } from '../../../../configs/dateTime'
 
 interface WorkTimeProps {
-  workTime: CompanyWorkTime[];
+  workTime: CompanyWorkTime[]
 }
 
 export const WorkTime = ({ workTime }: WorkTimeProps) => {
-
   return (
     <Flex w="100%" flexDir="column" mt={10}>
       <Text color="gray.300" fontSize="2xl">
@@ -36,5 +35,5 @@ export const WorkTime = ({ workTime }: WorkTimeProps) => {
         </Box>
       ))}
     </Flex>
-  );
-};
+  )
+}

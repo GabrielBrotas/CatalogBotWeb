@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -13,8 +14,8 @@ import { FormSelect } from '../../../components/Form/select'
 import Upload, { UploadedImages } from '../../../components/Upload'
 import { CreateProductProps } from '../../../pages/products/create'
 import { useToast } from '../../../contexts/Toast'
-import { useRouter } from 'next/router'
 import { createProduct, updateProductImage } from '../../../services/apiFunctions/products'
+import { queryClient } from '../../../services/queryClient'
 
 export type OptionAdditional = {
   name: string
@@ -151,8 +152,9 @@ export const CreateProductContainer = ({ categories }: CreateProductProps) => {
       }
       addToast({
         status: 'success',
-        title: 'Produto criada com sucesso!',
+        title: 'Produto criado com sucesso!',
       })
+      queryClient.invalidateQueries('products')
       router.push('/products')
     } catch (err) {
       addToast({

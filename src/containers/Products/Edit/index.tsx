@@ -147,6 +147,7 @@ export const EditProductContainer = ({ product, categories }: EditProductProps) 
     try {
       const { name, price, description, categoryId, options } = values
       await updateProduct({ name, categoryId, price, description, options, productId: product._id })
+
       addToast({
         status: 'success',
         title: 'Produto atualizado com sucesso!',
@@ -223,151 +224,152 @@ export const EditProductContainer = ({ product, categories }: EditProductProps) 
 
             <Divider my="6" borderColor="gray.700" />
 
-            {productOptions.map((productOption, pOindex) => (
-              <Box w="100%" key={pOindex} textAlign="right">
-                <Button
-                  type="button"
-                  colorScheme="red"
-                  justifySelf="flex-end"
-                  mt={2}
-                  onClick={() => removeProductOption(pOindex)}
-                >
-                  Remover opção
-                </Button>
-                <SimpleGrid minChildWidth="240px" spacing={['6', '8']} w="100%">
-                  <FormInput
-                    name={`options.${pOindex}.name`}
-                    label="Nome da opção"
-                    {...register(`options.${pOindex}.name`)}
-                    error={
-                      errors.options && errors.options[pOindex] && errors.options[pOindex].name
-                    }
-                    defaultValue={productOption.name}
-                  />
-                  <FormSelect
-                    name="isRequired"
-                    label="É obrigatório?"
-                    {...register(`options.${pOindex}.isRequired`)}
-                    options={[
-                      { value: 'true', label: 'Sim' },
-                      { value: 'false', label: 'Não' },
-                    ]}
-                    error={
-                      errors.options &&
-                      errors.options[pOindex] &&
-                      errors.options[pOindex].isRequired
-                    }
-                    defaultValue={String(productOption.isRequired)}
-                  />
-                </SimpleGrid>
-                <SimpleGrid minChildWidth="240px" spacing={['6', '8']} w="100%" mt={4}>
-                  <FormInput
-                    name={`options.${pOindex}.minQuantity`}
-                    label="Quantidade mínima"
-                    type="number"
-                    {...register(`options.${pOindex}.minQuantity`)}
-                    error={
-                      errors.options &&
-                      errors.options[pOindex] &&
-                      errors.options[pOindex].minQuantity
-                    }
-                    defaultValue={productOption.minQuantity}
-                  />
-                  <FormInput
-                    label="Quantidade máxima"
-                    name={`options.${pOindex}.maxQuantity`}
-                    type="number"
-                    {...register(`options.${pOindex}.maxQuantity`)}
-                    error={
-                      errors.options &&
-                      errors.options[pOindex] &&
-                      errors.options[pOindex].maxQuantity
-                    }
-                    defaultValue={productOption.maxQuantity}
-                  />
-                </SimpleGrid>
+            {productOptions &&
+              productOptions.map((productOption, pOindex) => (
+                <Box w="100%" key={pOindex} textAlign="right">
+                  <Button
+                    type="button"
+                    colorScheme="red"
+                    justifySelf="flex-end"
+                    mt={2}
+                    onClick={() => removeProductOption(pOindex)}
+                  >
+                    Remover opção
+                  </Button>
+                  <SimpleGrid minChildWidth="240px" spacing={['6', '8']} w="100%">
+                    <FormInput
+                      name={`options.${pOindex}.name`}
+                      label="Nome da opção"
+                      {...register(`options.${pOindex}.name`)}
+                      error={
+                        errors.options && errors.options[pOindex] && errors.options[pOindex].name
+                      }
+                      defaultValue={productOption.name}
+                    />
+                    <FormSelect
+                      name="isRequired"
+                      label="É obrigatório?"
+                      {...register(`options.${pOindex}.isRequired`)}
+                      options={[
+                        { value: 'true', label: 'Sim' },
+                        { value: 'false', label: 'Não' },
+                      ]}
+                      error={
+                        errors.options &&
+                        errors.options[pOindex] &&
+                        errors.options[pOindex].isRequired
+                      }
+                      defaultValue={String(productOption.isRequired)}
+                    />
+                  </SimpleGrid>
+                  <SimpleGrid minChildWidth="240px" spacing={['6', '8']} w="100%" mt={4}>
+                    <FormInput
+                      name={`options.${pOindex}.minQuantity`}
+                      label="Quantidade mínima"
+                      type="number"
+                      {...register(`options.${pOindex}.minQuantity`)}
+                      error={
+                        errors.options &&
+                        errors.options[pOindex] &&
+                        errors.options[pOindex].minQuantity
+                      }
+                      defaultValue={productOption.minQuantity}
+                    />
+                    <FormInput
+                      label="Quantidade máxima"
+                      name={`options.${pOindex}.maxQuantity`}
+                      type="number"
+                      {...register(`options.${pOindex}.maxQuantity`)}
+                      error={
+                        errors.options &&
+                        errors.options[pOindex] &&
+                        errors.options[pOindex].maxQuantity
+                      }
+                      defaultValue={productOption.maxQuantity}
+                    />
+                  </SimpleGrid>
 
-                {productOption.additionals.map(
-                  (additionalProductOption, additionalProductOptionIndex) => (
-                    <Flex
-                      key={additionalProductOptionIndex}
-                      w="100%"
-                      alignItems="center"
-                      gridGap="6"
-                      mt={4}
-                    >
-                      <FormInput
-                        name={`options.${pOindex}.additionals.${additionalProductOptionIndex}.name`}
-                        label="Nome"
-                        {...register(
-                          `options.${pOindex}.additionals.${additionalProductOptionIndex}.name`
-                        )}
-                        defaultValue={additionalProductOption?.name}
-                        maxLength={20}
-                        error={
-                          errors.options &&
-                          errors.options[pOindex] &&
-                          errors.options[pOindex].additionals &&
-                          errors.options[pOindex].additionals[additionalProductOptionIndex] &&
-                          errors.options[pOindex].additionals[additionalProductOptionIndex].name
-                        }
-                      />
-                      <FormInput
-                        name={`options.${pOindex}.additionals.${additionalProductOptionIndex}.price`}
-                        label="Preço"
-                        defaultValue={additionalProductOption?.price}
-                        {...register(
-                          `options.${pOindex}.additionals.${additionalProductOptionIndex}.price`
-                        )}
-                        type="number"
-                        error={
-                          errors.options &&
-                          errors.options[pOindex] &&
-                          errors.options[pOindex].additionals &&
-                          errors.options[pOindex].additionals[additionalProductOptionIndex] &&
-                          errors.options[pOindex].additionals[additionalProductOptionIndex].price
-                        }
-                      />
-
-                      <Button
-                        type="button"
-                        colorScheme="pink"
-                        w="3"
-                        justifySelf="flex-end"
+                  {productOption.additionals.map(
+                    (additionalProductOption, additionalProductOptionIndex) => (
+                      <Flex
+                        key={additionalProductOptionIndex}
+                        w="100%"
+                        alignItems="center"
+                        gridGap="6"
                         mt={4}
-                        onClick={() =>
-                          addProductAdditionalOptions({
-                            productOptionindex: pOindex,
-                          })
-                        }
                       >
-                        +
-                      </Button>
+                        <FormInput
+                          name={`options.${pOindex}.additionals.${additionalProductOptionIndex}.name`}
+                          label="Nome"
+                          {...register(
+                            `options.${pOindex}.additionals.${additionalProductOptionIndex}.name`
+                          )}
+                          defaultValue={additionalProductOption?.name}
+                          maxLength={20}
+                          error={
+                            errors.options &&
+                            errors.options[pOindex] &&
+                            errors.options[pOindex].additionals &&
+                            errors.options[pOindex].additionals[additionalProductOptionIndex] &&
+                            errors.options[pOindex].additionals[additionalProductOptionIndex].name
+                          }
+                        />
+                        <FormInput
+                          name={`options.${pOindex}.additionals.${additionalProductOptionIndex}.price`}
+                          label="Preço"
+                          defaultValue={additionalProductOption?.price}
+                          {...register(
+                            `options.${pOindex}.additionals.${additionalProductOptionIndex}.price`
+                          )}
+                          type="number"
+                          error={
+                            errors.options &&
+                            errors.options[pOindex] &&
+                            errors.options[pOindex].additionals &&
+                            errors.options[pOindex].additionals[additionalProductOptionIndex] &&
+                            errors.options[pOindex].additionals[additionalProductOptionIndex].price
+                          }
+                        />
 
-                      {productOption.additionals.length > 1 && (
                         <Button
                           type="button"
-                          colorScheme="red"
+                          colorScheme="pink"
                           w="3"
                           justifySelf="flex-end"
                           mt={4}
                           onClick={() =>
-                            removeProductAdditionalOptions({
+                            addProductAdditionalOptions({
                               productOptionindex: pOindex,
-                              additionProductOptionindex: additionalProductOptionIndex,
                             })
                           }
                         >
-                          -
+                          +
                         </Button>
-                      )}
-                    </Flex>
-                  )
-                )}
 
-                <Divider my="6" borderColor="gray.700" />
-              </Box>
-            ))}
+                        {productOption.additionals.length > 1 && (
+                          <Button
+                            type="button"
+                            colorScheme="red"
+                            w="3"
+                            justifySelf="flex-end"
+                            mt={4}
+                            onClick={() =>
+                              removeProductAdditionalOptions({
+                                productOptionindex: pOindex,
+                                additionProductOptionindex: additionalProductOptionIndex,
+                              })
+                            }
+                          >
+                            -
+                          </Button>
+                        )}
+                      </Flex>
+                    )
+                  )}
+
+                  <Divider my="6" borderColor="gray.700" />
+                </Box>
+              ))}
             <Button type="button" colorScheme="pink" onClick={addMoreProductOptions}>
               Adicionar opções adicionais
             </Button>

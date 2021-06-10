@@ -1,82 +1,79 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { setCookie, parseCookies, destroyCookie } from 'nookies'
 import { api } from '../services/api'
 import Router from 'next/router'
 import { Company } from '../services/apiFunctions/company/types'
 import { getMyCompany, signInCompany } from '../services/apiFunctions/company'
+import { Client } from '../services/apiFunctions/client/types'
+import { getMyClient, signInClient } from '../services/apiFunctions/client'
 
 type SignInCredentials = {
-  email: string
+  user: string
   password: string
 }
 
 type AuthContextData = {
-  signOutCompany(): void
-  loginCompany(credentials: SignInCredentials): Promise<void>
+  signOutClient(): void
+  loginClient(credentials: SignInCredentials): Promise<void>
   isAuthenticated: boolean
-  company: Company
+  client: Client
 }
 
 const AuthContext = createContext({} as AuthContextData)
 
-export function signOutCompany() {
+export function signOutClient() {
   destroyCookie(undefined, '@CatalogBot.token')
-  Router.push('/')
 }
 
-export const AuthCompanyProvider: React.FC = ({ children }) => {
-  const [company, setCompany] = useState<Company>()
-  const isAuthenticated = !!company
+export const AuthClientProvider: React.FC = ({ children }) => {
+  const [client, setClient] = useState<Client>()
+  const isAuthenticated = !!client
 
   useEffect(() => {
     const { '@CatalogBot.token': token } = parseCookies()
 
     if (token) {
-      getMyCompany({})
+      getMyClient({})
         .then((response) => {
-          const { _id, email, name, benefits, mainImageUrl, shortDescription, workTime } = response
+          const { _id, email, cellphone, name, defaultAddress } = response
 
-          setCompany({
+          setClient({
             _id,
             email,
+            cellphone,
             name,
-            benefits,
-            mainImageUrl,
-            shortDescription,
-            workTime,
+            defaultAddress,
           })
         })
         .catch((err) => {
           if (err.response.status === 401) {
-            signOutCompany()
+            signOutClient()
           }
         })
     }
   }, [])
 
-  async function loginCompany({ email, password }: SignInCredentials) {
-    const { company, token } = await signInCompany({ email, password })
+  async function loginClient({ user, password }: SignInCredentials) {
+    const { client, token } = await signInClient({ user, password })
 
     setCookie(undefined, '@CatalogBot.token', token, {
       maxAge: 60 * 60 * 24 * 30,
       path: '/',
     })
 
-    setCompany(company)
+    setClient(client)
 
     api.defaults.headers['Authorization'] = `Bearer ${token}`
-
-    Router.push('/dashboard')
   }
 
   return (
-    <AuthContext.Provider value={{ loginCompany, signOutCompany, isAuthenticated, company }}>
+    <AuthContext.Provider value={{ loginClient, signOutClient, isAuthenticated, client }}>
       {children}
     </AuthContext.Provider>
   )
 }
 
-export function useCompanyAuth() {
+export function useClientAuth() {
   const context = useContext(AuthContext)
 
   if (!context) {

@@ -1,11 +1,12 @@
 import React, { ChangeEvent, useCallback, useState } from 'react'
+import { AiOutlineCamera } from 'react-icons/ai'
 import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
 
 import { Box, Flex, Heading, Text, Avatar, VStack, useBreakpointValue } from '@chakra-ui/react'
 import { Sidebar } from '../../../components/Sidebar'
-import { AiOutlineCamera } from 'react-icons/ai'
 import { Header } from '../../../components/Header'
 import { FormInput } from '../../../components/Form/input'
 import { FormTextArea } from '../../../components/Form/textarea'
@@ -17,7 +18,6 @@ import { hours, weekDays } from '../../../configs/dateTime'
 import { IUpdateCompanyDTO } from '../../../services/apiFunctions/company/types'
 import { useToast } from '../../../contexts/Toast'
 import { updateCompany, updateCompanyImage } from '../../../services/apiFunctions/company'
-import { useRouter } from 'next/router'
 
 const updateCompanySchema = yup.object().shape({
   name: yup.string().required('Nome obrigatório'),

@@ -1,38 +1,44 @@
 import dayjs from 'dayjs'
 import React from 'react'
-import { AlertDialog } from '../../components/AlertDialog'
+import jwt_decode from 'jwt-decode'
+import { AlertDialog } from '../../components/Modals/AlertDialog'
 import { ProductsContainer } from '../../containers/Products/List'
-import { getMyProducts } from '../../services/apiFunctions/products'
-import { Product } from '../../services/apiFunctions/products/types'
-import { withSSRAuth } from '../../utils/withSSRAuth'
+import { getProducts } from '../../services/apiFunctions/products'
+import { Pagination, Product } from '../../services/apiFunctions/products/types'
+import { withCompanySSRAuth } from '../../utils/withSSRAuth'
+import { parseCookies } from 'nookies'
 
 interface ProductFormated extends Product {
   dateFormated: string
   priceFormated: string
 }
-export interface ProductsProps {
+export interface ProductsProps extends Pagination {
   products: ProductFormated[]
 }
 
-export default function Products({ products }: ProductsProps) {
+export default function Products({ products, previous, total, next }: ProductsProps) {
   return (
     <>
-      <ProductsContainer products={products} />
+      <ProductsContainer products={products} previous={previous} total={total} next={next} />
       <AlertDialog />
     </>
   )
 }
 
-export const getServerSideProps = withSSRAuth(async (ctx) => {
+export const getServerSideProps = withCompanySSRAuth(async (ctx) => {
   try {
-    const products = await getMyProducts(ctx)
+    const cookies = parseCookies(ctx)
+    const token = cookies['@CatalogBot.token']
+    const { sub: companyId } = jwt_decode(token) as any
+
+    const { results, total, next, previous } = await getProducts({ ctx, companyId })
 
     const formatterPrice = new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
     })
 
-    const productsFormated = products.map((product) => ({
+    const productsFormated = results.map((product) => ({
       ...product,
       dateFormated: dayjs(product.created_at).format('DD/MM/YYYY'),
       priceFormated: formatterPrice.format(product.price),
@@ -41,9 +47,13 @@ export const getServerSideProps = withSSRAuth(async (ctx) => {
     return {
       props: {
         products: productsFormated,
+        total,
+        next: next || null,
+        previous: previous || null,
       },
     }
   } catch (err) {
+    console.log(err)
     return {
       redirect: {
         destination: '/',

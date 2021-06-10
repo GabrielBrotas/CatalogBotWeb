@@ -1,11 +1,14 @@
 import { Category } from '../categories/types'
 
 export type OptionAdditional = {
+  _id?: string
   name: string
   price: number
+  priceFormated?: string
 }
 
 export type ProductOption = {
+  _id?: string
   name: string
   isRequired: boolean
   maxQuantity: number
@@ -41,9 +44,32 @@ export type Product = {
   companyId: string
   created_at: Date
   updated_at: Date
+  priceFormated?: string
 }
 
 export type GetProductDTO = {
   productId: string
   ctx?: any
+}
+
+export type GetProductsDTO = {
+  companyId: string
+  page?: string | number
+  limit?: string | number
+  ctx?: any
+}
+
+type SubPagination = {
+  page: number
+  limit: number
+}
+
+export type Pagination = {
+  next?: SubPagination | null
+  previous?: SubPagination | null
+  total: number
+}
+
+export interface ListResultProps extends Pagination {
+  results: Product[]
 }

@@ -1,29 +1,18 @@
-import React from 'react';
-import {
-  Avatar,
-  Box,
-  SimpleGrid,
-  Text,
-  useBreakpointValue,
-} from '@chakra-ui/react';
+import React from 'react'
+import { Avatar, Box, SimpleGrid, Text, useBreakpointValue } from '@chakra-ui/react'
 
 interface HeaderInfoProps {
-  name: string;
-  email: string;
-  description?: string;
-  mainImageUrl?: string;
+  name: string
+  email: string
+  description?: string
+  mainImageUrl?: string
 }
 
-export const HeaderInfo = ({
-  email,
-  name,
-  description,
-  mainImageUrl,
-}: HeaderInfoProps) => {
+export const HeaderInfo = ({ email, name, description, mainImageUrl }: HeaderInfoProps) => {
   const isMobileView = useBreakpointValue({
     base: true,
     lg: false,
-  });
+  })
 
   return (
     <SimpleGrid
@@ -47,5 +36,5 @@ export const HeaderInfo = ({
         </Text>
       </Box>
     </SimpleGrid>
-  );
-};
+  )
+}

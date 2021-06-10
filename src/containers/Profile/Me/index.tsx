@@ -1,14 +1,14 @@
-import React from 'react';
-import { Box, Button, Flex, Heading, Icon } from '@chakra-ui/react';
-import { Header } from '../../../components/Header';
-import { Sidebar } from '../../../components/Sidebar';
-import { RiEditLine } from 'react-icons/ri';
-import Link from 'next/link';
-import { WorkTime } from './WorkTime';
-import { HeaderInfo } from './HeaderInfo';
-import { CompanyBenefitsTag } from '../../../components/Tags/companyBenefitsTag';
-import { useCompanyAuth } from '../../../contexts/authCompany';
-import { ProfileProps } from '../../../pages/profile';
+import React from 'react'
+import Link from 'next/link'
+import { RiEditLine } from 'react-icons/ri'
+import { Box, Button, Flex, Heading, Icon } from '@chakra-ui/react'
+
+import { Header } from '../../../components/Header'
+import { Sidebar } from '../../../components/Sidebar'
+import { WorkTime } from './WorkTime'
+import { HeaderInfo } from './HeaderInfo'
+import { CompanyBenefitsTag } from '../../../components/Tags/companyBenefitsTag'
+import { ProfileProps } from '../../../pages/profile'
 
 export const ProfileContainer = ({ company }: ProfileProps) => {
   return (
@@ -50,5 +50,5 @@ export const ProfileContainer = ({ company }: ProfileProps) => {
         </Box>
       </Flex>
     </Box>
-  );
-};
+  )
+}

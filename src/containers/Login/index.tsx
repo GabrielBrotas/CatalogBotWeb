@@ -11,7 +11,7 @@ import { FormInput } from '../../components/Form/input';
 import { Button } from '../../components/Form/button';
 import { signInCompany } from '../../services/apiFunctions/company';
 import { useToast } from '../../contexts/Toast';
-import { useCompanyAuth } from '../../contexts/authCompany';
+import { useCompanyAuth } from '../../contexts/AuthCompany';
 
 type SignInFormData = {
   email: string;

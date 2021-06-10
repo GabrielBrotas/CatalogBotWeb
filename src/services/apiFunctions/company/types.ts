@@ -9,6 +9,11 @@ export type LoginDTO = {
   password: string
 }
 
+export type SignInCompanyResponse = {
+  company: Company
+  token: string
+}
+
 export type CompanyWorkTime = {
   day: number
   from: string
@@ -16,6 +21,7 @@ export type CompanyWorkTime = {
 }
 
 export type Company = {
+  _id: string
   email: string
   name: string
   mainImageUrl?: string
@@ -32,6 +38,11 @@ export type IUpdateCompanyDTO = {
 }
 
 export type RequestFromSSR = {
+  ctx?: any
+}
+
+export type GetCompanyDTO = {
+  companyId: string
   ctx?: any
 }
 

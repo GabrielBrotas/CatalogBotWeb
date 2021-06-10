@@ -1,33 +1,39 @@
 import React from 'react'
+import jwtDecode from 'jwt-decode'
 
 import { CategoriesContainer } from '../../containers/Categories/List'
-import { getMyCategories } from '../../services/apiFunctions/categories'
-import { Category } from '../../services/apiFunctions/categories/types'
-import { withSSRAuth } from '../../utils/withSSRAuth'
+import { getCategories } from '../../services/apiFunctions/categories'
+import { Category, Pagination } from '../../services/apiFunctions/categories/types'
+import { withCompanySSRAuth } from '../../utils/withSSRAuth'
 import dayjs from 'dayjs'
-import { AlertDialog } from '../../components/AlertDialog'
+import { AlertDialog } from '../../components/Modals/AlertDialog'
+import { parseCookies } from 'nookies'
 
 interface CategoryFormated extends Category {
   dateFormated: string
 }
-export interface CategoriesProps {
+export interface CategoriesProps extends Pagination {
   categories: CategoryFormated[]
 }
 
-export default function Categories({ categories }: CategoriesProps) {
+export default function Categories({ categories, total, next, previous }: CategoriesProps) {
   return (
     <>
-      <CategoriesContainer categories={categories} />
+      <CategoriesContainer categories={categories} total={total} next={next} previous={previous} />
       <AlertDialog />
     </>
   )
 }
 
-export const getServerSideProps = withSSRAuth(async (ctx) => {
+export const getServerSideProps = withCompanySSRAuth(async (ctx) => {
   try {
-    const categories = await getMyCategories(ctx)
+    const cookies = parseCookies(ctx)
+    const token = cookies['@CatalogBot.token']
+    const { sub: companyId } = jwtDecode(token) as any
 
-    const categoriesFormated = categories.map((category) => ({
+    const { results, total, next, previous } = await getCategories({ ctx, companyId: companyId })
+
+    const categoriesFormated = results.map((category) => ({
       ...category,
       dateFormated: dayjs(category.created_at).format('DD/MM/YYYY'),
     }))

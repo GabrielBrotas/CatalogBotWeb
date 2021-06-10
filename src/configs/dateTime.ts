@@ -23,7 +23,6 @@ export const hours = [
   { label: '21:00', value: '21:00' },
   { label: '22:00', value: '22:00' },
   { label: '23:00', value: '23:00' },
-  { label: '24:00', value: '24:00' },
 ]
 
 export const weekDayFormat = {

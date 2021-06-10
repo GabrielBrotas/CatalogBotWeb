@@ -1,4 +1,4 @@
-import { extendTheme } from '@chakra-ui/react';
+import { extendTheme } from '@chakra-ui/react'
 
 // extender o tema global e sobrescrever alterações
 export const theme = extendTheme({
@@ -28,4 +28,4 @@ export const theme = extendTheme({
       },
     },
   },
-});
+})

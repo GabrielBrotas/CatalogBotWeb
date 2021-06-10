@@ -8,7 +8,8 @@ import {
   Button,
 } from '@chakra-ui/react'
 import React from 'react'
-import { useAlertModal } from '../contexts/AlertModal'
+import { useAlertModal } from '../../contexts/AlertModal'
+import { Section } from '../Section'
 
 export const AlertDialog = () => {
   const { isAlertModalOpen, handleCloseAlertModal, alertModalContent } = useAlertModal()
@@ -17,7 +18,7 @@ export const AlertDialog = () => {
   const cancelRef = React.useRef()
 
   return (
-    <>
+    <Section>
       <ChakraAlertDialog
         isOpen={isAlertModalOpen}
         leastDestructiveRef={cancelRef}
@@ -49,6 +50,6 @@ export const AlertDialog = () => {
           </AlertDialogContent>
         </AlertDialogOverlay>
       </ChakraAlertDialog>
-    </>
+    </Section>
   )
 }

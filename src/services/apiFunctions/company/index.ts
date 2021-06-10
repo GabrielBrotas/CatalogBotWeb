@@ -1,11 +1,13 @@
 import { api, setupAPIClient } from '../../api'
 import {
   Company,
+  GetCompanyDTO,
   IUpdateCompanyDTO,
   IUploadedFile,
   IUploadFile,
   LoginDTO,
   RequestFromSSR,
+  SignInCompanyResponse,
   SignUpDTO,
 } from './types'
 
@@ -13,15 +15,18 @@ export const signUpCompany = async ({ email, name, password }: SignUpDTO): Promi
   return await api.post('/companies', { email, name, password }).then(({ data }) => data)
 }
 
-interface SignInCompanyResponse {
-  company: Company
-  token: string
-}
 export const signInCompany = async ({
   email,
   password,
 }: LoginDTO): Promise<SignInCompanyResponse> => {
   return api.post('/companies/auth', { email, password }).then(({ data }) => data)
+}
+
+export const getCompany = async ({ companyId, ctx = false }: GetCompanyDTO): Promise<Company> => {
+  if (!ctx) return await api.get(`/companies/${companyId}`).then(({ data }) => data)
+  return setupAPIClient(ctx)
+    .get(`/companies/${companyId}`)
+    .then(({ data }) => data)
 }
 
 export const getMyCompany = async ({ ctx = false }: RequestFromSSR): Promise<Company> => {

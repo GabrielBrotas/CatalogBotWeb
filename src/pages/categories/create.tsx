@@ -1,12 +1,12 @@
 import React from 'react'
 
 import { CreateCategoryContainer } from '../../containers/Categories/Create'
-import { withSSRAuth } from '../../utils/withSSRAuth'
+import { withCompanySSRAuth } from '../../utils/withSSRAuth'
 
 export default function CreateCategory() {
   return <CreateCategoryContainer />
 }
-export const getServerSideProps = withSSRAuth(async (ctx) => {
+export const getServerSideProps = withCompanySSRAuth(async (ctx) => {
   try {
     return {
       props: {},

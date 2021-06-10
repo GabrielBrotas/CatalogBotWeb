@@ -11,6 +11,7 @@ import { FormInput } from '../../../components/Form/input'
 import { createCategory } from '../../../services/apiFunctions/categories'
 import { useToast } from '../../../contexts/Toast'
 import { useRouter } from 'next/router'
+import { queryClient } from '../../../services/queryClient'
 
 type CreatCategoryFormData = {
   name: string
@@ -35,6 +36,7 @@ export const CreateCategoryContainer = () => {
   const handleCreateCategory: SubmitHandler<CreatCategoryFormData> = async (values) => {
     try {
       const { name } = values
+      queryClient.invalidateQueries('categories')
       await createCategory({ name: name.trim() })
       addToast({
         status: 'success',

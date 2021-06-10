@@ -1,10 +1,24 @@
 import { api, setupAPIClient } from '../../api'
-import { Category, GetCategoryDTO, UpdateCategoryDTO } from './types'
+import {
+  Category,
+  GetCategoryDTO,
+  GetCategoriesDTO,
+  ListCategoriesResultProps,
+  UpdateCategoryDTO,
+} from './types'
 
-export const getMyCategories = async (ctx?: any): Promise<Category[]> => {
-  if (!ctx) return await api.get('/categories').then(({ data }) => data)
+export const getCategories = async ({
+  page = 1,
+  limit = 10,
+  ctx,
+  companyId,
+}: GetCategoriesDTO): Promise<ListCategoriesResultProps> => {
+  if (!ctx)
+    return await api
+      .get(`/categories/${companyId}?page=${page}&limit=${limit}`)
+      .then(({ data }) => data)
   return setupAPIClient(ctx)
-    .get('/categories')
+    .get(`/categories/${companyId}?page=${page}&limit=${limit}`)
     .then(({ data }) => data)
 }
 
@@ -24,7 +38,7 @@ export const updateCategory = async ({
 }
 
 export const getCategory = async ({ categoryId, ctx }: GetCategoryDTO): Promise<Category> => {
-  if (!ctx) return await api.get(`categories/${categoryId}`).then(({ data }) => data)
+  if (!ctx) return await api.get(`/categories/category/${categoryId}`).then(({ data }) => data)
   return setupAPIClient(ctx)
     .get(`/categories/${categoryId}`)
     .then(({ data }) => data)

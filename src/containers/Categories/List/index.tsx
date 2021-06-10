@@ -12,6 +12,7 @@ import {
   Thead,
   Tr,
   Text,
+  Spinner,
 } from '@chakra-ui/react'
 import { Header } from '../../../components/Header'
 import { Sidebar } from '../../../components/Sidebar'
@@ -19,18 +20,56 @@ import { RiAddLine, RiPencilLine } from 'react-icons/ri'
 import { Pagination } from '../../../components/Pagination'
 import Link from 'next/link'
 import { CategoriesProps } from '../../../pages/categories'
-import { deleteCategory } from '../../../services/apiFunctions/categories'
+import { deleteCategory, getCategories } from '../../../services/apiFunctions/categories'
 import { useAlertModal } from '../../../contexts/AlertModal'
 import { useToast } from '../../../contexts/Toast'
+import { useQuery } from 'react-query'
+import dayjs from 'dayjs'
+import { queryClient } from '../../../services/queryClient'
+import { useCompanyAuth } from '../../../contexts/AuthCompany'
 
-export const CategoriesContainer = ({ categories }: CategoriesProps) => {
-  const [companyCategories, setCompanyCategories] = useState(categories)
+export const CategoriesContainer = (props: CategoriesProps) => {
+  const [page, setPage] = useState(1)
+  const { company } = useCompanyAuth()
+
+  const {
+    data: { results, total, next, previous },
+    isLoading,
+    isFetching,
+  } = useQuery(
+    ['categories', { page }],
+    async () => {
+      const { results, total, next, previous } = await getCategories({
+        companyId: company._id,
+        page,
+      })
+
+      const categoriesFormated = results.map((category) => ({
+        ...category,
+        dateFormated: dayjs(category.created_at).format('DD/MM/YYYY'),
+      }))
+
+      setCompanyCategories(categoriesFormated)
+      return { results: categoriesFormated, total, next, previous }
+    },
+    {
+      initialData: {
+        results: props.categories,
+        previous: props.previous,
+        next: props.next,
+        total: props.total,
+      },
+    }
+  )
+
+  const [companyCategories, setCompanyCategories] = useState(results)
 
   const { handleOpenAlertModal } = useAlertModal()
   const { addToast } = useToast()
 
   const handleDeleteCategory = async (categoryId: string) => {
     try {
+      queryClient.invalidateQueries('categories')
       handleOpenAlertModal({
         title: 'Deletar Categoria',
         description: 'Você tem certeza que deseja deletar essa categoria?',
@@ -78,56 +117,62 @@ export const CategoriesContainer = ({ categories }: CategoriesProps) => {
             </Link>
           </Flex>
 
-          <Table colorScheme="whiteAlpha">
-            <Thead>
-              <Tr>
-                <Th textAlign="center">Nome</Th>
-                <Th textAlign="center">Criada em</Th>
-                <Th textAlign="center">Ações</Th>
-              </Tr>
-            </Thead>
+          {isLoading || isFetching ? (
+            <Box textAlign="center">
+              <Spinner size="xl" />
+            </Box>
+          ) : (
+            <Table colorScheme="whiteAlpha">
+              <Thead>
+                <Tr>
+                  <Th textAlign="center">Nome</Th>
+                  <Th textAlign="center">Criada em</Th>
+                  <Th textAlign="center">Ações</Th>
+                </Tr>
+              </Thead>
 
-            <Tbody>
-              {companyCategories.map((category) => (
-                <Tr key={category._id}>
-                  <Td textAlign="center">
-                    <Text fontWeight="bold">{category.name}</Text>
-                  </Td>
-                  <Td textAlign="center">
-                    <Text fontSize="sm">{category.dateFormated}</Text>
-                  </Td>
+              <Tbody>
+                {companyCategories.map((category) => (
+                  <Tr key={category._id}>
+                    <Td textAlign="center">
+                      <Text fontWeight="bold">{category.name}</Text>
+                    </Td>
+                    <Td textAlign="center">
+                      <Text fontSize="sm">{category.dateFormated}</Text>
+                    </Td>
 
-                  <Td textAlign="center">
-                    <Link href={`/categories/edit/${category._id}`} passHref>
+                    <Td textAlign="center">
+                      <Link href={`/categories/edit/${category._id}`} passHref>
+                        <Button
+                          as="a"
+                          size="sm"
+                          fontSize="sm"
+                          colorScheme="purple"
+                          leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                        >
+                          Editar
+                        </Button>
+                      </Link>
                       <Button
+                        cursor="pointer"
+                        marginLeft="4"
                         as="a"
                         size="sm"
                         fontSize="sm"
-                        colorScheme="purple"
+                        colorScheme="red"
                         leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                        onClick={() => handleDeleteCategory(category._id)}
                       >
-                        Editar
+                        Deletar
                       </Button>
-                    </Link>
-                    <Button
-                      cursor="pointer"
-                      marginLeft="4"
-                      as="a"
-                      size="sm"
-                      fontSize="sm"
-                      colorScheme="red"
-                      leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                      onClick={() => handleDeleteCategory(category._id)}
-                    >
-                      Deletar
-                    </Button>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          )}
 
-          <Pagination />
+          <Pagination currentPage={page} totalCountOfRegisters={total} onPageChange={setPage} />
         </Box>
       </Flex>
     </Box>

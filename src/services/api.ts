@@ -1,9 +1,9 @@
-import axios from 'axios';
-import { parseCookies } from 'nookies';
-import { API_URL } from '../configs/constants';
+import axios from 'axios'
+import { parseCookies } from 'nookies'
+import { API_URL } from '../configs/constants'
 
 export function setupAPIClient(ctx = undefined) {
-  let cookies = parseCookies(ctx);
+  const cookies = parseCookies(ctx)
   const api = axios.create({
     baseURL: API_URL,
     headers: {
@@ -11,10 +11,9 @@ export function setupAPIClient(ctx = undefined) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${cookies['@CatalogBot.token']}`,
     },
-  });
+  })
 
   return api
 }
 
 export const api = setupAPIClient()
-
