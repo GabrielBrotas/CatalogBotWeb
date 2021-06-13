@@ -14,13 +14,13 @@ import {
 import { CatalogProps } from '../../pages/catalog/[companyId]'
 
 import { CompanyBenefitsTag } from '../../components/Tags/companyBenefitsTag'
-import { useCatalogModal } from '../../contexts/CatalogModal'
+import { useProductModal } from '../../contexts/ProductModal'
 import { Product } from '../../services/apiFunctions/companies/products/types'
 import { useCart } from '../../contexts/Cart'
 
 export const CatalogContainer = ({ company, productsAgrupedByCategory }: CatalogProps) => {
-  const { handleOpenCatalogModal } = useCatalogModal()
-  const { setCompany } = useCart()
+  const { openProductModal } = useProductModal()
+  const { setCompany, cart } = useCart()
 
   const isCompanyOpen = useMemo(() => {
     let open = false
@@ -52,9 +52,9 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
 
   const handleOpenProductModal = useCallback(
     (product: Product) => {
-      handleOpenCatalogModal({ type: 'product', product })
+      openProductModal({ type: 'product', product })
     },
-    [handleOpenCatalogModal]
+    [openProductModal]
   )
 
   useEffect(() => {
@@ -62,7 +62,15 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
   }, [company, setCompany])
 
   return (
-    <Container maxW="container.xl" centerContent p="0.5" display="flex" flexDir="column">
+    <Container
+      maxW="container.xl"
+      centerContent
+      p="0.5"
+      display="flex"
+      flexDir="column"
+      maxHeight={cart ? (cart.orderProducts.length > 0 ? '91%' : '100%') : '100%'}
+      overflowY="scroll"
+    >
       <Image
         w="full"
         h="15rem"

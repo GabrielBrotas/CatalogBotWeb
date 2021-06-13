@@ -20,6 +20,14 @@ export type CompanyWorkTime = {
   to: string
 }
 
+export type CompanyPaymentMethods = {
+  boleto: boolean
+  creditCard: boolean
+  pix: boolean
+  money: boolean
+  debit: boolean
+}
+
 export type Company = {
   _id: string
   email: string
@@ -27,6 +35,7 @@ export type Company = {
   mainImageUrl?: string
   workTime?: CompanyWorkTime[]
   shortDescription?: string
+  acceptedPaymentMethods: CompanyPaymentMethods
   benefits?: string[]
 }
 
@@ -34,6 +43,7 @@ export type IUpdateCompanyDTO = {
   name?: string
   workTime?: CompanyWorkTime[]
   shortDescription?: string
+  acceptedPaymentMethods: CompanyPaymentMethods
   benefits?: string[]
 }
 

@@ -8,8 +8,7 @@ import { ToastProvider } from '../contexts/Toast'
 import { AuthCompanyProvider } from '../contexts/AuthCompany'
 import { AuthClientProvider } from '../contexts/AuthClient'
 import { AlertModalProvider } from '../contexts/AlertModal'
-import { CatalogModalProvider } from '../contexts/CatalogModal'
-import { CartProvider } from '../contexts/Cart'
+import { ProductModalProvider } from '../contexts/ProductModal'
 
 import { theme } from '../styles/theme'
 import '../styles/global.css'
@@ -21,15 +20,13 @@ function MyApp({ Component, pageProps }) {
         <AuthCompanyProvider>
           <AuthClientProvider>
             <ToastProvider>
-              <CatalogModalProvider>
-                <CartProvider>
-                  <AlertModalProvider>
-                    <SidebarDrawerProvider>
-                      <Component {...pageProps} />
-                    </SidebarDrawerProvider>
-                  </AlertModalProvider>
-                </CartProvider>
-              </CatalogModalProvider>
+              <ProductModalProvider>
+                <AlertModalProvider>
+                  <SidebarDrawerProvider>
+                    <Component {...pageProps} />
+                  </SidebarDrawerProvider>
+                </AlertModalProvider>
+              </ProductModalProvider>
             </ToastProvider>
           </AuthClientProvider>
         </AuthCompanyProvider>

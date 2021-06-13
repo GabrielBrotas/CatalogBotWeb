@@ -5,7 +5,16 @@ import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
-import { Box, Flex, Heading, Text, Avatar, VStack, useBreakpointValue } from '@chakra-ui/react'
+import {
+  Box,
+  Flex,
+  Heading,
+  Text,
+  Avatar,
+  VStack,
+  useBreakpointValue,
+  Checkbox,
+} from '@chakra-ui/react'
 import { Sidebar } from '../../../components/Sidebar'
 import { Header } from '../../../components/Header'
 import { FormInput } from '../../../components/Form/input'
@@ -29,6 +38,13 @@ const updateCompanySchema = yup.object().shape({
       to: yup.string().required('Horário de fechamento obrigatório'),
     })
   ),
+  acceptedPaymentMethods: yup.object().shape({
+    boleto: yup.boolean().optional(),
+    creditCard: yup.boolean().optional(),
+    pix: yup.boolean().optional(),
+    money: yup.boolean().optional(),
+    debit: yup.boolean().optional(),
+  }),
 })
 
 export const UpdateProfileContainer = ({ company }: UpdateProfileProps) => {
@@ -46,6 +62,12 @@ export const UpdateProfileContainer = ({ company }: UpdateProfileProps) => {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(updateCompanySchema),
+    defaultValues: {
+      name: company.name,
+      shortDescription: company.shortDescription,
+      workTime: company.workTime,
+      acceptedPaymentMethods: company.acceptedPaymentMethods,
+    },
   })
   const { addToast } = useToast()
 
@@ -83,8 +105,14 @@ export const UpdateProfileContainer = ({ company }: UpdateProfileProps) => {
   const handleUpdate = useCallback(
     async (data: Omit<IUpdateCompanyDTO, 'benefits'>) => {
       try {
-        const { workTime, name, shortDescription } = data
-        await updateCompany({ name, shortDescription, workTime, benefits: companyBenefits })
+        const { workTime, name, shortDescription, acceptedPaymentMethods } = data
+        await updateCompany({
+          name,
+          shortDescription,
+          workTime,
+          benefits: companyBenefits,
+          acceptedPaymentMethods,
+        })
 
         addToast({
           status: 'success',
@@ -167,14 +195,12 @@ export const UpdateProfileContainer = ({ company }: UpdateProfileProps) => {
                 label="Nome da empresa"
                 {...register('name')}
                 error={errors.name}
-                defaultValue={company.name}
               />
               <FormTextArea
                 name="shortDescription"
                 label="Descrição curta"
                 {...register('shortDescription')}
                 error={errors.shortDescription}
-                defaultValue={company.shortDescription}
               />
 
               <Box display="flex" alignItems="flex-end" alignSelf="flex-start">
@@ -269,6 +295,51 @@ export const UpdateProfileContainer = ({ company }: UpdateProfileProps) => {
                   </Box>
                 ))}
               </Flex>
+
+              <Flex w="100%" flexDir="column" mt={10}>
+                <Text color="gray.300" fontSize="2xl">
+                  Formas de Pagamento
+                </Text>
+
+                <VStack>
+                  <Checkbox
+                    size="md"
+                    colorScheme="green"
+                    {...register('acceptedPaymentMethods.money')}
+                  >
+                    Dinheiro
+                  </Checkbox>
+                  <Checkbox
+                    size="md"
+                    colorScheme="green"
+                    {...register('acceptedPaymentMethods.pix')}
+                  >
+                    Pix
+                  </Checkbox>
+                  <Checkbox
+                    size="md"
+                    colorScheme="green"
+                    {...register('acceptedPaymentMethods.debit')}
+                  >
+                    Débito
+                  </Checkbox>
+                  <Checkbox
+                    size="md"
+                    colorScheme="green"
+                    {...register('acceptedPaymentMethods.creditCard')}
+                  >
+                    Cartão de crédito
+                  </Checkbox>
+                  <Checkbox
+                    size="md"
+                    colorScheme="green"
+                    {...register('acceptedPaymentMethods.boleto')}
+                  >
+                    Boleto
+                  </Checkbox>
+                </VStack>
+              </Flex>
+
               <Button
                 type="submit"
                 alignSelf="flex-end"

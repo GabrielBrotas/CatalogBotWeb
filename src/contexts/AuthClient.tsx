@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { setCookie, parseCookies, destroyCookie } from 'nookies'
-import { apiCompany } from '../services/api'
+import { apiClient } from '../services/api'
 import { getMyClient, signInClient } from '../services/apiFunctions/clients/client'
 import { COOKIE_CLIENT_TOKEN } from '../configs/constants'
 import { Client } from '../services/apiFunctions/clients/client/types'
@@ -59,9 +59,8 @@ export const AuthClientProvider: React.FC = ({ children }) => {
       path: '/',
     })
 
+    apiClient.defaults.headers['Authorization'] = `Bearer ${token}`
     setClient(client)
-
-    apiCompany.defaults.headers['Authorization'] = `Bearer ${token}`
   }
 
   return (

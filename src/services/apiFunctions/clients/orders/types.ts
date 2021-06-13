@@ -1,18 +1,21 @@
 import { Address } from '../client/types'
 
 type OrderOptionsAdditionals = {
+  _id?: string
   name: string
   price: number
   amount: number
 }
 
 export type PickedOptions = {
+  _id?: string
   productOptionName: string
   optionAdditionals: OrderOptionsAdditionals[]
 }
 
 export type OrderProduct = {
-  productId: string
+  _id?: string
+  product: string
   amount: number
   pickedOptions: PickedOptions[]
   comment?: string

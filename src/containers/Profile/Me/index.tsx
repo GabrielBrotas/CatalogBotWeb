@@ -9,6 +9,7 @@ import { WorkTime } from './WorkTime'
 import { HeaderInfo } from './HeaderInfo'
 import { CompanyBenefitsTag } from '../../../components/Tags/companyBenefitsTag'
 import { ProfileProps } from '../../../pages/profile'
+import { PaymentMethods } from './PaymentMethods'
 
 export const ProfileContainer = ({ company }: ProfileProps) => {
   return (
@@ -46,6 +47,7 @@ export const ProfileContainer = ({ company }: ProfileProps) => {
             />
             <CompanyBenefitsTag tags={company.benefits} />
             <WorkTime workTime={company.workTime} />
+            <PaymentMethods paymentMethods={company.acceptedPaymentMethods} />
           </Box>
         </Box>
       </Flex>

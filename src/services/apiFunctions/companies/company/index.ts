@@ -41,9 +41,10 @@ export const updateCompany = async ({
   benefits,
   shortDescription,
   workTime,
+  acceptedPaymentMethods,
 }: IUpdateCompanyDTO): Promise<Company> => {
   return await apiCompany
-    .put('/companies', { name, benefits, shortDescription, workTime })
+    .put('/companies', { name, benefits, shortDescription, workTime, acceptedPaymentMethods })
     .then(({ data }) => data)
 }
 

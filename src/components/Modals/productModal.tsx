@@ -21,13 +21,13 @@ import {
 import React, { useState } from 'react'
 import { useClientAuth } from '../../contexts/AuthClient'
 import { useCart } from '../../contexts/Cart'
-import { useCatalogModal } from '../../contexts/CatalogModal'
+import { useProductModal } from '../../contexts/ProductModal'
 import { AddToastProps, useToast } from '../../contexts/Toast'
 import { OrderProduct } from '../../services/apiFunctions/clients/orders/types'
 import { OptionAdditional, Product } from '../../services/apiFunctions/companies/products/types'
 import { Button } from '../Form/button'
 import { FormTextArea } from '../Form/textarea'
-import { RegisterClient } from './RegisterClient'
+import { RegisterOrLoginClient } from './RegisterOrLoginClient'
 
 interface formatItemToOrderProductProps {
   activeProduct: Product
@@ -53,7 +53,7 @@ function formatItemToOrderProduct({
   comment,
 }: formatItemToOrderProductProps): OrderProduct {
   return {
-    productId: activeProduct._id,
+    product: activeProduct._id,
     amount: 1,
     pickedOptions: selectedOptions.map((option) => ({
       productOptionName: option.name,
@@ -66,7 +66,7 @@ function formatItemToOrderProduct({
 }
 
 export const ProductModal = () => {
-  const { isCatalogModalOpen, handleCloseCatalogModal, activeProduct } = useCatalogModal()
+  const { isProductModalOpen, handleCloseProductModal, activeProduct } = useProductModal()
   const { isAuthenticated } = useClientAuth()
   const { addToast } = useToast()
   const { addToCart } = useCart()
@@ -86,7 +86,7 @@ export const ProductModal = () => {
   )
   const [comment, setComment] = useState('')
 
-  const onClose = () => handleCloseCatalogModal()
+  const onClose = () => handleCloseProductModal()
 
   if (!activeProduct) return <></>
 
@@ -152,7 +152,7 @@ export const ProductModal = () => {
     return total
   }
 
-  function handleAddToCart() {
+  async function handleAddToCart() {
     if (!isAuthenticated) {
       openRegisterModal()
       return
@@ -190,17 +190,20 @@ export const ProductModal = () => {
       comment,
     })
 
-    addToCart(formatedOption)
-    addToast({
-      title: 'Produto adicionado ao carrinho!',
-      status: 'success',
-    })
-    onClose()
+    try {
+      await addToCart(formatedOption)
+      addToast({
+        title: 'Produto adicionado ao carrinho',
+        status: 'success',
+      })
+    } finally {
+      onClose()
+    }
   }
 
   return (
     <>
-      <Drawer placement="bottom" onClose={onClose} isOpen={isCatalogModalOpen}>
+      <Drawer placement="bottom" onClose={onClose} isOpen={isProductModalOpen}>
         <DrawerOverlay />
         <DrawerContent h="90%" borderTopRadius="2xl">
           <DrawerHeader borderBottomWidth="1px" w="full" display="flex" justifyContent="center">
@@ -325,7 +328,7 @@ export const ProductModal = () => {
         </DrawerContent>
       </Drawer>
 
-      <RegisterClient isOpen={isOpen} closeRegisterModal={closeRegisterModal} />
+      <RegisterOrLoginClient isOpen={isOpen} closeRegisterModal={closeRegisterModal} />
     </>
   )
 }

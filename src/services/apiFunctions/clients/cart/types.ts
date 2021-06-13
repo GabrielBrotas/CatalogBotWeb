@@ -1,10 +1,19 @@
-import { OrderProduct } from './../orders/types'
+import { Product } from '../../companies/products/types'
+import { OrderProduct, PickedOptions } from './../orders/types'
+
+export type CartOrderProduct = {
+  _id?: string
+  product: Product
+  amount: number
+  pickedOptions: PickedOptions[]
+  comment?: string
+}
 
 export type Cart = {
   _id: string
   clientId: string
   companyId: string
-  orderProducts: OrderProduct[]
+  orderProducts: CartOrderProduct[]
   created_at: Date
 }
 

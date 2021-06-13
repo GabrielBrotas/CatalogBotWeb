@@ -2,7 +2,7 @@ import React from 'react'
 import { GetStaticPaths, GetStaticProps } from 'next'
 
 import { CatalogContainer } from '../../../containers/Catalog'
-import { useCatalogModal } from '../../../contexts/CatalogModal'
+import { useProductModal } from '../../../contexts/ProductModal'
 import { getCategories } from '../../../services/apiFunctions/companies/categories'
 import { getCompany } from '../../../services/apiFunctions/companies/company'
 import { Company } from '../../../services/apiFunctions/companies/company/types'
@@ -10,6 +10,9 @@ import { getProducts } from '../../../services/apiFunctions/companies/products'
 import { Product } from '../../../services/apiFunctions/companies/products/types'
 import { ProductModal } from '../../../components/Modals/ProductModal'
 import { Section } from '../../../components/Section'
+import { FloatCart } from '../../../components/Modals/Cart/Float'
+import { CartModal } from '../../../components/Modals/Cart/CartReview'
+import { CartProvider } from '../../../contexts/Cart'
 
 export interface CatalogProps {
   company: Company
@@ -20,14 +23,19 @@ export interface CatalogProps {
 }
 
 export default function Catalog({ company, productsAgrupedByCategory }: CatalogProps) {
-  const { isCatalogModalOpen } = useCatalogModal()
+  const { isProductModalOpen } = useProductModal()
 
   return (
-    <Section>
-      <CatalogContainer company={company} productsAgrupedByCategory={productsAgrupedByCategory} />
+    <CartProvider>
+      <Section>
+        <CatalogContainer company={company} productsAgrupedByCategory={productsAgrupedByCategory} />
 
-      {isCatalogModalOpen && <ProductModal />}
-    </Section>
+        {isProductModalOpen && <ProductModal />}
+        <FloatCart />
+
+        <CartModal />
+      </Section>
+    </CartProvider>
   )
 }
 
