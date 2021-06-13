@@ -26,7 +26,7 @@ import Link from 'next/link'
 import { ProductsProps } from '../../../pages/products'
 import { useAlertModal } from '../../../contexts/AlertModal'
 import { useToast } from '../../../contexts/Toast'
-import { deleteProduct, getProducts } from '../../../services/apiFunctions/products'
+import { deleteProduct, getProducts } from '../../../services/apiFunctions/companies/products'
 import { queryClient } from '../../../services/queryClient'
 import { useCompanyAuth } from '../../../contexts/AuthCompany'
 

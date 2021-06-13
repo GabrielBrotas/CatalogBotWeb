@@ -1,11 +1,11 @@
 import { createContext, ReactNode, useCallback, useContext } from 'react'
-import { useToast as useChakraToast, UseToastOptions } from '@chakra-ui/react'
+import { useToast as useChakraToast } from '@chakra-ui/react'
 
 interface TostProviderProps {
   children: ReactNode
 }
 
-type AddToastProps = {
+export type AddToastProps = {
   title: string
   description?: string
   status: 'success' | 'info' | 'warning' | 'error'
@@ -20,15 +20,19 @@ const SidebarDrawerContext = createContext({} as TostContextProps)
 export function ToastProvider({ children }: TostProviderProps) {
   const toast = useChakraToast()
 
-  const addToast = useCallback(({ title, description, status }: AddToastProps) => {
-    toast({
-      title,
-      description,
-      status,
-      duration: 9000,
-      isClosable: true,
-    })
-  }, [])
+  const addToast = useCallback(
+    ({ title, description, status }: AddToastProps) => {
+      toast({
+        title,
+        description,
+        status,
+        duration: 9000,
+        isClosable: true,
+      })
+    },
+    [toast]
+  )
+
   return (
     <SidebarDrawerContext.Provider value={{ addToast }}>{children}</SidebarDrawerContext.Provider>
   )

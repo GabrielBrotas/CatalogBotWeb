@@ -1,6 +1,6 @@
 import { Box, Stack, Text } from '@chakra-ui/react'
 import React, { useMemo } from 'react'
-import { Pagination as IPagination } from '../../services/apiFunctions/products/types'
+import { Pagination as IPagination } from '../../services/apiFunctions/companies/products/types'
 import { PaginationItem } from './PaginationItem'
 
 interface PaginationProps {

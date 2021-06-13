@@ -14,11 +14,11 @@ import {
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import { Address } from '../../services/apiFunctions/client/types'
 import { useToast } from '../../contexts/Toast'
 import { FormInput } from '../Form/input'
-import { signInClient, signUpClient } from '../../services/apiFunctions/client'
+import { signUpClient } from '../../services/apiFunctions/clients/client'
 import { useClientAuth } from '../../contexts/AuthClient'
+import { Address } from '../../services/apiFunctions/clients/client/types'
 
 interface RegisterClientProps {
   isOpen: boolean

@@ -1,7 +1,6 @@
 import {
   Badge,
   Box,
-  Checkbox,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -20,25 +19,72 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import React, { useState } from 'react'
+import { useClientAuth } from '../../contexts/AuthClient'
+import { useCart } from '../../contexts/Cart'
 import { useCatalogModal } from '../../contexts/CatalogModal'
+import { AddToastProps, useToast } from '../../contexts/Toast'
+import { OrderProduct } from '../../services/apiFunctions/clients/orders/types'
+import { OptionAdditional, Product } from '../../services/apiFunctions/companies/products/types'
 import { Button } from '../Form/button'
+import { FormTextArea } from '../Form/textarea'
 import { RegisterClient } from './RegisterClient'
+
+interface formatItemToOrderProductProps {
+  activeProduct: Product
+  selectedOptions: {
+    selectedAdditionalOptions: {
+      _id: string
+      name: string
+      price: number
+      amount: number
+    }[]
+    _id?: string
+    name: string
+    isRequired: boolean
+    maxQuantity: number
+    minQuantity: number
+    additionals: OptionAdditional[]
+  }[]
+  comment?: string
+}
+function formatItemToOrderProduct({
+  activeProduct,
+  selectedOptions,
+  comment,
+}: formatItemToOrderProductProps): OrderProduct {
+  return {
+    productId: activeProduct._id,
+    amount: 1,
+    pickedOptions: selectedOptions.map((option) => ({
+      productOptionName: option.name,
+      optionAdditionals: option.selectedAdditionalOptions.filter(
+        (selectedAdditionalOption) => selectedAdditionalOption.amount !== 0
+      ),
+    })),
+    comment,
+  }
+}
 
 export const ProductModal = () => {
   const { isCatalogModalOpen, handleCloseCatalogModal, activeProduct } = useCatalogModal()
+  const { isAuthenticated } = useClientAuth()
+  const { addToast } = useToast()
+  const { addToCart } = useCart()
 
   const { isOpen, onOpen: openRegisterModal, onClose: closeRegisterModal } = useDisclosure()
 
-  const [selectedOption, setSelectedOptions] = useState(
+  const [selectedOptions, setSelectedOptions] = useState(
     activeProduct.options.map((option) => ({
       ...option,
       selectedAdditionalOptions: option.additionals.map((additional) => ({
         _id: additional._id,
         name: additional.name,
-        quantity: 0,
+        price: additional.price,
+        amount: 0,
       })),
     }))
   )
+  const [comment, setComment] = useState('')
 
   const onClose = () => handleCloseCatalogModal()
 
@@ -46,14 +92,13 @@ export const ProductModal = () => {
 
   function handleSingleOptionChange({ optionId, additionalOptionId, value }) {
     setSelectedOptions(
-      selectedOption.map((option) => {
+      selectedOptions.map((option) => {
         if (option._id !== optionId) {
           return {
             ...option,
             selectedAdditionalOptions: option.selectedAdditionalOptions.map((additional) => ({
-              _id: additional._id,
-              name: additional.name,
-              quantity: Number(additional.quantity),
+              ...additional,
+              amount: Number(additional.amount),
             })),
           }
         }
@@ -61,9 +106,8 @@ export const ProductModal = () => {
         return {
           ...option,
           selectedAdditionalOptions: option.selectedAdditionalOptions.map((additional) => ({
-            _id: additional._id,
-            name: additional.name,
-            quantity: additional._id === additionalOptionId ? value : 0,
+            ...additional,
+            amount: additional._id === additionalOptionId ? value : 0,
           })),
         }
       })
@@ -72,14 +116,13 @@ export const ProductModal = () => {
 
   function handleMultipleOptionChange({ optionId, additionalOptionId, value }) {
     setSelectedOptions(
-      selectedOption.map((option) => {
+      selectedOptions.map((option) => {
         if (option._id !== optionId) {
           return {
             ...option,
             selectedAdditionalOptions: option.selectedAdditionalOptions.map((additional) => ({
-              _id: additional._id,
-              name: additional.name,
-              quantity: Number(additional.quantity),
+              ...additional,
+              amount: Number(additional.amount),
             })),
           }
         }
@@ -87,14 +130,13 @@ export const ProductModal = () => {
         return {
           ...option,
           selectedAdditionalOptions: option.selectedAdditionalOptions.map((additional) => ({
-            _id: additional._id,
-            name: additional.name,
-            quantity:
+            ...additional,
+            amount:
               additional._id === additionalOptionId
-                ? Number(additional.quantity) + Number(value) < 0
-                  ? Number(additional.quantity)
-                  : Number(additional.quantity) + Number(value)
-                : Number(additional.quantity),
+                ? Number(additional.amount) + Number(value) < 0
+                  ? Number(additional.amount)
+                  : Number(additional.amount) + Number(value)
+                : Number(additional.amount),
           })),
         }
       })
@@ -103,7 +145,7 @@ export const ProductModal = () => {
 
   function getTotalAdditionalPicked(selectedAdditionalOptions) {
     const total = selectedAdditionalOptions.reduce(
-      (acc, currentOption) => acc + currentOption.quantity,
+      (acc, currentOption) => acc + currentOption.amount,
       0
     )
 
@@ -111,7 +153,49 @@ export const ProductModal = () => {
   }
 
   function handleAddToCart() {
-    openRegisterModal()
+    if (!isAuthenticated) {
+      openRegisterModal()
+      return
+    }
+
+    const errors: AddToastProps[] = []
+    // validate
+    selectedOptions.map((option) => {
+      if (option.isRequired) {
+        let countSelected = 0
+        option.selectedAdditionalOptions.map((selectedAdditionalOption) => {
+          countSelected += selectedAdditionalOption.amount
+        })
+
+        if (countSelected < option.maxQuantity) {
+          errors.push({
+            title: `Quantidade inválida em ${option.name}`,
+            description: `Você escolheu ${countSelected} de ${option.maxQuantity} opções obrigatórias`,
+            status: 'error',
+          })
+        }
+      }
+    })
+
+    if (errors.length > 0) {
+      errors.map((error) => {
+        addToast(error)
+      })
+      return
+    }
+
+    const formatedOption = formatItemToOrderProduct({
+      activeProduct,
+      selectedOptions,
+      comment,
+    })
+
+    addToCart(formatedOption)
+    addToast({
+      title: 'Produto adicionado ao carrinho!',
+      status: 'success',
+    })
+    onClose()
   }
 
   return (
@@ -135,7 +219,7 @@ export const ProductModal = () => {
             </Text>
 
             <VStack w="full" display="flex" flexDir="column">
-              {selectedOption.map((option) => (
+              {selectedOptions.map((option) => (
                 <Box key={option._id} w="full">
                   <Flex alignItems="flex-start" justifyContent="space-between" bg="gray.300" p="2">
                     <Box display="flex" flexDir="column">
@@ -177,7 +261,7 @@ export const ProductModal = () => {
                               value={
                                 option.selectedAdditionalOptions.find(
                                   (addOption) => addOption._id === additionalOption._id
-                                ).quantity
+                                ).amount
                               }
                               readOnly
                               min={0}
@@ -227,6 +311,13 @@ export const ProductModal = () => {
                   )}
                 </Box>
               ))}
+
+              <FormTextArea
+                name="comments"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                label="Comentário adicional"
+              />
 
               <Button onClick={handleAddToCart}>Adicionar ao carrinho</Button>
             </VStack>

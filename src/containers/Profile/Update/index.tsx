@@ -15,9 +15,9 @@ import { FormSelect } from '../../../components/Form/select'
 import { Button } from '../../../components/Form/button'
 import { UpdateProfileProps } from '../../../pages/profile/update'
 import { hours, weekDays } from '../../../configs/dateTime'
-import { IUpdateCompanyDTO } from '../../../services/apiFunctions/company/types'
+import { IUpdateCompanyDTO } from '../../../services/apiFunctions/companies/company/types'
 import { useToast } from '../../../contexts/Toast'
-import { updateCompany, updateCompanyImage } from '../../../services/apiFunctions/company'
+import { updateCompany, updateCompanyImage } from '../../../services/apiFunctions/companies/company'
 
 const updateCompanySchema = yup.object().shape({
   name: yup.string().required('Nome obrigatório'),

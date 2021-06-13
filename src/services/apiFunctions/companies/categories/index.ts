@@ -1,4 +1,4 @@
-import { api, setupAPIClient } from '../../api'
+import { apiCompany, apiCompanySSR } from '../../../api'
 import {
   Category,
   GetCategoryDTO,
@@ -14,32 +14,33 @@ export const getCategories = async ({
   companyId,
 }: GetCategoriesDTO): Promise<ListCategoriesResultProps> => {
   if (!ctx)
-    return await api
+    return await apiCompany
       .get(`/categories/${companyId}?page=${page}&limit=${limit}`)
       .then(({ data }) => data)
-  return setupAPIClient(ctx)
+  return apiCompanySSR(ctx)
     .get(`/categories/${companyId}?page=${page}&limit=${limit}`)
     .then(({ data }) => data)
 }
 
 export const createCategory = async ({ name }: { name: string }): Promise<Category> => {
-  return await api.post(`/categories/`, { name }).then(({ data }) => data)
+  return await apiCompany.post(`/categories/`, { name }).then(({ data }) => data)
 }
 
 export const deleteCategory = async (categoryId: string): Promise<void> => {
-  return await api.delete(`/categories/${categoryId}`).then(({ data }) => data)
+  return await apiCompany.delete(`/categories/${categoryId}`).then(({ data }) => data)
 }
 
 export const updateCategory = async ({
   categoryId,
   name,
 }: UpdateCategoryDTO): Promise<Category> => {
-  return await api.put(`/categories/${categoryId}`, { name }).then(({ data }) => data)
+  return await apiCompany.put(`/categories/${categoryId}`, { name }).then(({ data }) => data)
 }
 
 export const getCategory = async ({ categoryId, ctx }: GetCategoryDTO): Promise<Category> => {
-  if (!ctx) return await api.get(`/categories/category/${categoryId}`).then(({ data }) => data)
-  return setupAPIClient(ctx)
+  if (!ctx)
+    return await apiCompany.get(`/categories/category/${categoryId}`).then(({ data }) => data)
+  return apiCompanySSR(ctx)
     .get(`/categories/${categoryId}`)
     .then(({ data }) => data)
 }

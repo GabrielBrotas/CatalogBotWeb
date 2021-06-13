@@ -8,7 +8,7 @@ import { Box, Button, Divider, Flex, Heading, HStack, SimpleGrid, VStack } from 
 import { Header } from '../../../components/Header'
 import { Sidebar } from '../../../components/Sidebar'
 import { FormInput } from '../../../components/Form/input'
-import { createCategory } from '../../../services/apiFunctions/categories'
+import { createCategory } from '../../../services/apiFunctions/companies/categories'
 import { useToast } from '../../../contexts/Toast'
 import { useRouter } from 'next/router'
 import { queryClient } from '../../../services/queryClient'

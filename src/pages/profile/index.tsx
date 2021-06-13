@@ -1,7 +1,7 @@
 import React from 'react'
 import { ProfileContainer } from '../../containers/Profile/Me'
-import { getMyCompany } from '../../services/apiFunctions/company'
-import { Company } from '../../services/apiFunctions/company/types'
+import { getMyCompany } from '../../services/apiFunctions/companies/company'
+import { Company } from '../../services/apiFunctions/companies/company/types'
 import { withCompanySSRAuth } from '../../utils/withSSRAuth'
 
 export interface ProfileProps {

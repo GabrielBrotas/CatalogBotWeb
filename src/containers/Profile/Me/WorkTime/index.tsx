@@ -1,6 +1,6 @@
 import React from 'react'
 import { Flex, Text, Box } from '@chakra-ui/react'
-import { CompanyWorkTime } from '../../../../services/apiFunctions/company/types'
+import { CompanyWorkTime } from '../../../../services/apiFunctions/companies/company/types'
 import { weekDayFormat } from '../../../../configs/dateTime'
 
 interface WorkTimeProps {

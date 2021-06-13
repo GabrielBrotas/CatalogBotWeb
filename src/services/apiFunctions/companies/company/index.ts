@@ -1,4 +1,4 @@
-import { api, setupAPIClient } from '../../api'
+import { apiCompany, apiCompanySSR } from '../../../api'
 import {
   Company,
   GetCompanyDTO,
@@ -12,26 +12,26 @@ import {
 } from './types'
 
 export const signUpCompany = async ({ email, name, password }: SignUpDTO): Promise<void> => {
-  return await api.post('/companies', { email, name, password }).then(({ data }) => data)
+  return await apiCompany.post('/companies', { email, name, password }).then(({ data }) => data)
 }
 
 export const signInCompany = async ({
   email,
   password,
 }: LoginDTO): Promise<SignInCompanyResponse> => {
-  return api.post('/companies/auth', { email, password }).then(({ data }) => data)
+  return apiCompany.post('/companies/auth', { email, password }).then(({ data }) => data)
 }
 
 export const getCompany = async ({ companyId, ctx = false }: GetCompanyDTO): Promise<Company> => {
-  if (!ctx) return await api.get(`/companies/${companyId}`).then(({ data }) => data)
-  return setupAPIClient(ctx)
+  if (!ctx) return await apiCompany.get(`/companies/${companyId}`).then(({ data }) => data)
+  return apiCompanySSR(ctx)
     .get(`/companies/${companyId}`)
     .then(({ data }) => data)
 }
 
 export const getMyCompany = async ({ ctx = false }: RequestFromSSR): Promise<Company> => {
-  if (!ctx) return await api.get('/companies').then(({ data }) => data)
-  return setupAPIClient(ctx)
+  if (!ctx) return await apiCompany.get('/companies').then(({ data }) => data)
+  return apiCompanySSR(ctx)
     .get('/companies')
     .then(({ data }) => data)
 }
@@ -42,7 +42,7 @@ export const updateCompany = async ({
   shortDescription,
   workTime,
 }: IUpdateCompanyDTO): Promise<Company> => {
-  return await api
+  return await apiCompany
     .put('/companies', { name, benefits, shortDescription, workTime })
     .then(({ data }) => data)
 }
@@ -55,7 +55,7 @@ export const updateCompanyImage = async ({
   const formData: any = new FormData()
   formData.append('image', file)
 
-  return await api
+  return await apiCompany
     .patch('/companies/me/image', formData, {
       headers: {
         'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,

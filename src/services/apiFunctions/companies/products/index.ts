@@ -1,4 +1,4 @@
-import { api, setupAPIClient } from '../../api'
+import { apiCompany, apiCompanySSR } from '../../../api'
 import {
   CreateProductDTO,
   UpdateProductDTO,
@@ -15,20 +15,20 @@ export const getProducts = async ({
   companyId,
 }: GetProductsDTO): Promise<ListResultProps> => {
   if (!ctx)
-    return await api
+    return await apiCompany
       .get(`/products/${companyId}?page=${page}&limit=${limit}`)
       .then(({ data }) => data)
-  return setupAPIClient(ctx)
+  return apiCompanySSR(ctx)
     .get(`/products/${companyId}?page=${page}&limit=${limit}`)
     .then(({ data }) => data)
 }
 
 export const createProduct = async (data: CreateProductDTO): Promise<Product> => {
-  return await api.post(`/products/`, { ...data }).then(({ data }) => data)
+  return await apiCompany.post(`/products/`, { ...data }).then(({ data }) => data)
 }
 
 export const deleteProduct = async (productId: string): Promise<void> => {
-  return await api.delete(`/products/${productId}`).then(({ data }) => data)
+  return await apiCompany.delete(`/products/${productId}`).then(({ data }) => data)
 }
 
 export const updateProduct = async ({
@@ -39,14 +39,14 @@ export const updateProduct = async ({
   description,
   options,
 }: UpdateProductDTO): Promise<Product> => {
-  return await api
+  return await apiCompany
     .put(`/products/${productId}`, { categoryId, name, price, description, options })
     .then(({ data }) => data)
 }
 
 export const getProduct = async ({ productId, ctx }: GetProductDTO): Promise<Product> => {
-  if (!ctx) return await api.get(`/products/product/${productId}`).then(({ data }) => data)
-  return setupAPIClient(ctx)
+  if (!ctx) return await apiCompany.get(`/products/product/${productId}`).then(({ data }) => data)
+  return apiCompanySSR(ctx)
     .get(`/products/product/${productId}`)
     .then(({ data }) => data)
 }
@@ -66,7 +66,7 @@ export const updateProductImage = async ({
 }: IUploadImage): Promise<Product> => {
   const formData: any = new FormData()
   formData.append('image', image)
-  return await api
+  return await apiCompany
     .patch(`/products/${productId}/image`, formData, {
       headers: {
         'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,

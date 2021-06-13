@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef } from 'react'
 
 import {
   FormControl,
@@ -7,22 +7,19 @@ import {
   FormLabel,
   Textarea as ChakraTextArea,
   TextareaProps as CharkaTextareaProps,
-} from '@chakra-ui/react';
-import { FieldError } from 'react-hook-form';
+} from '@chakra-ui/react'
+import { FieldError } from 'react-hook-form'
 
 interface TextareaProps extends CharkaTextareaProps {
-  name: string;
-  label?: string;
-  error?: FieldError;
-  containerStyle?: FormControlProps;
+  name: string
+  label?: string
+  error?: FieldError
+  containerStyle?: FormControlProps
 }
 
-const TextAreaContainer: React.ForwardRefRenderFunction<
-  HTMLTextAreaElement,
-  TextareaProps
-> = (
+const TextAreaContainer: React.ForwardRefRenderFunction<HTMLTextAreaElement, TextareaProps> = (
   { name, label, error = null, containerStyle, ...rest }: TextareaProps,
-  ref,
+  ref
 ) => {
   return (
     <FormControl isInvalid={!!error} {...containerStyle}>
@@ -42,7 +39,7 @@ const TextAreaContainer: React.ForwardRefRenderFunction<
 
       {!!error && <FormErrorMessage>{error.message}</FormErrorMessage>}
     </FormControl>
-  );
-};
+  )
+}
 
-export const FormTextArea = forwardRef(TextAreaContainer);
+export const FormTextArea = forwardRef(TextAreaContainer)

@@ -14,7 +14,7 @@ import { FormSelect } from '../../../components/Form/select'
 import Upload, { UploadedImages } from '../../../components/Upload'
 import { CreateProductProps } from '../../../pages/products/create'
 import { useToast } from '../../../contexts/Toast'
-import { createProduct, updateProductImage } from '../../../services/apiFunctions/products'
+import { createProduct, updateProductImage } from '../../../services/apiFunctions/companies/products'
 import { queryClient } from '../../../services/queryClient'
 
 export type OptionAdditional = {

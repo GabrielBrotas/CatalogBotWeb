@@ -1,7 +1,7 @@
 import React from 'react'
 import { EditCategoryContainer } from '../../../containers/Categories/Edit'
-import { getCategory } from '../../../services/apiFunctions/categories'
-import { Category } from '../../../services/apiFunctions/categories/types'
+import { getCategory } from '../../../services/apiFunctions/companies/categories'
+import { Category } from '../../../services/apiFunctions/companies/categories/types'
 import { withCompanySSRAuth } from '../../../utils/withSSRAuth'
 
 export interface EditCategoryProps {

@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useCallback, useContext, useState } from 'react'
-import { Product } from '../services/apiFunctions/products/types'
+import { Product } from '../services/apiFunctions/companies/products/types'
 
 interface CatalogModalProps {
   children: ReactNode

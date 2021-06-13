@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useMemo } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo } from 'react'
 import {
   Avatar,
   Box,
@@ -15,10 +15,12 @@ import { CatalogProps } from '../../pages/catalog/[companyId]'
 
 import { CompanyBenefitsTag } from '../../components/Tags/companyBenefitsTag'
 import { useCatalogModal } from '../../contexts/CatalogModal'
-import { Product } from '../../services/apiFunctions/products/types'
+import { Product } from '../../services/apiFunctions/companies/products/types'
+import { useCart } from '../../contexts/Cart'
 
 export const CatalogContainer = ({ company, productsAgrupedByCategory }: CatalogProps) => {
   const { handleOpenCatalogModal } = useCatalogModal()
+  const { setCompany } = useCart()
 
   const isCompanyOpen = useMemo(() => {
     let open = false
@@ -54,6 +56,10 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
     },
     [handleOpenCatalogModal]
   )
+
+  useEffect(() => {
+    setCompany(company)
+  }, [company, setCompany])
 
   return (
     <Container maxW="container.xl" centerContent p="0.5" display="flex" flexDir="column">

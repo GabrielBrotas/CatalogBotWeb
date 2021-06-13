@@ -3,11 +3,12 @@ import { parseCookies } from 'nookies'
 import jwtDecode from 'jwt-decode'
 
 import { EditProductContainer } from '../../../containers/Products/Edit'
-import { getCategories } from '../../../services/apiFunctions/categories'
-import { Category } from '../../../services/apiFunctions/categories/types'
-import { getProduct } from '../../../services/apiFunctions/products'
-import { Product } from '../../../services/apiFunctions/products/types'
+import { getCategories } from '../../../services/apiFunctions/companies/categories'
+import { Category } from '../../../services/apiFunctions/companies/categories/types'
+import { getProduct } from '../../../services/apiFunctions/companies/products'
+import { Product } from '../../../services/apiFunctions/companies/products/types'
 import { withCompanySSRAuth } from '../../../utils/withSSRAuth'
+import { COOKIE_COMPANY_TOKEN } from '../../../configs/constants'
 
 export interface EditProductProps {
   product: Product
@@ -21,7 +22,7 @@ export default function EditProduct({ product, categories }: EditProductProps) {
 export const getServerSideProps = withCompanySSRAuth(async (ctx) => {
   try {
     const cookies = parseCookies(ctx)
-    const token = cookies['@CatalogBot.token']
+    const token = cookies[COOKIE_COMPANY_TOKEN]
     const { sub: companyId } = jwtDecode(token) as any
 
     const { pId } = ctx.params

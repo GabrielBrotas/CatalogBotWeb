@@ -9,7 +9,7 @@ import * as yup from 'yup'
 import { Box, Flex, FormControl, Image, Text } from '@chakra-ui/react'
 import { FormInput } from '../../components/Form/input'
 import { Button } from '../../components/Form/button'
-import { signUpCompany } from '../../services/apiFunctions/company'
+import { signUpCompany } from '../../services/apiFunctions/companies/company'
 import { useToast } from '../../contexts/Toast'
 
 type SignUpFormData = {

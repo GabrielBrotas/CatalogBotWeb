@@ -1,11 +1,9 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { setCookie, parseCookies, destroyCookie } from 'nookies'
-import { api } from '../services/api'
-import Router from 'next/router'
-import { Company } from '../services/apiFunctions/company/types'
-import { getMyCompany, signInCompany } from '../services/apiFunctions/company'
-import { Client } from '../services/apiFunctions/client/types'
-import { getMyClient, signInClient } from '../services/apiFunctions/client'
+import { apiCompany } from '../services/api'
+import { getMyClient, signInClient } from '../services/apiFunctions/clients/client'
+import { COOKIE_CLIENT_TOKEN } from '../configs/constants'
+import { Client } from '../services/apiFunctions/clients/client/types'
 
 type SignInCredentials = {
   user: string
@@ -22,7 +20,7 @@ type AuthContextData = {
 const AuthContext = createContext({} as AuthContextData)
 
 export function signOutClient() {
-  destroyCookie(undefined, '@CatalogBot.token')
+  destroyCookie(undefined, COOKIE_CLIENT_TOKEN)
 }
 
 export const AuthClientProvider: React.FC = ({ children }) => {
@@ -30,7 +28,7 @@ export const AuthClientProvider: React.FC = ({ children }) => {
   const isAuthenticated = !!client
 
   useEffect(() => {
-    const { '@CatalogBot.token': token } = parseCookies()
+    const { '@CatalogBot.token.client': token } = parseCookies()
 
     if (token) {
       getMyClient({})
@@ -56,14 +54,14 @@ export const AuthClientProvider: React.FC = ({ children }) => {
   async function loginClient({ user, password }: SignInCredentials) {
     const { client, token } = await signInClient({ user, password })
 
-    setCookie(undefined, '@CatalogBot.token', token, {
+    setCookie(undefined, COOKIE_CLIENT_TOKEN, token, {
       maxAge: 60 * 60 * 24 * 30,
       path: '/',
     })
 
     setClient(client)
 
-    api.defaults.headers['Authorization'] = `Bearer ${token}`
+    apiCompany.defaults.headers['Authorization'] = `Bearer ${token}`
   }
 
   return (
