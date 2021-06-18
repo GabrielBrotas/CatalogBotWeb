@@ -8,6 +8,7 @@ export function withCompanySSRAuth<P>(fn: GetServerSideProps<P>): GetServerSideP
   return async (ctx: GetServerSidePropsContext): Promise<GetServerSidePropsResult<P>> => {
     const cookies = parseCookies(ctx)
     const token = cookies[COOKIE_COMPANY_TOKEN]
+
     const { roles } = jwtDecode(token) as any
 
     // se nao tiver cookie vai redirecionar

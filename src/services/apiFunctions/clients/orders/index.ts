@@ -1,6 +1,6 @@
-import { apiClient, apiClientSSR } from '../../../api'
-import { RequestFromSSR } from '../../companies/company/types'
-import { ICreateOrderDTO, Order } from './types'
+import { apiClient } from '../../../api'
+import { Order } from '../../companies/orders/types'
+import { ICreateOrderDTO } from './types'
 
 export const createOrder = async ({
   companyId,
@@ -18,12 +18,5 @@ export const createOrder = async ({
       totalPrice,
       comment,
     })
-    .then(({ data }) => data)
-}
-
-export const listOrders = async ({ ctx = false }: RequestFromSSR): Promise<Order[]> => {
-  if (!ctx) return await apiClient.get('/orders').then(({ data }) => data)
-  return apiClientSSR(ctx)
-    .get('/orders')
     .then(({ data }) => data)
 }

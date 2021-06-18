@@ -1,5 +1,5 @@
 import { Product } from '../../companies/products/types'
-import { OrderProduct, PickedOptions } from './../orders/types'
+import { PickedOptions } from './../orders/types'
 
 export type CartOrderProduct = {
   _id?: string
@@ -17,9 +17,17 @@ export type Cart = {
   created_at: Date
 }
 
+export type StoreCartOrderProductDTO = {
+  _id?: string
+  product: string
+  amount: number
+  pickedOptions: PickedOptions[]
+  comment?: string
+}
+
 export type AddProductToCartDTO = {
   companyId: string
-  orderProduct: OrderProduct
+  orderProduct: StoreCartOrderProductDTO
 }
 
 export type GetCartDTO = {
@@ -29,7 +37,7 @@ export type GetCartDTO = {
 
 export type UpdateCartDTO = {
   cartId: string
-  orderProducts: OrderProduct[]
+  orderProducts: StoreCartOrderProductDTO[]
 }
 
 export type ClearCartDTO = {

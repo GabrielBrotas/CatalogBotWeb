@@ -37,7 +37,6 @@ export const ProductsContainer = (props: ProductsProps) => {
   const {
     data: { results, total, next, previous },
     isLoading,
-    isFetching,
   } = useQuery(
     ['products', { page }],
     async () => {
@@ -121,7 +120,7 @@ export const ProductsContainer = (props: ProductsProps) => {
             </Link>
           </Flex>
 
-          {isLoading || isFetching ? (
+          {isLoading ? (
             <Box textAlign="center">
               <Spinner size="xl" />
             </Box>

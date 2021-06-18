@@ -9,7 +9,11 @@ import {
   clearCart as clearCartApiFunction,
   updateCart as updateCartApiFunction,
 } from '../services/apiFunctions/clients/cart'
-import { Cart, CartOrderProduct } from '../services/apiFunctions/clients/cart/types'
+import {
+  Cart,
+  CartOrderProduct,
+  StoreCartOrderProductDTO,
+} from '../services/apiFunctions/clients/cart/types'
 import { createOrder } from '../services/apiFunctions/clients/orders'
 import { Address } from '../services/apiFunctions/clients/client/types'
 
@@ -20,8 +24,8 @@ type StoreOrderDTO = {
 
 interface CartContext {
   cart: Cart
-  addToCart(orderProduct: OrderProduct): Promise<void>
-  updateCart: ({ orderProducts }: { orderProducts: OrderProduct[] }) => Promise<void>
+  addToCart(orderProduct: StoreCartOrderProductDTO): Promise<void>
+  updateCart: ({ orderProducts }: { orderProducts: StoreCartOrderProductDTO[] }) => Promise<void>
   clearCart(): Promise<void>
   company: Company | null
   setCompany: React.Dispatch<React.SetStateAction<Company | null>>
@@ -35,7 +39,12 @@ const CartContext = createContext<CartContext | null>(null)
 
 function formatCartProductsToOrderProducts(cartProducts: CartOrderProduct[]): OrderProduct[] {
   const formatedCartProducts = cartProducts.map((cartProduct) => ({
-    product: cartProduct.product._id,
+    product: {
+      _id: cartProduct.product._id,
+      name: cartProduct.product.name,
+      price: cartProduct.product.price,
+      imageUrl: cartProduct.product.imageUrl,
+    },
     amount: cartProduct.amount,
     pickedOptions: cartProduct.pickedOptions,
     comment: cartProduct.comment,
@@ -61,7 +70,7 @@ const CartProvider: React.FC = ({ children }) => {
   }, [company, client])
 
   const addToCart = useCallback(
-    async (orderProduct: OrderProduct) => {
+    async (orderProduct: StoreCartOrderProductDTO) => {
       if (!company) return
       if (!client) return
 
@@ -89,7 +98,7 @@ const CartProvider: React.FC = ({ children }) => {
   }, [cart, client])
 
   const updateCart = useCallback(
-    async ({ orderProducts }: { orderProducts: OrderProduct[] }) => {
+    async ({ orderProducts }: { orderProducts: StoreCartOrderProductDTO[] }) => {
       if (!cart) return
       if (!client) return
 

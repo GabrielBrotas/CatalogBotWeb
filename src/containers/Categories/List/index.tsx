@@ -35,7 +35,6 @@ export const CategoriesContainer = (props: CategoriesProps) => {
   const {
     data: { results, total, next, previous },
     isLoading,
-    isFetching,
   } = useQuery(
     ['categories', { page }],
     async () => {
@@ -61,7 +60,7 @@ export const CategoriesContainer = (props: CategoriesProps) => {
       },
     }
   )
-
+  
   const [companyCategories, setCompanyCategories] = useState(results)
 
   const { handleOpenAlertModal } = useAlertModal()
@@ -117,7 +116,7 @@ export const CategoriesContainer = (props: CategoriesProps) => {
             </Link>
           </Flex>
 
-          {isLoading || isFetching ? (
+          {isLoading ? (
             <Box textAlign="center">
               <Spinner size="xl" />
             </Box>

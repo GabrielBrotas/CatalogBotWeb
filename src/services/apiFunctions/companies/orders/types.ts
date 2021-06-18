@@ -1,10 +1,12 @@
-import { Address } from '../client/types'
+import { Company } from '../company/types'
+import { Address, Client } from './../../clients/client/types'
 
 type OrderOptionsAdditionals = {
   _id?: string
   name: string
   price: number
   amount: number
+  priceFormated?: string
 }
 
 export type PickedOptions = {
@@ -20,6 +22,7 @@ export type OrderProduct = {
     name: string
     price: number
     imageUrl: string
+    priceFormated?: string
   }
   amount: number
   pickedOptions: PickedOptions[]
@@ -30,11 +33,20 @@ export type OrderStatus = 'pending' | 'confimed' | 'sent' | 'received' | 'cancel
 
 export type PaymentMethods = 'boleto' | 'creditCard' | 'debit' | 'pix' | 'money'
 
-export type ICreateOrderDTO = {
-  companyId: string
+export type Order = {
+  _id: string
+  client: Client
+  company: string
   orderProducts: OrderProduct[]
-  totalPrice: number
-  comment?: string
-  deliveryAddress: Address
+  totalPrice: string
+  totalPriceFormated?: string
   paymentMethod: PaymentMethods
+  deliveryAddress: Address
+  status: OrderStatus
+  created_at: Date
+}
+
+export type IGetOrderDTO = {
+  orderId: string
+  ctx?: any
 }

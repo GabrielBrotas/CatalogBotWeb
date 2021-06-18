@@ -1,7 +1,7 @@
 import React from 'react'
 import { Flex, Text, UnorderedList, ListItem } from '@chakra-ui/react'
 import { CompanyPaymentMethods } from '../../../services/apiFunctions/companies/company/types'
-import { FORMAT_PAYMENT } from '../../../utils/formatedPaymentsMethod'
+import { FORMAT_PAYMENT } from '../../../utils/dataFormat'
 
 interface WorkTimeProps {
   paymentMethods: CompanyPaymentMethods

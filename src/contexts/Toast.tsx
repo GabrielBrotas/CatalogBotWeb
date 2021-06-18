@@ -26,7 +26,7 @@ export function ToastProvider({ children }: TostProviderProps) {
         title,
         description,
         status,
-        duration: 9000,
+        duration: 3000,
         isClosable: true,
       })
     },
