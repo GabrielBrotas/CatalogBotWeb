@@ -44,7 +44,7 @@ export const AlertDialog = () => {
                 }}
                 ml={3}
               >
-                Deletar
+                {alertModalContent?.submitButtonText}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

@@ -3,12 +3,13 @@ import jwtDecode from 'jwt-decode'
 
 import { CategoriesContainer } from '../../containers/Categories/List'
 import { getCategories } from '../../services/apiFunctions/companies/categories'
-import { Category, Pagination } from '../../services/apiFunctions/companies/categories/types'
+import { Category } from '../../services/apiFunctions/companies/categories/types'
 import { withCompanySSRAuth } from '../../utils/withSSRAuth'
 import dayjs from 'dayjs'
 import { AlertDialog } from '../../components/Modals/AlertDialog'
 import { parseCookies } from 'nookies'
 import { COOKIE_COMPANY_TOKEN } from '../../configs/constants'
+import { Pagination } from '../../services/apiFunctions/companies/products/types'
 
 interface CategoryFormated extends Category {
   dateFormated: string

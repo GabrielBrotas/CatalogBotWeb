@@ -1,5 +1,5 @@
 import { apiCompany, apiCompanySSR } from '../../../api'
-import { IGetOrderDTO, IGetOrdersDTO, Order, OrderPaginated } from './types'
+import { IGetOrderDTO, IGetOrdersDTO, IUpdateOrderDTO, Order, OrderPaginated } from './types'
 
 export const listOrders = async ({
   page = 1,
@@ -18,4 +18,8 @@ export const getOrder = async ({ orderId, ctx }: IGetOrderDTO): Promise<Order> =
   return apiCompanySSR(ctx)
     .get(`/orders/${orderId}`)
     .then(({ data }) => data)
+}
+
+export const updateOrder = async ({ orderId, data }: IUpdateOrderDTO): Promise<Order> => {
+  return await apiCompany.put(`/orders/${orderId}`, { order: { ...data } }).then(({ data }) => data)
 }

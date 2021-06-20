@@ -4,11 +4,12 @@ import { withCompanySSRAuth } from '../../utils/withSSRAuth'
 import { getOrder } from '../../services/apiFunctions/companies/orders'
 import { Section } from '../../components/Section'
 import { Order } from '../../services/apiFunctions/companies/orders/types'
-import { OrderContainer } from '../../containers/Orders/order'
+import { OrderContainer } from '../../containers/Orders/Order'
 import dayjs from 'dayjs'
 import { getTotalPriceFromOrderProduct } from '../../utils/maths'
+import { AlertDialog } from '../../components/Modals/AlertDialog'
 
-interface OrderFormated extends Order {
+export interface OrderFormated extends Order {
   dateFormated: string
   totalPriceFormated: string
 }
@@ -20,6 +21,7 @@ export default function OrderPage({ order }: OrderContainerProps) {
   return (
     <Section>
       <OrderContainer order={order} />
+      <AlertDialog />
     </Section>
   )
 }

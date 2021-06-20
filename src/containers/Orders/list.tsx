@@ -13,6 +13,7 @@ import {
   Text,
   Spinner,
   useBreakpointValue,
+  Tooltip,
 } from '@chakra-ui/react'
 import { useQuery } from 'react-query'
 import dayjs from 'dayjs'
@@ -23,7 +24,12 @@ import { Sidebar } from '../../components/Sidebar'
 import { Pagination } from '../../components/Pagination'
 import { OrdersContainerProps } from '../../pages/orders'
 import { listOrders } from '../../services/apiFunctions/companies/orders'
-import { FORMAT_ORDER_STATUS, FORMAT_PAYMENT, ORDER_STATUS_COLOR } from '../../utils/dataFormat'
+import {
+  FORMAT_ORDER_STATUS,
+  FORMAT_PAYMENT,
+  ORDER_STATUS_COLOR,
+  ORDER_STATUS_TOOLTIP_INFO,
+} from '../../utils/dataFormat'
 
 export const OrdersContainer = (props: OrdersContainerProps) => {
   const isMobileView = useBreakpointValue({
@@ -129,9 +135,15 @@ export const OrdersContainer = (props: OrdersContainerProps) => {
                       </>
                     )}
                     <Td>
-                      <Text fontSize="sm" textColor={ORDER_STATUS_COLOR[order.status]}>
-                        {FORMAT_ORDER_STATUS[order.status]}
-                      </Text>
+                      <Tooltip
+                        label={ORDER_STATUS_TOOLTIP_INFO[order.status]}
+                        fontSize="sm"
+                        aria-label="A tooltip"
+                      >
+                        <Text fontSize="sm" textColor={ORDER_STATUS_COLOR[order.status]}>
+                          {FORMAT_ORDER_STATUS[order.status]}
+                        </Text>
+                      </Tooltip>
                     </Td>
                     <Td>
                       <Link href={`/orders/${order._id}`} passHref>

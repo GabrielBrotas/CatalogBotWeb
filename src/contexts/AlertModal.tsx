@@ -17,16 +17,20 @@ type OpenModalProps = {
   title: string
   description: string
   onConfirm: (data?: any) => void
+  submitButtonText?: string
 }
 
 export function AlertModalProvider({ children }: TostProviderProps) {
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false)
   const [alertModalContent, setAlertModalContent] = useState<OpenModalProps>()
 
-  const handleOpenAlertModal = useCallback((openModalProps: OpenModalProps) => {
-    setAlertModalContent(openModalProps)
-    setIsAlertModalOpen(true)
-  }, [])
+  const handleOpenAlertModal = useCallback(
+    ({ description, onConfirm, title, submitButtonText = 'Deletar' }: OpenModalProps) => {
+      setAlertModalContent({ description, onConfirm, title, submitButtonText })
+      setIsAlertModalOpen(true)
+    },
+    []
+  )
 
   const handleCloseAlertModal = useCallback(() => {
     setIsAlertModalOpen(false)

@@ -61,3 +61,16 @@ export type IGetOrdersDTO = {
   limit?: number
   ctx?: any
 }
+
+export type IOrderToUpdateDTO = {
+  orderProducts: OrderProduct[]
+  totalPrice: string
+  paymentMethod: PaymentMethods
+  deliveryAddress: Address
+  status: OrderStatus
+}
+
+export type IUpdateOrderDTO = {
+  orderId: string
+  data: IOrderToUpdateDTO
+}
