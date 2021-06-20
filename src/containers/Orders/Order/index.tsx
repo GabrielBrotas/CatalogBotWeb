@@ -9,7 +9,7 @@ import { queryClient } from '../../../services/queryClient'
 
 import { OrderContainerProps } from '../../../pages/orders/[oId]'
 import { updateOrder } from '../../../services/apiFunctions/companies/orders'
-import { Header } from '../../../components/Header'
+import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
 import { Sidebar } from '../../../components/Sidebar'
 import { tranformOrderFormatedInOrderToUpdate } from '../../../utils/dataFormat'
 import { ClientData } from './client-data'
@@ -103,7 +103,7 @@ export const OrderContainer = ({ order }: OrderContainerProps) => {
 
   return (
     <Box>
-      <Header />
+      <CompanyHeader />
 
       <Flex w="100%" my="6" maxWidth="1480" mx="auto" px="6">
         <Sidebar />

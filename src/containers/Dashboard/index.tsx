@@ -1,7 +1,7 @@
 import { Flex, SimpleGrid, theme } from '@chakra-ui/react'
 import React from 'react'
 
-import { Header } from '../../components/Header'
+import { CompanyHeader } from '../../components/Headers/CompanyHeader'
 import { Section } from '../../components/Section'
 import { Sidebar } from '../../components/Sidebar'
 import { Chart } from './chart'
@@ -61,7 +61,7 @@ const series = [
 export const DashboardContainer = () => {
   return (
     <Flex direction="column" h="100vh">
-      <Header />
+      <CompanyHeader />
 
       <Section>
         <Flex w="100%" my="6" maxWidth="auto" px="6">

@@ -10,13 +10,30 @@ import { AuthClientProvider } from '../contexts/AuthClient'
 import { AlertModalProvider } from '../contexts/AlertModal'
 import { ProductModalProvider } from '../contexts/ProductModal'
 
-import { theme } from '../styles/theme'
+import { theme, ThemeProps } from '../styles/theme'
 import '../styles/global.css'
 
+function handleGlobalStyles(pageProps) {
+  const styles: ThemeProps = {}
+
+  if (pageProps.globalStyles) {
+    if (pageProps.globalStyles.bg) {
+      styles.bg = pageProps.globalStyles.bg
+    }
+
+    if (pageProps.globalStyles.color) {
+      styles.color = pageProps.globalStyles.color
+    }
+  }
+  return styles
+}
+
 function MyApp({ Component, pageProps }) {
+  const themeOptions = handleGlobalStyles(pageProps)
+
   return (
     <QueryClientProvider client={queryClient}>
-      <ChakraProvider theme={theme}>
+      <ChakraProvider theme={theme(themeOptions)}>
         <AuthCompanyProvider>
           <AuthClientProvider>
             <ToastProvider>

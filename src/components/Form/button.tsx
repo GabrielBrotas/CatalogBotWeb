@@ -3,10 +3,16 @@ import { Button as ChakraButton, ButtonProps as ChakraButtonProps } from '@chakr
 
 interface ButtonProps extends ChakraButtonProps {
   isSubmitting?: boolean
+  secondary?: boolean
 }
 
-export const Button: React.FC<ButtonProps> = ({ children, isSubmitting, ...rest }) => (
-  <ChakraButton colorScheme="teal" isLoading={isSubmitting} {...rest}>
+export const FormButton: React.FC<ButtonProps> = ({
+  children,
+  isSubmitting,
+  secondary = false,
+  ...rest
+}) => (
+  <ChakraButton colorScheme={secondary ? 'blue' : 'teal'} isLoading={isSubmitting} {...rest}>
     {children}
   </ChakraButton>
 )

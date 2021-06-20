@@ -17,6 +17,7 @@ import { CompanyBenefitsTag } from '../../components/Tags/companyBenefitsTag'
 import { useProductModal } from '../../contexts/ProductModal'
 import { Product } from '../../services/apiFunctions/companies/products/types'
 import { useCart } from '../../contexts/Cart'
+import { CatalogHeader } from '../../components/Headers/CatalogHeader'
 
 export const CatalogContainer = ({ company, productsAgrupedByCategory }: CatalogProps) => {
   const { openProductModal } = useProductModal()
@@ -63,23 +64,15 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
 
   return (
     <Container
-      maxW="container.xl"
       centerContent
-      p="0.5"
       display="flex"
       flexDir="column"
       maxHeight={cart ? (cart.orderProducts.length > 0 ? '91%' : '100%') : '100%'}
-      overflowY="scroll"
+      maxW="800px"
     >
-      <Image
-        w="full"
-        h="15rem"
-        objectFit="cover"
-        src={company.mainImageUrl ? company.mainImageUrl : '/images/default-picture.jpg'}
-        alt={company.name}
-      />
+      <CatalogHeader />
 
-      <Box padding="2" flex={1} display="flex" flexDir="column" mt={2} w="full" maxW="800px">
+      <Box padding="2" flex={1} display="flex" flexDir="column" mt={6} w="full">
         <Flex alignItems="flex-start" justifyContent="space-between">
           <Box>
             <Heading as="h4" size="md" isTruncated>

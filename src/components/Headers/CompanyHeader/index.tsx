@@ -4,10 +4,10 @@ import { Flex, Icon, IconButton, useBreakpointValue } from '@chakra-ui/react'
 import { Logo } from './Logo'
 import { NotificationsNav } from './NotificationsNav'
 import { Profile } from './Profile'
-import { useSidebarDrawer } from '../../contexts/SidebarDrawerContext'
+import { useSidebarDrawer } from '../../../contexts/SidebarDrawerContext'
 import { RiMenuLine } from 'react-icons/ri'
 
-export function Header() {
+export function CompanyHeader() {
   const { onOpen } = useSidebarDrawer()
 
   // no mobile vai ser false, no large vai ser true, para mostrar o nome e email do usuario

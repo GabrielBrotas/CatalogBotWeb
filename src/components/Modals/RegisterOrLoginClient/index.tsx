@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   Modal,
   ModalContent,
@@ -6,10 +6,7 @@ import {
   ModalOverlay,
   ModalCloseButton,
   ModalBody,
-  ModalFooter,
-  Button,
 } from '@chakra-ui/react'
-import * as yup from 'yup'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useToast } from '../../../contexts/Toast'
@@ -19,11 +16,7 @@ import { Address } from '../../../services/apiFunctions/clients/client/types'
 import { RegisterForm } from './RegisterForm'
 import { LoginForm } from './LoginForm'
 import { removeSpeciaCaracteresAndLetters } from '../../../utils/removeSpecialCaracters'
-
-interface RegisterClientProps {
-  isOpen: boolean
-  closeRegisterModal: () => void
-}
+import { signInClientFormSchema, signUpClientFormSchema } from './schemas'
 
 type SignUpClienFormData = {
   name: string
@@ -38,27 +31,7 @@ type SignInClientFormData = {
   password: string
 }
 
-const signUpClientFormSchema = yup.object().shape({
-  name: yup.string().required('Nome obrigatório'),
-  email: yup.string().email('Insira um e-mail válido'),
-  password: yup.string().required('senha obrigatória'),
-  cellphone: yup.string().required('Telefone obrigatório'),
-  defaultAddress: yup.object().shape({
-    state: yup.string(),
-    city: yup.string(),
-    street: yup.string(),
-    neighborhood: yup.string(),
-    number: yup.string(),
-    cep: yup.string(),
-  }),
-})
-
-const signInClientFormSchema = yup.object().shape({
-  user: yup.string().required('Usuario obrigatório'),
-  password: yup.string().required('senha obrigatória'),
-})
-
-export const RegisterOrLoginClient = ({ isOpen, closeRegisterModal }: RegisterClientProps) => {
+export const RegisterOrLoginClient = () => {
   const {
     register: registerSignUp,
     handleSubmit: handleSubmitSignUp,
@@ -76,9 +49,7 @@ export const RegisterOrLoginClient = ({ isOpen, closeRegisterModal }: RegisterCl
   })
 
   const { addToast } = useToast()
-  const { loginClient } = useClientAuth()
-
-  const [formType, setFormType] = useState<'Register' | 'Login'>('Register')
+  const { loginClient, closeModal: closeRegisterModal, isModalOpen, formType } = useClientAuth()
 
   const handleSignUpClient: SubmitHandler<SignUpClienFormData> = async (data, event) => {
     event.preventDefault()
@@ -96,9 +67,10 @@ export const RegisterOrLoginClient = ({ isOpen, closeRegisterModal }: RegisterCl
 
       closeRegisterModal()
     } catch (err) {
+      console.log(err.response)
       addToast({
         title: 'Error',
-        description: err.message,
+        description: err.response.data,
         status: 'error',
       })
     }
@@ -130,19 +102,18 @@ export const RegisterOrLoginClient = ({ isOpen, closeRegisterModal }: RegisterCl
 
   return (
     <>
-      <Modal onClose={closeRegisterModal} size="full" isOpen={isOpen}>
+      <Modal onClose={closeRegisterModal} size="full" isOpen={isModalOpen}>
         <ModalOverlay />
         <ModalContent textColor="gray.600">
-          <ModalHeader>Cadastro</ModalHeader>
+          <ModalHeader>{formType === 'register' ? 'Cadastro' : 'Login'}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            {formType === 'Register' ? (
+            {formType === 'register' ? (
               <form onSubmit={handleSubmitSignUp(handleSignUpClient)}>
                 <RegisterForm
                   register={registerSignUp}
                   errors={signUpErrors}
                   isSubmitting={isSubmittingSignUp}
-                  setFormType={setFormType}
                 />
               </form>
             ) : (
@@ -151,14 +122,10 @@ export const RegisterOrLoginClient = ({ isOpen, closeRegisterModal }: RegisterCl
                   register={registerSignIn}
                   errors={signInErrors}
                   isSubmitting={isSubmittingSignIn}
-                  setFormType={setFormType}
                 />
               </form>
             )}
           </ModalBody>
-          <ModalFooter>
-            <Button onClick={closeRegisterModal}>Close</Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

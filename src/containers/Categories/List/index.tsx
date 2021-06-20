@@ -15,7 +15,7 @@ import {
   Spinner,
   useBreakpointValue,
 } from '@chakra-ui/react'
-import { Header } from '../../../components/Header'
+import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
 import { Sidebar } from '../../../components/Sidebar'
 import { RiAddLine, RiPencilLine } from 'react-icons/ri'
 import { Pagination } from '../../../components/Pagination'
@@ -99,7 +99,7 @@ export const CategoriesContainer = (props: CategoriesProps) => {
 
   return (
     <Box>
-      <Header />
+      <CompanyHeader />
 
       <Flex w="100%" my="6" maxWidth="1480" mx="auto" px="6">
         <Sidebar />

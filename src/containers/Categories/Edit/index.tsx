@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
 import { Box, Button, Divider, Flex, Heading, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
-import { Header } from '../../../components/Header'
+import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
 import { Sidebar } from '../../../components/Sidebar'
 import { FormInput } from '../../../components/Form/input'
 import { EditCategoryProps } from '../../../pages/categories/edit/[cId]'
@@ -53,7 +53,7 @@ export const EditCategoryContainer = ({ category }: EditCategoryProps) => {
 
   return (
     <Box>
-      <Header />
+      <CompanyHeader />
 
       <Flex w="100%" my="6" maxWidth="1480" mx="auto" px="6">
         <Sidebar />

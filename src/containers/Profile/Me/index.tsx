@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { RiEditLine } from 'react-icons/ri'
 import { Box, Button, Flex, Heading, Icon } from '@chakra-ui/react'
 
-import { Header } from '../../../components/Header'
+import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
 import { Sidebar } from '../../../components/Sidebar'
 import { WorkTime } from './WorkTime'
 import { HeaderInfo } from './HeaderInfo'
@@ -14,7 +14,7 @@ import { PaymentMethods } from './PaymentMethods'
 export const ProfileContainer = ({ company }: ProfileProps) => {
   return (
     <Box>
-      <Header />
+      <CompanyHeader />
 
       <Flex w="100%" my="6" maxWidth="1480" mx="auto" px="6">
         <Sidebar />

@@ -4,6 +4,7 @@ import { apiClient } from '../services/api'
 import { getMyClient, signInClient } from '../services/apiFunctions/clients/client'
 import { COOKIE_CLIENT_TOKEN } from '../configs/constants'
 import { Client } from '../services/apiFunctions/clients/client/types'
+import { useDisclosure } from '@chakra-ui/react'
 
 type SignInCredentials = {
   user: string
@@ -15,6 +16,11 @@ type AuthContextData = {
   loginClient(credentials: SignInCredentials): Promise<void>
   isAuthenticated: boolean
   client: Client
+  isModalOpen: boolean
+  formType: 'register' | 'login'
+  setFormType: React.Dispatch<React.SetStateAction<'register' | 'login'>>
+  openModal: ({ type }: { type: 'register' | 'login' }) => void
+  closeModal: () => void
 }
 
 const AuthContext = createContext({} as AuthContextData)
@@ -24,6 +30,13 @@ export function signOutClient() {
 }
 
 export const AuthClientProvider: React.FC = ({ children }) => {
+  const [formType, setFormType] = useState<'register' | 'login'>('register')
+  const {
+    isOpen: isModalOpen,
+    onOpen: openRegisterModal,
+    onClose: closeRegisterModal,
+  } = useDisclosure()
+
   const [client, setClient] = useState<Client>()
   const isAuthenticated = !!client
 
@@ -63,8 +76,29 @@ export const AuthClientProvider: React.FC = ({ children }) => {
     setClient(client)
   }
 
+  async function openModal({ type }: { type: 'register' | 'login' }) {
+    setFormType(type)
+    openRegisterModal()
+  }
+
+  async function closeModal() {
+    closeRegisterModal()
+  }
+
   return (
-    <AuthContext.Provider value={{ loginClient, signOutClient, isAuthenticated, client }}>
+    <AuthContext.Provider
+      value={{
+        loginClient,
+        signOutClient,
+        isAuthenticated,
+        client,
+        isModalOpen,
+        openModal,
+        closeModal,
+        formType,
+        setFormType,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )

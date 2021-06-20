@@ -1,5 +1,7 @@
+import { StoreCartOrderProductDTO } from './../services/apiFunctions/clients/cart/types'
+import { OptionAdditional, Product } from './../services/apiFunctions/companies/products/types'
 import { OrderFormated } from '../pages/orders/[oId]'
-import { IOrderToUpdateDTO, Order } from '../services/apiFunctions/companies/orders/types'
+import { IOrderToUpdateDTO, OrderProduct } from '../services/apiFunctions/companies/orders/types'
 import { ProductOption } from '../services/apiFunctions/companies/products/types'
 
 export const FORMAT_PAYMENT = {
@@ -77,5 +79,42 @@ export function tranformOrderFormatedInOrderToUpdate(
     paymentMethod: orderFormated.paymentMethod,
     status: orderFormated.status,
     totalPrice: orderFormated.totalPrice,
+  }
+}
+
+interface FormatItemToOrderProductProps {
+  activeProduct: Product
+  selectedOptions: {
+    selectedAdditionalOptions: {
+      _id: string
+      name: string
+      price: number
+      amount: number
+    }[]
+    _id?: string
+    name: string
+    isRequired: boolean
+    maxQuantity: number
+    minQuantity: number
+    additionals: OptionAdditional[]
+  }[]
+  comment?: string
+}
+
+export function formatItemToAddInCart({
+  activeProduct,
+  selectedOptions,
+  comment,
+}: FormatItemToOrderProductProps): StoreCartOrderProductDTO {
+  return {
+    product: activeProduct._id,
+    amount: 1,
+    pickedOptions: selectedOptions.map((option) => ({
+      productOptionName: option.name,
+      optionAdditionals: option.selectedAdditionalOptions.filter(
+        (selectedAdditionalOption) => selectedAdditionalOption.amount !== 0
+      ),
+    })),
+    comment,
   }
 }

@@ -5,28 +5,17 @@ import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
-import {
-  Box,
-  Flex,
-  Heading,
-  Text,
-  Avatar,
-  VStack,
-  useBreakpointValue,
-  Checkbox,
-} from '@chakra-ui/react'
+import { Box, Flex, Heading, Avatar, VStack, useBreakpointValue } from '@chakra-ui/react'
 import { Sidebar } from '../../../components/Sidebar'
-import { Header } from '../../../components/Header'
-import { FormInput } from '../../../components/Form/input'
-import { FormTextArea } from '../../../components/Form/textarea'
-import { CompanyBenefitsTag } from '../../../components/Tags/companyBenefitsTag'
-import { FormSelect } from '../../../components/Form/select'
+import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
 import { Button } from '../../../components/Form/button'
 import { UpdateProfileProps } from '../../../pages/profile/update'
-import { hours, weekDays } from '../../../configs/dateTime'
 import { IUpdateCompanyDTO } from '../../../services/apiFunctions/companies/company/types'
 import { useToast } from '../../../contexts/Toast'
 import { updateCompany, updateCompanyImage } from '../../../services/apiFunctions/companies/company'
+import { CompanyMainDataForm } from './main-data.form'
+import { CompanyWorkTimeForm } from './work-time.form'
+import { CompanyPaymentMethodsForm } from './payments-method.form'
 
 const updateCompanySchema = yup.object().shape({
   name: yup.string().required('Nome obrigatório'),
@@ -152,7 +141,7 @@ export const UpdateProfileContainer = ({ company }: UpdateProfileProps) => {
 
   return (
     <Box>
-      <Header />
+      <CompanyHeader />
 
       <Flex w="100%" my="6" maxWidth="1480" mx="auto" px="6">
         <Sidebar />
@@ -190,164 +179,46 @@ export const UpdateProfileContainer = ({ company }: UpdateProfileProps) => {
             </Box>
 
             <VStack as="form" onSubmit={handleSubmit(handleUpdate)} spacing="6" mt={6}>
-              <FormInput
-                name="name"
-                label="Nome da empresa"
-                {...register('name')}
-                error={errors.name}
-              />
-              <FormTextArea
-                name="shortDescription"
-                label="Descrição curta"
-                {...register('shortDescription')}
-                error={errors.shortDescription}
-              />
-
-              <Box display="flex" alignItems="flex-end" alignSelf="flex-start">
-                <FormInput
-                  name="benefits"
-                  label="Beneficios"
-                  w="100%"
-                  maxWidth="20rem"
-                  value={benefit}
-                  onChange={(e) => setBenefit(e.target.value)}
-                />
-                <Button
-                  type="button"
-                  colorScheme="pink"
-                  w="5"
-                  marginLeft="1rem"
-                  padding="1.5rem"
-                  onClick={handleAddNewBenefit}
-                >
-                  +
-                </Button>
-              </Box>
-
-              <CompanyBenefitsTag
+              <CompanyMainDataForm
+                register={register}
+                errors={errors}
+                benefit={benefit}
+                setBenefit={setBenefit}
+                companyBenefits={companyBenefits}
+                handleAddNewBenefit={handleAddNewBenefit}
                 handleRemoveBenefit={handleRemoveBenefit}
-                tags={companyBenefits}
-                canRemove={true}
               />
 
-              <Flex w="100%" flexDir="column" mt={10}>
-                <Flex justify="space-between" mb={4}>
-                  <Text color="gray.300" fontSize="2xl">
-                    Horário de funcionamento
-                  </Text>
-                  <Button
-                    type="button"
-                    colorScheme="pink"
-                    marginLeft="1rem"
-                    padding="1.5rem"
-                    onClick={handleAddNewWorkTime}
-                  >
-                    Adicionar novo dia
-                  </Button>
-                </Flex>
-                {companyWorkTime.map((workDay, index) => (
-                  <Box
-                    key={index}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    p="2"
-                    bg="gray.600"
-                    borderRadius="lg"
-                    mb={1}
-                  >
-                    <FormSelect
-                      name={`${workDay.day}${index}`}
-                      options={weekDays}
-                      defaultValue={workDay.day}
-                      maxW="12rem"
-                      {...register(`workTime.${index}.day`)}
-                    />
+              <CompanyWorkTimeForm
+                companyWorkTime={companyWorkTime}
+                handleAddNewWorkTime={handleAddNewWorkTime}
+                handleRemoveWorkTime={handleRemoveWorkTime}
+                register={register}
+              />
 
-                    <Flex>
-                      <FormSelect
-                        minW="7rem"
-                        name={`${workDay.from}${index}`}
-                        options={hours}
-                        defaultValue={workDay.from}
-                        containerStyle={{ mr: '4' }}
-                        {...register(`workTime.${index}.from`)}
-                      />
-                      <FormSelect
-                        minW="7rem"
-                        name={`${workDay.to}${index}`}
-                        options={hours}
-                        defaultValue={workDay.to}
-                        containerStyle={{ mr: '4' }}
-                        {...register(`workTime.${index}.to`)}
-                      />
-                    </Flex>
+              <CompanyPaymentMethodsForm register={register} />
 
-                    <Button
-                      type="button"
-                      colorScheme="red"
-                      w="3"
-                      justifySelf="flex-end"
-                      onClick={() => handleRemoveWorkTime(index)}
-                    >
-                      -
-                    </Button>
-                  </Box>
-                ))}
+              <Flex justifyContent="flex-end" w="full">
+                <Button
+                  bg="gray.300"
+                  type="submit"
+                  alignSelf="flex-end"
+                  w={isMobileView ? '100%' : '10rem'}
+                  isLoading={isSubmitting}
+                  mr="6"
+                >
+                  Cancelar
+                </Button>
+
+                <Button
+                  type="submit"
+                  alignSelf="flex-end"
+                  w={isMobileView ? '100%' : '10rem'}
+                  isLoading={isSubmitting}
+                >
+                  Atualizar
+                </Button>
               </Flex>
-
-              <Flex w="100%" flexDir="column" mt={10}>
-                <Text color="gray.300" fontSize="2xl">
-                  Formas de Pagamento
-                </Text>
-
-                <VStack>
-                  <Checkbox
-                    size="md"
-                    colorScheme="green"
-                    {...register('acceptedPaymentMethods.money')}
-                  >
-                    Dinheiro
-                  </Checkbox>
-                  <Checkbox
-                    size="md"
-                    colorScheme="green"
-                    {...register('acceptedPaymentMethods.pix')}
-                  >
-                    Pix
-                  </Checkbox>
-                  <Checkbox
-                    size="md"
-                    colorScheme="green"
-                    {...register('acceptedPaymentMethods.debit')}
-                  >
-                    Débito
-                  </Checkbox>
-                  <Checkbox
-                    size="md"
-                    colorScheme="green"
-                    {...register('acceptedPaymentMethods.creditCard')}
-                  >
-                    Cartão de crédito
-                  </Checkbox>
-                  <Checkbox
-                    size="md"
-                    colorScheme="green"
-                    {...register('acceptedPaymentMethods.boleto')}
-                  >
-                    Boleto
-                  </Checkbox>
-                </VStack>
-              </Flex>
-
-              <Button
-                type="submit"
-                alignSelf="flex-end"
-                w={isMobileView ? '100%' : '10rem'}
-                isLoading={isSubmitting}
-              >
-                Atualizar
-              </Button>
             </VStack>
           </Box>
         </Box>

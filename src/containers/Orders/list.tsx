@@ -19,7 +19,7 @@ import { useQuery } from 'react-query'
 import dayjs from 'dayjs'
 import Link from 'next/link'
 
-import { Header } from '../../components/Header'
+import { CompanyHeader } from '../../components/Headers/CompanyHeader'
 import { Sidebar } from '../../components/Sidebar'
 import { Pagination } from '../../components/Pagination'
 import { OrdersContainerProps } from '../../pages/orders'
@@ -73,7 +73,7 @@ export const OrdersContainer = (props: OrdersContainerProps) => {
 
   return (
     <Box>
-      <Header />
+      <CompanyHeader />
 
       <Flex w="100%" my="6" maxWidth="1480" mx="auto" px="6">
         <Sidebar />

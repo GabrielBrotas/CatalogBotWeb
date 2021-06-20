@@ -4,7 +4,7 @@ import { useQuery } from 'react-query'
 import { RiAddLine } from 'react-icons/ri'
 import dayjs from 'dayjs'
 
-import { Header } from '../../../components/Header'
+import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
 import { Sidebar } from '../../../components/Sidebar'
 import { Pagination } from '../../../components/Pagination'
 import Link from 'next/link'
@@ -53,7 +53,7 @@ export const ProductsContainer = (props: ProductsProps) => {
 
   return (
     <Box>
-      <Header />
+      <CompanyHeader />
 
       <Flex w="100%" my="6" maxWidth="1480" mx="auto" px="6">
         <Sidebar />

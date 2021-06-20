@@ -1,13 +1,13 @@
 import React from 'react'
 import { Box, Flex, Text } from '@chakra-ui/react'
-import { Header } from '../components/Header'
+import { CompanyHeader } from '../components/Headers/CompanyHeader'
 import { Sidebar } from '../components/Sidebar'
 import { withCompanySSRAuth } from '../utils/withSSRAuth'
 
 export default function Login() {
   return (
     <Box>
-      <Header />
+      <CompanyHeader />
 
       <Flex w="100%" my="6" maxWidth="1480" mx="auto" px="6">
         <Sidebar />

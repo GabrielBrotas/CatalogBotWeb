@@ -15,10 +15,11 @@ interface InputProps extends CharkaInputProps {
   label?: string
   error?: FieldError
   containerStyle?: FormControlProps
+  secondary?: boolean
 }
 
 const InputContainer: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
-  { name, label, error = null, containerStyle, ...rest }: InputProps,
+  { name, label, error = null, containerStyle, secondary = false, ...rest }: InputProps,
   ref
 ) => {
   return (
@@ -28,10 +29,10 @@ const InputContainer: React.ForwardRefRenderFunction<HTMLInputElement, InputProp
       <CharkaInput
         id={name}
         name={name}
-        focusBorderColor="pink.500"
-        bgColor="gray.700"
+        focusBorderColor={secondary ? 'blue.500' : 'pink.500'}
+        bgColor={secondary ? 'gray.50' : 'gray.700'}
         variant="outline"
-        _hover={{ bgColor: 'gray.800' }}
+        _hover={secondary ? { bgColor: 'gray.100' } : { bgColor: 'gray.800' }}
         size="lg"
         ref={ref}
         {...rest}

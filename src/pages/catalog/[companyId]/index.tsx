@@ -13,6 +13,7 @@ import { Section } from '../../../components/Section'
 import { FloatCart } from '../../../components/Modals/Cart/Float'
 import { CartModal } from '../../../components/Modals/Cart/CartReview'
 import { CartProvider } from '../../../contexts/Cart'
+import { RegisterOrLoginClient } from '../../../components/Modals/RegisterOrLoginClient'
 
 export interface CatalogProps {
   company: Company
@@ -32,8 +33,8 @@ export default function Catalog({ company, productsAgrupedByCategory }: CatalogP
 
         {isProductModalOpen && <ProductModal />}
         <FloatCart />
-
         <CartModal />
+        <RegisterOrLoginClient />
       </Section>
     </CartProvider>
   )
@@ -89,7 +90,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
         })
       }
     })
-    console.log('here')
+
     if (!company) {
       return {
         redirect: {
@@ -104,6 +105,10 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
       props: {
         company,
         productsAgrupedByCategory,
+        globalStyles: {
+          bg: 'gray.50',
+          color: 'gray.600',
+        },
       },
       revalidate: 60 * 60 * 1, // 1 hora
     }

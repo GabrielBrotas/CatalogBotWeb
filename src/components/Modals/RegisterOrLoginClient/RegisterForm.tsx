@@ -1,23 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FormControl, Text } from '@chakra-ui/react'
 
 import { FormInput } from '../../Form/input'
-import { Button } from '../../Form/button'
+import { FormButton } from '../../Form/button'
 import { DeepMap, FieldError, FieldValues, UseFormRegister } from 'react-hook-form'
+import { useClientAuth } from '../../../contexts/AuthClient'
 
 interface RegisterFormProps {
   register: UseFormRegister<FieldValues>
   errors: DeepMap<FieldValues, FieldError>
   isSubmitting: boolean
-  setFormType: React.Dispatch<React.SetStateAction<'Register' | 'Login'>>
 }
 
-export const RegisterForm = ({
-  register,
-  errors,
-  isSubmitting,
-  setFormType,
-}: RegisterFormProps) => {
+export const RegisterForm = ({ register, errors, isSubmitting }: RegisterFormProps) => {
+  const { setFormType } = useClientAuth()
+
   return (
     <>
       <Text fontSize="lg" my="4" textAlign="center">
@@ -25,6 +22,7 @@ export const RegisterForm = ({
       </Text>
       <FormControl isInvalid={errors.name}>
         <FormInput
+          secondary={true}
           name="name"
           placeholder="Nome"
           {...register('name')}
@@ -33,6 +31,7 @@ export const RegisterForm = ({
         />
 
         <FormInput
+          secondary={true}
           name="email"
           placeholder="E-mail"
           {...register('email')}
@@ -41,6 +40,7 @@ export const RegisterForm = ({
         />
 
         <FormInput
+          secondary={true}
           name="password"
           placeholder="Senha"
           type="password"
@@ -50,67 +50,20 @@ export const RegisterForm = ({
         />
 
         <FormInput
+          secondary={true}
           name="cellphone"
           placeholder="Telefone"
           {...register('cellphone')}
           error={errors.cellphone}
           containerStyle={{ mb: '4' }}
         />
-
-        <FormInput
-          name="state"
-          placeholder="Estado"
-          {...register('defaultAddress.state')}
-          error={errors.defaultAddress && errors.defaultAddress.state}
-          containerStyle={{ mb: '4' }}
-        />
-
-        <FormInput
-          name="city"
-          placeholder="Cidade"
-          {...register('defaultAddress.city')}
-          error={errors.defaultAddress && errors.defaultAddress.city}
-          containerStyle={{ mb: '4' }}
-        />
-
-        <FormInput
-          name="street"
-          placeholder="Endereço"
-          {...register('defaultAddress.street')}
-          error={errors.defaultAddress && errors.defaultAddress.street}
-          containerStyle={{ mb: '4' }}
-        />
-
-        <FormInput
-          name="neighborhood"
-          placeholder="Bairro"
-          {...register('defaultAddress.neighborhood')}
-          error={errors.defaultAddress && errors.defaultAddress.neighborhood}
-          containerStyle={{ mb: '4' }}
-        />
-
-        <FormInput
-          name="number"
-          placeholder="Numero"
-          {...register('defaultAddress.number')}
-          error={errors.defaultAddress && errors.defaultAddress.number}
-          containerStyle={{ mb: '4' }}
-        />
-
-        <FormInput
-          name="cep"
-          placeholder="Cep"
-          {...register('defaultAddress.cep')}
-          error={errors.defaultAddress && errors.defaultAddress.cep}
-          containerStyle={{ mb: '4' }}
-        />
       </FormControl>
 
-      <Button mt={4} w="100%" isLoading={isSubmitting} type="submit">
+      <FormButton secondary={true} mt={4} w="100%" isLoading={isSubmitting} type="submit">
         Cadastrar
-      </Button>
+      </FormButton>
 
-      <Text mt={4} w="100%" onClick={() => setFormType('Login')}>
+      <Text mt={4} w="100%" onClick={() => setFormType('login')}>
         Já tenho uma conta
       </Text>
     </>

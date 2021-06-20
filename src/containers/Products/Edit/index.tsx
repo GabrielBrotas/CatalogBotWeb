@@ -4,7 +4,7 @@ import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 import { Box, Button, Divider, Flex, Heading, HStack, VStack } from '@chakra-ui/react'
-import { Header } from '../../../components/Header'
+import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
 import { Sidebar } from '../../../components/Sidebar'
 import { EditProductProps } from '../../../pages/products/edit/[pId]'
 import { useToast } from '../../../contexts/Toast'
@@ -100,7 +100,7 @@ export const EditProductContainer = ({ product, categories }: EditProductProps) 
 
   return (
     <Box>
-      <Header />
+      <CompanyHeader />
 
       <Flex w="100%" my="6" maxWidth="1480" mx="auto" px="6">
         <Sidebar />

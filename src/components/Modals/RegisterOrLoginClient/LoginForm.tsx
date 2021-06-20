@@ -2,17 +2,18 @@ import React from 'react'
 import { FormControl, Text } from '@chakra-ui/react'
 
 import { FormInput } from '../../Form/input'
-import { Button } from '../../Form/button'
+import { FormButton } from '../../Form/button'
 import { DeepMap, FieldError, FieldValues, UseFormRegister } from 'react-hook-form'
+import { useClientAuth } from '../../../contexts/AuthClient'
 
 interface LoginFormProps {
   register: UseFormRegister<FieldValues>
   errors: DeepMap<FieldValues, FieldError>
   isSubmitting: boolean
-  setFormType: React.Dispatch<React.SetStateAction<'Register' | 'Login'>>
 }
 
-export const LoginForm = ({ register, errors, isSubmitting, setFormType }: LoginFormProps) => {
+export const LoginForm = ({ register, errors, isSubmitting }: LoginFormProps) => {
+  const { setFormType } = useClientAuth()
   return (
     <>
       <Text fontSize="lg" my="4" textAlign="center">
@@ -25,6 +26,7 @@ export const LoginForm = ({ register, errors, isSubmitting, setFormType }: Login
           {...register('user')}
           error={errors.user}
           containerStyle={{ mb: '4' }}
+          secondary={true}
         />
 
         <FormInput
@@ -34,14 +36,15 @@ export const LoginForm = ({ register, errors, isSubmitting, setFormType }: Login
           {...register('password')}
           error={errors.password}
           containerStyle={{ mb: '4' }}
+          secondary={true}
         />
       </FormControl>
 
-      <Button mt={4} w="100%" isLoading={isSubmitting} type="submit">
+      <FormButton secondary={true} mt={4} w="100%" isLoading={isSubmitting} type="submit">
         Login
-      </Button>
+      </FormButton>
 
-      <Text mt={4} w="100%" onClick={() => setFormType('Register')}>
+      <Text mt={4} w="100%" onClick={() => setFormType('register')}>
         Não tennho uma conta
       </Text>
     </>
