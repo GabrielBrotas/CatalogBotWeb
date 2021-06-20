@@ -1,11 +1,15 @@
 import { apiCompany, apiCompanySSR } from '../../../api'
-import { RequestFromSSR } from '../../companies/company/types'
-import { IGetOrderDTO, Order } from './types'
+import { IGetOrderDTO, IGetOrdersDTO, Order, OrderPaginated } from './types'
 
-export const listOrders = async ({ ctx = false }: RequestFromSSR): Promise<Order[]> => {
-  if (!ctx) return await apiCompany.get('/orders').then(({ data }) => data)
+export const listOrders = async ({
+  page = 1,
+  limit = 10,
+  ctx = false,
+}: IGetOrdersDTO): Promise<OrderPaginated> => {
+  if (!ctx)
+    return await apiCompany.get(`/orders?page=${page}&limit=${limit}`).then(({ data }) => data)
   return apiCompanySSR(ctx)
-    .get('/orders')
+    .get(`/orders?page=${page}&limit=${limit}`)
     .then(({ data }) => data)
 }
 

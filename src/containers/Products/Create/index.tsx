@@ -1,155 +1,79 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm, useFieldArray } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
 
-import { Box, Button, Divider, Flex, Heading, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
+import { Box, Button, Divider, Flex, Heading, HStack, VStack } from '@chakra-ui/react'
 import { Header } from '../../../components/Header'
 import { Sidebar } from '../../../components/Sidebar'
-import { FormInput } from '../../../components/Form/input'
-import { FormTextArea } from '../../../components/Form/textarea'
-import { FormSelect } from '../../../components/Form/select'
 import Upload, { UploadedImages } from '../../../components/Upload'
 import { CreateProductProps } from '../../../pages/products/create'
 import { useToast } from '../../../contexts/Toast'
-import { createProduct, updateProductImage } from '../../../services/apiFunctions/companies/products'
+import {
+  createProduct,
+  updateProductImage,
+} from '../../../services/apiFunctions/companies/products'
 import { queryClient } from '../../../services/queryClient'
-
-export type OptionAdditional = {
-  name: string
-  price: number
-}
-
-export type ProductOption = {
-  name: string
-  isRequired: boolean
-  maxQuantity: number
-  minQuantity: number
-  additionals: OptionAdditional[]
-}
-
-type CreateProductFormData = {
-  name: string
-  price: number
-  description?: string
-  options?: ProductOption[]
-  categoryId: string
-}
-
-type RemoveProductAdditionalOptionProps = {
-  productOptionindex: number
-  additionProductOptionindex: number
-}
-
-type AddProductAdditionalOptionsProps = {
-  productOptionindex: number
-}
-
-const createProductFormSchema = yup.object().shape({
-  name: yup.string().required('Nome obrigatório'),
-  price: yup.string().required('Valor obrigatório'),
-  description: yup.string(),
-  categoryId: yup.string().required('Categoria obrigatória'),
-  options: yup.array(
-    yup.object({
-      name: yup.string().required('Nome da opção obrigatório'),
-      isRequired: yup.boolean(),
-      maxQuantity: yup.string().required('Quantidade maxima obrigatório'),
-      minQuantity: yup.string().required('Quantidade mínima obrigatório'),
-      additionals: yup.array(
-        yup.object({
-          name: yup.string().required('Nome obrigatório'),
-          price: yup.string().required('Valor obrigatório'),
-        })
-      ),
-    })
-  ),
-})
+import { CreateProductFormData, createProductFormSchema } from './types'
+import { ProductMainData } from '../forms/main-data.form.'
+import { ProductOptionForm } from '../forms/product-options.form'
+import { ProductOption } from '../../../services/apiFunctions/companies/products/types'
+import { removeIdFromProductOptions } from '../../../utils/dataFormat'
 
 export const CreateProductContainer = ({ categories }: CreateProductProps) => {
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    clearErrors,
-    unregister,
-  } = useForm({
+  } = useForm<CreateProductFormData>({
     resolver: yupResolver(createProductFormSchema),
+  })
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'options',
   })
 
   const router = useRouter()
   const { addToast } = useToast()
 
-  const [productOptions, setProductsOptions] = useState<ProductOption[]>([])
   const [uploadedImages, setUploadedImages] = useState<Array<UploadedImages>>([])
 
   const addMoreProductOptions = () => {
-    setProductsOptions(
-      productOptions.concat({
-        name: '',
-        isRequired: true,
-        maxQuantity: 1,
-        minQuantity: 1,
-        additionals: [{ name: '', price: 0 }],
-      })
-    )
-  }
-
-  const addProductAdditionalOptions = ({
-    productOptionindex,
-  }: AddProductAdditionalOptionsProps) => {
-    setProductsOptions(
-      productOptions.map((product, i) =>
-        i !== productOptionindex
-          ? product
-          : {
-              ...product,
-              additionals: product.additionals.concat({ name: '', price: 0 }),
-            }
-      )
-    )
-  }
-
-  const removeProductAdditionalOptions = ({
-    productOptionindex,
-    additionProductOptionindex,
-  }: RemoveProductAdditionalOptionProps) => {
-    setProductsOptions(
-      productOptions.map((product, pOindex) =>
-        pOindex !== productOptionindex
-          ? product
-          : {
-              ...product,
-              additionals: product.additionals.filter(
-                (_, aPOindex) => aPOindex !== additionProductOptionindex
-              ),
-            }
-      )
-    )
-    clearErrors()
-    unregister([
-      `options.${productOptionindex}.additionals.${additionProductOptionindex}.name`,
-      `options.${productOptionindex}.additionals.${additionProductOptionindex}.price`,
-    ])
+    append({
+      _id: Date.now().toString(),
+      name: '',
+      isRequired: true,
+      maxQuantity: 1,
+      minQuantity: 1,
+      additionals: [{ _id: Date.now().toString(), name: '', price: 0 }],
+    })
   }
 
   const removeProductOption = (productOptionindex: number) => {
-    setProductsOptions(productOptions.filter((product, pOindex) => pOindex !== productOptionindex))
-    clearErrors()
-    unregister([`options.${productOptionindex}`, `options.${productOptionindex}`])
+    remove(productOptionindex)
   }
 
   const handleCreateProduct: SubmitHandler<CreateProductFormData> = async (values, event) => {
     event.preventDefault()
     try {
       const { name, price, description, categoryId, options } = values
-      const product = await createProduct({ name, price, description, categoryId, options })
+
+      const product = await createProduct({
+        name,
+        price: Number(price),
+        description,
+        categoryId,
+        options: removeIdFromProductOptions(options),
+      })
+
       if (uploadedImages[0] && uploadedImages[0].file) {
         console.log('upload')
         await updateProductImage({ productId: product._id, image: uploadedImages[0].file })
       }
+
       addToast({
         status: 'success',
         title: 'Produto criado com sucesso!',
@@ -188,180 +112,27 @@ export const CreateProductContainer = ({ categories }: CreateProductProps) => {
 
           <VStack spacing="8">
             <Upload uploadedImages={uploadedImages} setUploadedImages={setUploadedImages} />
-            <FormInput
-              name="name"
-              label="Nome do produto"
-              {...register('name')}
-              error={errors.name}
-            />
-            <SimpleGrid minChildWidth="240px" spacing={['6', '8']} w="100%">
-              <FormInput
-                name="price"
-                label="Valor"
-                type="number"
-                {...register('price')}
-                error={errors.price}
-              />
-              <FormSelect
-                name="categoryId"
-                label="Categoria"
-                {...register('categoryId')}
-                options={categories.map((category) => ({
-                  label: category.name,
-                  value: category._id,
-                }))}
-                error={errors.categoryId}
-              />
-            </SimpleGrid>
 
-            <FormTextArea
-              name="description"
-              label="Descrição"
-              {...register('description')}
-              error={errors.description}
-            />
+            <ProductMainData categories={categories} errors={errors} register={register} />
 
             <Divider my="6" borderColor="gray.700" />
 
-            {productOptions.map((productOption, pOindex) => (
-              <Box w="100%" key={pOindex} textAlign="right">
-                <Button
-                  type="button"
-                  colorScheme="red"
-                  justifySelf="flex-end"
-                  mt={2}
-                  onClick={() => removeProductOption(pOindex)}
-                >
-                  Remover opção
-                </Button>
-                <SimpleGrid minChildWidth="240px" spacing={['6', '8']} w="100%">
-                  <FormInput
-                    name={`options.${pOindex}.name`}
-                    label="Nome da opção"
-                    {...register(`options.${pOindex}.name`)}
-                    error={
-                      errors.options && errors.options[pOindex] && errors.options[pOindex].name
-                    }
-                  />
-                  <FormSelect
-                    name="isRequired"
-                    label="É obrigatório?"
-                    {...register(`options.${pOindex}.isRequired`)}
-                    options={[
-                      { value: 'true', label: 'Sim' },
-                      { value: 'false', label: 'Não' },
-                    ]}
-                    error={
-                      errors.options &&
-                      errors.options[pOindex] &&
-                      errors.options[pOindex].isRequired
-                    }
-                  />
-                </SimpleGrid>
-                <SimpleGrid minChildWidth="240px" spacing={['6', '8']} w="100%" mt={4}>
-                  <FormInput
-                    name={`options.${pOindex}.minQuantity`}
-                    label="Quantidade mínima"
-                    type="number"
-                    defaultValue={1}
-                    {...register(`options.${pOindex}.minQuantity`)}
-                    error={
-                      errors.options &&
-                      errors.options[pOindex] &&
-                      errors.options[pOindex].minQuantity
-                    }
-                  />
-                  <FormInput
-                    label="Quantidade máxima"
-                    name={`options.${pOindex}.maxQuantity`}
-                    type="number"
-                    defaultValue={1}
-                    {...register(`options.${pOindex}.maxQuantity`)}
-                    error={
-                      errors.options &&
-                      errors.options[pOindex] &&
-                      errors.options[pOindex].maxQuantity
-                    }
-                  />
-                </SimpleGrid>
-
-                {productOption.additionals.map((_, additionalProductOptionIndex) => (
-                  <Flex
-                    key={additionalProductOptionIndex}
-                    w="100%"
-                    alignItems="center"
-                    gridGap="6"
-                    mt={4}
-                  >
-                    <FormInput
-                      name={`options.${pOindex}.additionals.${additionalProductOptionIndex}.name`}
-                      label="Nome"
-                      {...register(
-                        `options.${pOindex}.additionals.${additionalProductOptionIndex}.name`
-                      )}
-                      maxLength={20}
-                      error={
-                        errors.options &&
-                        errors.options[pOindex] &&
-                        errors.options[pOindex].additionals &&
-                        errors.options[pOindex].additionals[additionalProductOptionIndex] &&
-                        errors.options[pOindex].additionals[additionalProductOptionIndex].name
-                      }
-                    />
-                    <FormInput
-                      name={`options.${pOindex}.additionals.${additionalProductOptionIndex}.price`}
-                      label="Preço"
-                      {...register(
-                        `options.${pOindex}.additionals.${additionalProductOptionIndex}.price`
-                      )}
-                      type="number"
-                      error={
-                        errors.options &&
-                        errors.options[pOindex] &&
-                        errors.options[pOindex].additionals &&
-                        errors.options[pOindex].additionals[additionalProductOptionIndex] &&
-                        errors.options[pOindex].additionals[additionalProductOptionIndex].price
-                      }
-                    />
-
-                    <Button
-                      type="button"
-                      colorScheme="pink"
-                      w="3"
-                      justifySelf="flex-end"
-                      mt={4}
-                      onClick={() =>
-                        addProductAdditionalOptions({
-                          productOptionindex: pOindex,
-                        })
-                      }
-                    >
-                      +
-                    </Button>
-
-                    {productOption.additionals.length > 1 && (
-                      <Button
-                        type="button"
-                        colorScheme="red"
-                        w="3"
-                        justifySelf="flex-end"
-                        mt={4}
-                        onClick={() =>
-                          removeProductAdditionalOptions({
-                            productOptionindex: pOindex,
-                            additionProductOptionindex: additionalProductOptionIndex,
-                          })
-                        }
-                      >
-                        -
-                      </Button>
-                    )}
-                  </Flex>
-                ))}
-
-                <Divider my="6" borderColor="gray.700" />
-              </Box>
+            {fields.map((field, index) => (
+              <ProductOptionForm
+                key={field._id}
+                errors={errors}
+                register={register}
+                control={control}
+                productOptionAdditionals={field.additionals}
+                productOptionIndex={index}
+                removeProductOption={removeProductOption}
+                defaultOptionName={field.name}
+                defaultOptionIsRequired={field.isRequired}
+                defaultOptionMaxQuantity={field.maxQuantity}
+                defaultOptionMinQuantity={field.minQuantity}
+              />
             ))}
+
             <Button type="button" colorScheme="pink" onClick={addMoreProductOptions}>
               Adicionar opções adicionais
             </Button>

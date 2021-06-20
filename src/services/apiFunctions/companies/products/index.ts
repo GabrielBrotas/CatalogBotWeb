@@ -16,10 +16,10 @@ export const getProducts = async ({
 }: GetProductsDTO): Promise<ListResultProps> => {
   if (!ctx)
     return await apiCompany
-      .get(`/products/${companyId}?page=${page}&limit=${limit}`)
+      .get(`/products/company/${companyId}?page=${page}&limit=${limit}`)
       .then(({ data }) => data)
   return apiCompanySSR(ctx)
-    .get(`/products/${companyId}?page=${page}&limit=${limit}`)
+    .get(`/products/company/${companyId}?page=${page}&limit=${limit}`)
     .then(({ data }) => data)
 }
 
@@ -45,9 +45,9 @@ export const updateProduct = async ({
 }
 
 export const getProduct = async ({ productId, ctx }: GetProductDTO): Promise<Product> => {
-  if (!ctx) return await apiCompany.get(`/products/product/${productId}`).then(({ data }) => data)
+  if (!ctx) return await apiCompany.get(`/products/${productId}`).then(({ data }) => data)
   return apiCompanySSR(ctx)
-    .get(`/products/product/${productId}`)
+    .get(`/products/${productId}`)
     .then(({ data }) => data)
 }
 

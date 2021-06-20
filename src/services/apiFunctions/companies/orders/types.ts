@@ -1,4 +1,4 @@
-import { Company } from '../company/types'
+import { Pagination } from '../products/types'
 import { Address, Client } from './../../clients/client/types'
 
 type OrderOptionsAdditionals = {
@@ -27,6 +27,7 @@ export type OrderProduct = {
   amount: number
   pickedOptions: PickedOptions[]
   comment?: string
+  totalPriceFormated?: string
 }
 
 export type OrderStatus = 'pending' | 'confimed' | 'sent' | 'received' | 'canceled'
@@ -46,7 +47,17 @@ export type Order = {
   created_at: Date
 }
 
+export interface OrderPaginated extends Pagination {
+  results: Order[]
+}
+
 export type IGetOrderDTO = {
   orderId: string
+  ctx?: any
+}
+
+export type IGetOrdersDTO = {
+  page?: number
+  limit?: number
   ctx?: any
 }

@@ -9,7 +9,7 @@ import { withCompanySSRAuth } from '../../utils/withSSRAuth'
 import { parseCookies } from 'nookies'
 import { COOKIE_COMPANY_TOKEN } from '../../configs/constants'
 
-interface ProductFormated extends Product {
+export interface ProductFormated extends Product {
   dateFormated: string
   priceFormated: string
 }

@@ -1,6 +1,4 @@
-import React, {
-  forwardRef,
-} from 'react';
+import React, { forwardRef } from 'react'
 
 import {
   FormControl,
@@ -9,22 +7,19 @@ import {
   FormLabel,
   Input as CharkaInput,
   InputProps as CharkaInputProps,
-} from '@chakra-ui/react';
-import { FieldError } from 'react-hook-form';
+} from '@chakra-ui/react'
+import { FieldError } from 'react-hook-form'
 
 interface InputProps extends CharkaInputProps {
-  name: string;
-  label?: string;
-  error?: FieldError;
-  containerStyle?: FormControlProps;
+  name: string
+  label?: string
+  error?: FieldError
+  containerStyle?: FormControlProps
 }
 
-const InputContainer: React.ForwardRefRenderFunction<
-  HTMLInputElement,
-  InputProps
-> = (
+const InputContainer: React.ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
   { name, label, error = null, containerStyle, ...rest }: InputProps,
-  ref,
+  ref
 ) => {
   return (
     <FormControl isInvalid={!!error} {...containerStyle}>
@@ -44,7 +39,7 @@ const InputContainer: React.ForwardRefRenderFunction<
 
       {!!error && <FormErrorMessage>{error.message}</FormErrorMessage>}
     </FormControl>
-  );
-};
+  )
+}
 
-export const FormInput = forwardRef(InputContainer);
+export const FormInput = forwardRef(InputContainer)

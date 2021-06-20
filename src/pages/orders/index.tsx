@@ -4,34 +4,35 @@ import { withCompanySSRAuth } from '../../utils/withSSRAuth'
 import { listOrders } from '../../services/apiFunctions/companies/orders'
 import { Order } from '../../services/apiFunctions/companies/orders/types'
 import { OrdersContainer } from '../../containers/Orders/list'
+import { Pagination } from '../../services/apiFunctions/companies/products/types'
 
 interface OrderFormated extends Order {
   dateFormated: string
   totalPriceFormated: string
 }
 
-export interface OrdersContainerProps {
+export interface OrdersContainerProps extends Pagination {
   orders: OrderFormated[]
 }
 
-export default function Orders({ orders }: OrdersContainerProps) {
+export default function Orders({ orders, total, next, previous }: OrdersContainerProps) {
   return (
     <>
-      <OrdersContainer orders={orders} />
+      <OrdersContainer orders={orders} total={total} next={next} previous={previous} />
     </>
   )
 }
 
 export const getServerSideProps = withCompanySSRAuth(async (ctx) => {
   try {
-    const orders = await listOrders({ ctx })
+    const { results, total, next, previous } = await listOrders({ ctx })
 
     const formatterPrice = new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
     })
 
-    const ordersFormated = orders.map((order) => ({
+    const ordersFormated = results.map((order) => ({
       ...order,
       dateFormated: dayjs(order.created_at).format('DD/MM/YYYY'),
       totalPriceFormated: formatterPrice.format(Number(order.totalPrice)),
@@ -40,6 +41,9 @@ export const getServerSideProps = withCompanySSRAuth(async (ctx) => {
     return {
       props: {
         orders: ordersFormated,
+        total,
+        next: next || null,
+        previous: previous || null,
       },
     }
   } catch (err) {

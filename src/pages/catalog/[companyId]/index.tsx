@@ -67,7 +67,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     categories.results.map((category) => {
       const productsFormated = []
       products.results.map((product) => {
-        if (product.category._id === category._id) {
+        if (product.category && product.category._id === category._id) {
           productsFormated.push({
             ...product,
             priceFormated: formatterPrice.format(product.price),
@@ -89,7 +89,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
         })
       }
     })
-
+    console.log('here')
     if (!company) {
       return {
         redirect: {
@@ -108,6 +108,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
       revalidate: 60 * 60 * 1, // 1 hora
     }
   } catch (err) {
+    console.log({ err })
     return {
       redirect: {
         destination: '/404',

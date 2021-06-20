@@ -13,6 +13,7 @@ import {
   Tr,
   Text,
   Spinner,
+  useBreakpointValue,
 } from '@chakra-ui/react'
 import { Header } from '../../../components/Header'
 import { Sidebar } from '../../../components/Sidebar'
@@ -31,6 +32,12 @@ import { useCompanyAuth } from '../../../contexts/AuthCompany'
 export const CategoriesContainer = (props: CategoriesProps) => {
   const [page, setPage] = useState(1)
   const { company } = useCompanyAuth()
+
+  const isMobileView = useBreakpointValue({
+    base: true,
+    md: false,
+    lg: false,
+  })
 
   const {
     data: { results, total, next, previous },
@@ -60,7 +67,7 @@ export const CategoriesContainer = (props: CategoriesProps) => {
       },
     }
   )
-  
+
   const [companyCategories, setCompanyCategories] = useState(results)
 
   const { handleOpenAlertModal } = useAlertModal()
@@ -141,29 +148,36 @@ export const CategoriesContainer = (props: CategoriesProps) => {
                     </Td>
 
                     <Td textAlign="center">
-                      <Link href={`/categories/edit/${category._id}`} passHref>
+                      <Flex
+                        flexDir={isMobileView ? 'column' : 'row'}
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <Link href={`/categories/edit/${category._id}`} passHref>
+                          <Button
+                            as="a"
+                            size="sm"
+                            fontSize="sm"
+                            colorScheme="purple"
+                            leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                          >
+                            Editar
+                          </Button>
+                        </Link>
                         <Button
+                          cursor="pointer"
+                          marginLeft={isMobileView ? 0 : 4}
+                          marginTop={isMobileView ? 4 : 0}
                           as="a"
                           size="sm"
                           fontSize="sm"
-                          colorScheme="purple"
+                          colorScheme="red"
                           leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                          onClick={() => handleDeleteCategory(category._id)}
                         >
-                          Editar
+                          Deletar
                         </Button>
-                      </Link>
-                      <Button
-                        cursor="pointer"
-                        marginLeft="4"
-                        as="a"
-                        size="sm"
-                        fontSize="sm"
-                        colorScheme="red"
-                        leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                        onClick={() => handleDeleteCategory(category._id)}
-                      >
-                        Deletar
-                      </Button>
+                      </Flex>
                     </Td>
                   </Tr>
                 ))}
@@ -171,7 +185,11 @@ export const CategoriesContainer = (props: CategoriesProps) => {
             </Table>
           )}
 
-          <Pagination currentPage={page} totalCountOfRegisters={total} onPageChange={setPage} />
+          <Pagination
+            currentPage={page}
+            totalCountOfRegisters={companyCategories.length}
+            onPageChange={setPage}
+          />
         </Box>
       </Flex>
     </Box>

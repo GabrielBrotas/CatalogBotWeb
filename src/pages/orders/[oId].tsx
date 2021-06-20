@@ -5,9 +5,15 @@ import { getOrder } from '../../services/apiFunctions/companies/orders'
 import { Section } from '../../components/Section'
 import { Order } from '../../services/apiFunctions/companies/orders/types'
 import { OrderContainer } from '../../containers/Orders/order'
+import dayjs from 'dayjs'
+import { getTotalPriceFromOrderProduct } from '../../utils/maths'
 
+interface OrderFormated extends Order {
+  dateFormated: string
+  totalPriceFormated: string
+}
 export interface OrderContainerProps {
-  order: Order
+  order: OrderFormated
 }
 
 export default function OrderPage({ order }: OrderContainerProps) {
@@ -40,9 +46,11 @@ export const getServerSideProps: GetServerSideProps = withCompanySSRAuth(async (
 
     const orderFormated = {
       ...order,
+      dateFormated: dayjs(order.created_at).format('DD/MM/YYYY - HH:mm'),
       totalPriceFormated: formatterPrice.format(Number(order.totalPrice)),
       orderProducts: order.orderProducts.map((orderProduct) => ({
         ...orderProduct,
+        totalPriceFormated: formatterPrice.format(getTotalPriceFromOrderProduct(orderProduct)),
         product: {
           ...orderProduct.product,
           priceFormated: formatterPrice.format(orderProduct.product.price),

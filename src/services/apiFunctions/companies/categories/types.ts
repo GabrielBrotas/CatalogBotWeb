@@ -1,4 +1,5 @@
 import { Company } from '../company/types'
+import { Pagination } from '../products/types'
 
 export type Category = {
   _id: string
@@ -22,13 +23,6 @@ type SubPagination = {
   page: number
   limit: number
 }
-
-export type Pagination = {
-  next?: SubPagination | null
-  previous?: SubPagination | null
-  total: number
-}
-
 export interface ListCategoriesResultProps extends Pagination {
   results: Category[]
 }

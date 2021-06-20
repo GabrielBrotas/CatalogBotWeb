@@ -15,15 +15,15 @@ export const getCategories = async ({
 }: GetCategoriesDTO): Promise<ListCategoriesResultProps> => {
   if (!ctx)
     return await apiCompany
-      .get(`/categories/${companyId}?page=${page}&limit=${limit}`)
+      .get(`/categories/company/${companyId}?page=${page}&limit=${limit}`)
       .then(({ data }) => data)
   return apiCompanySSR(ctx)
-    .get(`/categories/${companyId}?page=${page}&limit=${limit}`)
+    .get(`/categories/company/${companyId}?page=${page}&limit=${limit}`)
     .then(({ data }) => data)
 }
 
 export const createCategory = async ({ name }: { name: string }): Promise<Category> => {
-  return await apiCompany.post(`/categories/`, { name }).then(({ data }) => data)
+  return await apiCompany.post('/categories', { name }).then(({ data }) => data)
 }
 
 export const deleteCategory = async (categoryId: string): Promise<void> => {
@@ -38,8 +38,7 @@ export const updateCategory = async ({
 }
 
 export const getCategory = async ({ categoryId, ctx }: GetCategoryDTO): Promise<Category> => {
-  if (!ctx)
-    return await apiCompany.get(`/categories/category/${categoryId}`).then(({ data }) => data)
+  if (!ctx) return await apiCompany.get(`/categories/${categoryId}`).then(({ data }) => data)
   return apiCompanySSR(ctx)
     .get(`/categories/${categoryId}`)
     .then(({ data }) => data)

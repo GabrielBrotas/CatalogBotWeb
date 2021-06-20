@@ -1,12 +1,12 @@
-import { Box, Text } from '@chakra-ui/react';
-import dynamic from 'next/dynamic';
+import { Box, Text } from '@chakra-ui/react'
+import dynamic from 'next/dynamic'
 
-const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
+const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 interface ChartProps {
-  title: string;
-  options: ApexCharts.ApexOptions;
-  series: any[];
+  title: string
+  options: ApexCharts.ApexOptions
+  series: any[]
 }
 
 export const Chart = ({ options, series, title }: ChartProps) => {
@@ -17,5 +17,5 @@ export const Chart = ({ options, series, title }: ChartProps) => {
       </Text>
       <ApexChart type="area" height={160} options={options} series={series} />
     </Box>
-  );
-};
+  )
+}

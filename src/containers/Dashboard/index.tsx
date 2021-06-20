@@ -1,13 +1,12 @@
-import { Flex, SimpleGrid, Box, Text, theme } from '@chakra-ui/react';
-import dynamic from 'next/dynamic';
-import React from 'react';
+import { Flex, SimpleGrid, theme } from '@chakra-ui/react'
+import React from 'react'
 
-import { Header } from '../../components/Header';
-import { Section } from '../../components/Section';
-import { Sidebar } from '../../components/Sidebar';
-import { Chart } from './chart';
+import { Header } from '../../components/Header'
+import { Section } from '../../components/Section'
+import { Sidebar } from '../../components/Sidebar'
+import { Chart } from './chart'
 
-const options = {
+const options: ApexCharts.ApexOptions = {
   chart: {
     toolbar: {
       show: false,
@@ -50,14 +49,14 @@ const options = {
       opacityTo: 0.3,
     },
   },
-};
+}
 
 const series = [
   {
     name: 'series 1',
     data: [31, 120, 10, 28, 61, 70, 100],
   },
-];
+]
 
 export const DashboardContainer = () => {
   return (
@@ -69,20 +68,12 @@ export const DashboardContainer = () => {
           <Sidebar />
 
           {/* o minChildWidht vai fazer com que se o elemento ter menos de 320px de largura vai jogar ele para baixo, deixando responsivo */}
-          <SimpleGrid flex="1" gap="4" minChildWidth="320px" align="flex-start">
-            <Chart
-              title="Visitas ao catalogo"
-              options={options}
-              series={series}
-            />
-            <Chart
-              title="Quantidade de ordens"
-              options={options}
-              series={series}
-            />
+          <SimpleGrid flex="1" gap="4" columns={1} align="flex-start">
+            <Chart title="Visitas ao catalogo" options={options} series={series} />
+            <Chart title="Quantidade de ordens" options={options} series={series} />
           </SimpleGrid>
         </Flex>
       </Section>
     </Flex>
-  );
-};
+  )
+}
