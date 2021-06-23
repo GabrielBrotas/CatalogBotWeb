@@ -1,3 +1,4 @@
+import { useDisclosure } from '@chakra-ui/react'
 import { createContext, ReactNode, useCallback, useContext, useState } from 'react'
 import { Product } from '../services/apiFunctions/companies/products/types'
 
@@ -14,32 +15,25 @@ interface ProductModalContextProps {
 
 const ProductModalContext = createContext({} as ProductModalContextProps)
 
-type ProductModal = {
-  type: 'product'
+type OpenModalProps = {
   product: Product
 }
 
-type CartModal = {
-  type: 'cart'
-  orderProducts: string
-}
-
-type OpenModalProps = ProductModal | CartModal
-
 export function ProductModalProvider({ children }: ProductModalProps) {
-  const [isProductModalOpen, setIsProductModalOpen] = useState(false)
   const [activeProduct, setActiveProduct] = useState<Product>()
+  const { isOpen: isProductModalOpen, onOpen: onOpen, onClose: onClose } = useDisclosure()
 
-  const openProductModal = useCallback((props: OpenModalProps) => {
-    if (props.type === 'product') {
+  const openProductModal = useCallback(
+    (props: OpenModalProps) => {
       setActiveProduct(props.product)
-    }
-    setIsProductModalOpen(true)
-  }, [])
+      onOpen()
+    },
+    [onOpen]
+  )
 
   const handleCloseProductModal = useCallback(() => {
-    setIsProductModalOpen(false)
-  }, [])
+    onClose()
+  }, [onClose])
 
   return (
     <ProductModalContext.Provider

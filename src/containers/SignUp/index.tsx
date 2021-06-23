@@ -8,7 +8,7 @@ import * as yup from 'yup'
 
 import { Box, Flex, FormControl, Image, Text } from '@chakra-ui/react'
 import { FormInput } from '../../components/Form/input'
-import { Button } from '../../components/Form/button'
+import { FormButton } from '../../components/Form/button'
 import { signUpCompany } from '../../services/apiFunctions/companies/company'
 import { useToast } from '../../contexts/Toast'
 
@@ -103,9 +103,9 @@ export const SignUpContainer = () => {
               />
             </FormControl>
 
-            <Button mt={4} w="100%" isLoading={isSubmitting} type="submit">
+            <FormButton mt={4} w="100%" isLoading={isSubmitting} type="submit">
               Cadastrar
-            </Button>
+            </FormButton>
           </form>
 
           <Link href="/forgot-password" passHref>

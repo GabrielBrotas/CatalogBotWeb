@@ -1,13 +1,13 @@
 import jwtDecode from 'jwt-decode'
 import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
-import { destroyCookie, parseCookies } from 'nookies'
+import { destroyCookie } from 'nookies'
 import { COOKIE_COMPANY_TOKEN } from '../configs/constants'
 import { AuthTokenError } from '../errors/AuthTokenError'
+import { getCompanyToken } from './getToken'
 
 export function withCompanySSRAuth<P>(fn: GetServerSideProps<P>): GetServerSideProps {
   return async (ctx: GetServerSidePropsContext): Promise<GetServerSidePropsResult<P>> => {
-    const cookies = parseCookies(ctx)
-    const token = cookies[COOKIE_COMPANY_TOKEN]
+    const token = getCompanyToken(ctx)
 
     const { roles } = jwtDecode(token) as any
 

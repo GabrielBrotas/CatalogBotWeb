@@ -1,3 +1,4 @@
+import { CartOrderProduct } from './../services/apiFunctions/clients/cart/types'
 import { OrderProduct } from '../services/apiFunctions/clients/orders/types'
 
 export function getTotalPriceFromOrderProduct(orderProduct: OrderProduct) {
@@ -13,6 +14,16 @@ export function getTotalPriceFromOrderProduct(orderProduct: OrderProduct) {
         ),
       0
     )
+
+  return total
+}
+
+export function getTotalPriceFromCartOrderProduct(cartOrderProducts: CartOrderProduct[]) {
+  let total = 0
+
+  cartOrderProducts.map((cartOrderProduct) => {
+    total += getTotalPriceFromOrderProduct(cartOrderProduct as OrderProduct)
+  })
 
   return total
 }

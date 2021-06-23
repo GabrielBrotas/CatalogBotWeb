@@ -106,8 +106,8 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
         company,
         productsAgrupedByCategory,
         globalStyles: {
-          bg: 'gray.50',
-          color: 'gray.600',
+          bg: '#f8fafb',
+          color: '#444150',
         },
       },
       revalidate: 60 * 60 * 1, // 1 hora

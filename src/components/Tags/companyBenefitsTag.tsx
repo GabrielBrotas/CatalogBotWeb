@@ -1,11 +1,11 @@
-import { Flex, Tag } from '@chakra-ui/react';
-import React from 'react';
-import { AiOutlineClose } from 'react-icons/ai';
+import { Flex, Tag } from '@chakra-ui/react'
+import React from 'react'
+import { AiOutlineClose } from 'react-icons/ai'
 
 interface CompanyBenefitsTagProps {
-  tags: string[];
-  canRemove?: boolean;
-  handleRemoveBenefit?: (index: number) => void;
+  tags: string[]
+  canRemove?: boolean
+  handleRemoveBenefit?: (index: number) => void
 }
 
 export const CompanyBenefitsTag = ({
@@ -16,7 +16,7 @@ export const CompanyBenefitsTag = ({
   return (
     <Flex flexWrap="wrap" w="100%" mt={6}>
       {tags.map((tag, index) => (
-        <Tag key={index} mr={6} size="lg" variant="subtle" borderRadius="full">
+        <Tag key={index} mr={6} size="lg" variant="subtle" bg="gray.50" borderRadius="full">
           {tag}
           {canRemove && (
             <AiOutlineClose
@@ -28,5 +28,5 @@ export const CompanyBenefitsTag = ({
         </Tag>
       ))}
     </Flex>
-  );
-};
+  )
+}

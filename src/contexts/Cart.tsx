@@ -16,21 +16,30 @@ import {
 } from '../services/apiFunctions/clients/cart/types'
 import { createOrder } from '../services/apiFunctions/clients/orders'
 import { Address } from '../services/apiFunctions/clients/client/types'
+import { useDisclosure } from '@chakra-ui/react'
+import { getTotalPriceFromCartOrderProduct } from '../utils/maths'
+import { currencyFormat } from '../utils/dataFormat'
 
 type StoreOrderDTO = {
   deliveryAddress: Address
   paymentMethod: PaymentMethods
+  cartOrderProducts: CartOrderProduct[]
 }
 
+interface CartFormated extends Cart {
+  cartTotalPrice: number
+  cartTotalPriceFormated: string
+}
 interface CartContext {
-  cart: Cart
+  cart: CartFormated
   addToCart(orderProduct: StoreCartOrderProductDTO): Promise<void>
   updateCart: ({ orderProducts }: { orderProducts: StoreCartOrderProductDTO[] }) => Promise<void>
   clearCart(): Promise<void>
   company: Company | null
   setCompany: React.Dispatch<React.SetStateAction<Company | null>>
-  isCartModalOpen: boolean
-  setIsCartModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+  isModalOpen: boolean
+  openCartModal: () => void
+  closeCartModal: () => void
   storeOrder: ({ deliveryAddress, paymentMethod }: StoreOrderDTO) => Promise<void>
   orderTotalPrice: number
 }
@@ -54,9 +63,9 @@ function formatCartProductsToOrderProducts(cartProducts: CartOrderProduct[]): Or
 }
 
 const CartProvider: React.FC = ({ children }) => {
-  const [cart, setCart] = useState<Cart | null>()
+  const [cart, setCart] = useState<CartFormated | null>()
   const [company, setCompany] = useState<Company | null>(null)
-  const [isCartModalOpen, setIsCartModalOpen] = useState(false)
+  const { isOpen: isModalOpen, onOpen: openCartModal, onClose: closeCartModal } = useDisclosure()
 
   const { addToast } = useToast()
   const { client } = useClientAuth()
@@ -65,7 +74,13 @@ const CartProvider: React.FC = ({ children }) => {
     if (!client) return
 
     getCart({ companyId: company._id }).then((response) => {
-      setCart(response)
+      setCart({
+        ...response,
+        cartTotalPrice: getTotalPriceFromCartOrderProduct(response.orderProducts),
+        cartTotalPriceFormated: currencyFormat(
+          getTotalPriceFromCartOrderProduct(response.orderProducts)
+        ),
+      })
     })
   }, [company, client])
 
@@ -77,7 +92,13 @@ const CartProvider: React.FC = ({ children }) => {
       try {
         const cart = await addProductInCart({ companyId: company._id, orderProduct })
 
-        setCart(cart)
+        setCart({
+          ...cart,
+          cartTotalPrice: getTotalPriceFromCartOrderProduct(cart.orderProducts),
+          cartTotalPriceFormated: currencyFormat(
+            getTotalPriceFromCartOrderProduct(cart.orderProducts)
+          ),
+        })
       } catch (err) {
         console.log(err)
       }
@@ -104,7 +125,13 @@ const CartProvider: React.FC = ({ children }) => {
 
       try {
         const cartUpdated = await updateCartApiFunction({ cartId: cart._id, orderProducts })
-        setCart(cartUpdated)
+        setCart({
+          ...cartUpdated,
+          cartTotalPrice: getTotalPriceFromCartOrderProduct(cartUpdated.orderProducts),
+          cartTotalPriceFormated: currencyFormat(
+            getTotalPriceFromCartOrderProduct(cartUpdated.orderProducts)
+          ),
+        })
       } catch (err) {
         console.log(err)
         addToast({
@@ -141,16 +168,16 @@ const CartProvider: React.FC = ({ children }) => {
   }, [cart, client, company])
 
   const storeOrder = useCallback(
-    async ({ deliveryAddress, paymentMethod }: StoreOrderDTO) => {
+    async ({ deliveryAddress, paymentMethod, cartOrderProducts }: StoreOrderDTO) => {
       if (!company) return
       if (!client) return
 
       try {
-        const formatedOrderProducts = formatCartProductsToOrderProducts(cart.orderProducts)
+        const orderProducts = formatCartProductsToOrderProducts(cartOrderProducts)
         await createOrder({
           companyId: company._id,
           deliveryAddress,
-          orderProducts: formatedOrderProducts,
+          orderProducts,
           paymentMethod,
           totalPrice: orderTotalPrice,
         })
@@ -163,7 +190,7 @@ const CartProvider: React.FC = ({ children }) => {
         })
       }
     },
-    [addToast, cart, clearCart, client, company, orderTotalPrice]
+    [addToast, clearCart, client, company, orderTotalPrice]
   )
 
   return (
@@ -175,10 +202,11 @@ const CartProvider: React.FC = ({ children }) => {
         company,
         setCompany,
         updateCart,
-        isCartModalOpen,
-        setIsCartModalOpen,
         storeOrder,
         orderTotalPrice,
+        isModalOpen,
+        closeCartModal,
+        openCartModal,
       }}
     >
       {children}

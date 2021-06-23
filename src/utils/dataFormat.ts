@@ -1,4 +1,7 @@
-import { StoreCartOrderProductDTO } from './../services/apiFunctions/clients/cart/types'
+import {
+  CartOrderProduct,
+  StoreCartOrderProductDTO,
+} from './../services/apiFunctions/clients/cart/types'
 import { OptionAdditional, Product } from './../services/apiFunctions/companies/products/types'
 import { OrderFormated } from '../pages/orders/[oId]'
 import { IOrderToUpdateDTO, OrderProduct } from '../services/apiFunctions/companies/orders/types'
@@ -117,4 +120,13 @@ export function formatItemToAddInCart({
     })),
     comment,
   }
+}
+
+export function currencyFormat(price: number) {
+  const formatterPrice = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  })
+
+  return formatterPrice.format(price)
 }

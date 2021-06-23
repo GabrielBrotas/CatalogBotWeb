@@ -16,7 +16,7 @@ export const LoginForm = ({ register, errors, isSubmitting }: LoginFormProps) =>
   const { setFormType } = useClientAuth()
   return (
     <>
-      <Text fontSize="lg" my="4" textAlign="center">
+      <Text fontSize="xl" my="4" textAlign="center">
         Faça seu Login
       </Text>
       <FormControl isInvalid={errors.name}>
@@ -44,7 +44,7 @@ export const LoginForm = ({ register, errors, isSubmitting }: LoginFormProps) =>
         Login
       </FormButton>
 
-      <Text mt={4} w="100%" onClick={() => setFormType('register')}>
+      <Text cursor="pointer" fontSize="lg" mt={4} w="100%" onClick={() => setFormType('register')}>
         Não tennho uma conta
       </Text>
     </>

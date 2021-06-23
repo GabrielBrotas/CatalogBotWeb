@@ -1,30 +1,25 @@
-import React, { useCallback } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { FiLogIn } from 'react-icons/fi';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import React, { useCallback } from 'react'
+import Link from 'next/link'
+import { FiLogIn } from 'react-icons/fi'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
-import { Box, Flex, FormControl, Image, Text } from '@chakra-ui/react';
-import { FormInput } from '../../components/Form/input';
-import { Button } from '../../components/Form/button';
-import { signInCompany } from '../../services/apiFunctions/companies/company';
-import { useToast } from '../../contexts/Toast';
-import { useCompanyAuth } from '../../contexts/AuthCompany';
+import { Box, Flex, FormControl, Image, Text } from '@chakra-ui/react'
+import { FormInput } from '../../components/Form/input'
+import { FormButton } from '../../components/Form/button'
+import { useToast } from '../../contexts/Toast'
+import { useCompanyAuth } from '../../contexts/AuthCompany'
 
 type SignInFormData = {
-  email: string;
-  password: string;
-};
+  email: string
+  password: string
+}
 
 const signInFormSchema = yup.object().shape({
-  email: yup
-    .string()
-    .required('e-mail obrigatório')
-    .email('Insira um e-mail válido'),
+  email: yup.string().required('e-mail obrigatório').email('Insira um e-mail válido'),
   password: yup.string().required('senha obrigatória'),
-});
+})
 
 export const LoginContainer = () => {
   const {
@@ -33,33 +28,30 @@ export const LoginContainer = () => {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(signInFormSchema),
-  });
+  })
 
-  const { addToast } = useToast();
-  const { loginCompany } = useCompanyAuth();
+  const { addToast } = useToast()
+  const { loginCompany } = useCompanyAuth()
 
-  const handleSignIn = useCallback(async (data: SignInFormData) => {
-    try {
-      const { email, password } = data;
-      await loginCompany({ email, password });
-    } catch (err) {
-      addToast({
-        title: 'Error',
-        description: err.response.data.message,
-        status: 'error',
-      });
-    }
-  }, []);
+  const handleSignIn = useCallback(
+    async (data: SignInFormData) => {
+      try {
+        const { email, password } = data
+        await loginCompany({ email, password })
+      } catch (err) {
+        addToast({
+          title: 'Error',
+          description: err.response.data.message,
+          status: 'error',
+        })
+      }
+    },
+    [addToast, loginCompany]
+  )
 
   return (
     <Box height="100vh" display="flex" alignItems="center" justify="between">
-      <Flex
-        flexDir="column"
-        alignItems="center"
-        justify="center"
-        width="100%"
-        maxW="700px"
-      >
+      <Flex flexDir="column" alignItems="center" justify="center" width="100%" maxW="700px">
         <Flex flexDir="column" alignItems="center" justify="center">
           <Image src="/svgs/logo.svg" alt="logo" />
 
@@ -86,9 +78,9 @@ export const LoginContainer = () => {
               />
             </FormControl>
 
-            <Button mt={4} w="100%" isLoading={isSubmitting} type="submit">
+            <FormButton mt={4} w="100%" isLoading={isSubmitting} type="submit">
               Entrar
-            </Button>
+            </FormButton>
           </form>
 
           <Link href="/forgot-password" passHref>
@@ -117,5 +109,5 @@ export const LoginContainer = () => {
         />
       </Flex>
     </Box>
-  );
-};
+  )
+}

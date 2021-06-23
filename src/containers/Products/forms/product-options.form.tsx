@@ -8,7 +8,7 @@ import {
   useFieldArray,
   UseFormRegister,
 } from 'react-hook-form'
-import { Button } from '../../../components/Form/button'
+import { FormButton } from '../../../components/Form/button'
 import { FormInput } from '../../../components/Form/input'
 import { FormSelect } from '../../../components/Form/select'
 import { OptionAdditional } from '../../../services/apiFunctions/companies/products/types'
@@ -58,7 +58,7 @@ export const ProductOptionForm = ({
 
   return (
     <Box w="100%" textAlign="right">
-      <Button
+      <FormButton
         type="button"
         colorScheme="red"
         justifySelf="flex-end"
@@ -66,7 +66,7 @@ export const ProductOptionForm = ({
         onClick={() => removeProductOption(productOptionIndex)}
       >
         Remover opção
-      </Button>
+      </FormButton>
       <SimpleGrid minChildWidth="240px" spacing={['6', '8']} w="100%">
         <FormInput
           name={`options.${productOptionIndex}.name` as const}

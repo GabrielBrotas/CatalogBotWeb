@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef } from 'react'
 
 import {
   FormControl,
@@ -7,32 +7,21 @@ import {
   FormLabel,
   Select as ChakraSelect,
   SelectProps as CharkaSelectProps,
-} from '@chakra-ui/react';
-import { FieldError } from 'react-hook-form';
+} from '@chakra-ui/react'
+import { FieldError } from 'react-hook-form'
 
 interface SelectProps extends CharkaSelectProps {
-  name: string;
-  placeholder?: string;
-  label?: string;
-  error?: FieldError;
-  containerStyle?: FormControlProps;
-  options: { value: string | number; label: string }[];
+  name: string
+  placeholder?: string
+  label?: string
+  error?: FieldError
+  containerStyle?: FormControlProps
+  options: { value: string | number; label: string }[]
 }
 
-const SelectContainer: React.ForwardRefRenderFunction<
-  HTMLSelectElement,
-  SelectProps
-> = (
-  {
-    name,
-    placeholder,
-    label,
-    error = null,
-    containerStyle,
-    options,
-    ...rest
-  }: SelectProps,
-  ref,
+const SelectContainer: React.ForwardRefRenderFunction<HTMLSelectElement, SelectProps> = (
+  { name, placeholder, label, error = null, containerStyle, options, ...rest }: SelectProps,
+  ref
 ) => {
   return (
     <FormControl isInvalid={!!error} {...containerStyle}>
@@ -52,11 +41,7 @@ const SelectContainer: React.ForwardRefRenderFunction<
         {...rest}
       >
         {options.map((option, index) => (
-          <option
-            key={index}
-            style={{ backgroundColor: '#1F2029' }}
-            value={option.value}
-          >
+          <option key={index} style={{ backgroundColor: '#1F2029' }} value={option.value}>
             {option.label}
           </option>
         ))}
@@ -64,7 +49,7 @@ const SelectContainer: React.ForwardRefRenderFunction<
 
       {!!error && <FormErrorMessage>{error.message}</FormErrorMessage>}
     </FormControl>
-  );
-};
+  )
+}
 
-export const FormSelect = forwardRef(SelectContainer);
+export const FormSelect = forwardRef(SelectContainer)

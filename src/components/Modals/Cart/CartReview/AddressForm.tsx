@@ -1,6 +1,5 @@
 import React from 'react'
-import { Box, Checkbox, Text } from '@chakra-ui/react'
-import { CompanyPaymentMethods } from '../../../../services/apiFunctions/companies/company/types'
+import { Box, Checkbox, Flex, Text } from '@chakra-ui/react'
 import { FormInput } from '../../../Form/input'
 import { DeepMap, FieldError, FieldValues, UseFormRegister } from 'react-hook-form'
 
@@ -11,14 +10,17 @@ interface AddressFormProps {
 
 export const AddressForm = ({ errors, register }: AddressFormProps) => {
   return (
-    <Box alignSelf="flex-start">
-      <Text>Endereço de entrega</Text>
+    <Box alignSelf="flex-start" mt="4">
+      <Text fontSize="x-large" fontWeight="medium" mb="4">
+        Endereço de entrega
+      </Text>
       <FormInput
         name="state"
         placeholder="Estado"
         {...register('deliveryAddress.state')}
         error={errors.deliveryAddress && errors.deliveryAddress.state}
         containerStyle={{ mb: '4' }}
+        secondary
       />
 
       <FormInput
@@ -27,6 +29,7 @@ export const AddressForm = ({ errors, register }: AddressFormProps) => {
         {...register('deliveryAddress.city')}
         error={errors.deliveryAddress && errors.deliveryAddress.city}
         containerStyle={{ mb: '4' }}
+        secondary
       />
 
       <FormInput
@@ -35,6 +38,7 @@ export const AddressForm = ({ errors, register }: AddressFormProps) => {
         {...register('deliveryAddress.street')}
         error={errors.deliveryAddress && errors.deliveryAddress.street}
         containerStyle={{ mb: '4' }}
+        secondary
       />
 
       <FormInput
@@ -43,6 +47,7 @@ export const AddressForm = ({ errors, register }: AddressFormProps) => {
         {...register('deliveryAddress.neighborhood')}
         error={errors.deliveryAddress && errors.deliveryAddress.neighborhood}
         containerStyle={{ mb: '4' }}
+        secondary
       />
 
       <FormInput
@@ -51,6 +56,7 @@ export const AddressForm = ({ errors, register }: AddressFormProps) => {
         {...register('deliveryAddress.number')}
         error={errors.deliveryAddress && errors.deliveryAddress.number}
         containerStyle={{ mb: '4' }}
+        secondary
       />
 
       <FormInput
@@ -59,10 +65,18 @@ export const AddressForm = ({ errors, register }: AddressFormProps) => {
         {...register('deliveryAddress.cep')}
         error={errors.deliveryAddress && errors.deliveryAddress.cep}
         containerStyle={{ mb: '4' }}
+        secondary
       />
 
-      <Checkbox colorScheme="green" defaultIsChecked>
-        Salvar como padrão para as próximas compras
+      <Checkbox
+        colorScheme="blue"
+        defaultIsChecked
+        size="md"
+        mr="2"
+        mb="4"
+        {...register('saveAddressAsDefault')}
+      >
+        Salvar este endereço como padrão para as próximas compras
       </Checkbox>
     </Box>
   )

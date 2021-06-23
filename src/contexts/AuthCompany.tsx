@@ -35,7 +35,16 @@ export const AuthCompanyProvider: React.FC = ({ children }) => {
     if (token) {
       getMyCompany({})
         .then((response) => {
-          const { _id, email, name, benefits, mainImageUrl, shortDescription, workTime } = response
+          const {
+            _id,
+            email,
+            name,
+            benefits,
+            mainImageUrl,
+            shortDescription,
+            workTime,
+            acceptedPaymentMethods,
+          } = response
 
           setCompany({
             _id,
@@ -45,9 +54,12 @@ export const AuthCompanyProvider: React.FC = ({ children }) => {
             mainImageUrl,
             shortDescription,
             workTime,
+            acceptedPaymentMethods,
           })
         })
         .catch((err) => {
+          console.log('aqyuu')
+          console.log({ err })
           if (err.response.status === 401) {
             signOutCompany()
           }

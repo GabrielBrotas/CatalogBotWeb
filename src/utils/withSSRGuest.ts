@@ -1,12 +1,11 @@
 import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
-import { parseCookies } from 'nookies'
-import { COOKIE_COMPANY_TOKEN } from '../configs/constants'
+import { getCompanyToken } from './getToken'
 
 export function withSSRGuest<P>(fn: GetServerSideProps<P>): GetServerSideProps {
   return async (ctx: GetServerSidePropsContext): Promise<GetServerSidePropsResult<P>> => {
-    const cookies = parseCookies(ctx)
-
-    if (cookies[COOKIE_COMPANY_TOKEN]) {
+    const token = getCompanyToken(ctx)
+    console.log(token)
+    if (token) {
       return {
         redirect: {
           destination: '/dashboard',
@@ -14,7 +13,7 @@ export function withSSRGuest<P>(fn: GetServerSideProps<P>): GetServerSideProps {
         },
       }
     }
-
+    console.log('here')
     return await fn(ctx)
   }
 }

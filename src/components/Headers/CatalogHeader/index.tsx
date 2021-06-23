@@ -20,7 +20,7 @@ export function CatalogHeader() {
       py="4"
       px="6"
       align="center"
-      bg="blue.300"
+      bg="#007AFF"
     >
       {/* <Logo /> */}
 

@@ -15,10 +15,11 @@ interface TextareaProps extends CharkaTextareaProps {
   label?: string
   error?: FieldError
   containerStyle?: FormControlProps
+  secondary?: boolean
 }
 
 const TextAreaContainer: React.ForwardRefRenderFunction<HTMLTextAreaElement, TextareaProps> = (
-  { name, label, error = null, containerStyle, ...rest }: TextareaProps,
+  { name, label, error = null, containerStyle, secondary, ...rest }: TextareaProps,
   ref
 ) => {
   return (
@@ -28,10 +29,10 @@ const TextAreaContainer: React.ForwardRefRenderFunction<HTMLTextAreaElement, Tex
       <ChakraTextArea
         id={name}
         name={name}
-        focusBorderColor="pink.500"
-        bgColor="gray.700"
         variant="outline"
-        _hover={{ bgColor: 'gray.800' }}
+        focusBorderColor={secondary ? 'blue.500' : 'pink.500'}
+        bgColor={secondary ? 'gray.50' : 'gray.700'}
+        _hover={secondary ? { bgColor: 'gray.100' } : { bgColor: 'gray.800' }}
         size="lg"
         ref={ref}
         {...rest}

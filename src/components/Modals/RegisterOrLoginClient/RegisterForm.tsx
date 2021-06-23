@@ -17,7 +17,7 @@ export const RegisterForm = ({ register, errors, isSubmitting }: RegisterFormPro
 
   return (
     <>
-      <Text fontSize="lg" my="4" textAlign="center">
+      <Text fontSize="xl" my="4" textAlign="center">
         Faça seu cadastro
       </Text>
       <FormControl isInvalid={errors.name}>
@@ -63,7 +63,7 @@ export const RegisterForm = ({ register, errors, isSubmitting }: RegisterFormPro
         Cadastrar
       </FormButton>
 
-      <Text mt={4} w="100%" onClick={() => setFormType('login')}>
+      <Text cursor="pointer" fontSize="lg" mt={4} w="100%" onClick={() => setFormType('login')}>
         Já tenho uma conta
       </Text>
     </>

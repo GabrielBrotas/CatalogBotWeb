@@ -1,11 +1,10 @@
-import React, { Fragment, useCallback, useEffect, useMemo } from 'react'
+import React, { Fragment, useEffect, useMemo } from 'react'
 import {
   Avatar,
   Box,
   Text,
   Container,
   Flex,
-  Image,
   Alert,
   AlertIcon,
   Heading,
@@ -14,13 +13,12 @@ import {
 import { CatalogProps } from '../../pages/catalog/[companyId]'
 
 import { CompanyBenefitsTag } from '../../components/Tags/companyBenefitsTag'
-import { useProductModal } from '../../contexts/ProductModal'
-import { Product } from '../../services/apiFunctions/companies/products/types'
 import { useCart } from '../../contexts/Cart'
 import { CatalogHeader } from '../../components/Headers/CatalogHeader'
+import { AiOutlineShop } from 'react-icons/ai'
+import { CatalogProduct } from '../../components/CatalogProduct'
 
 export const CatalogContainer = ({ company, productsAgrupedByCategory }: CatalogProps) => {
-  const { openProductModal } = useProductModal()
   const { setCompany, cart } = useCart()
 
   const isCompanyOpen = useMemo(() => {
@@ -51,13 +49,6 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
     return open
   }, [company.workTime])
 
-  const handleOpenProductModal = useCallback(
-    (product: Product) => {
-      openProductModal({ type: 'product', product })
-    },
-    [openProductModal]
-  )
-
   useEffect(() => {
     setCompany(company)
   }, [company, setCompany])
@@ -75,7 +66,7 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
       <Box padding="2" flex={1} display="flex" flexDir="column" mt={6} w="full">
         <Flex alignItems="flex-start" justifyContent="space-between">
           <Box>
-            <Heading as="h4" size="md" isTruncated>
+            <Heading as="h4" fontSize="x-large" isTruncated>
               {company.name}
             </Heading>
             <Text mt="1" maxW="40rem">
@@ -95,43 +86,28 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
           </Alert>
         )}
 
-        {productsAgrupedByCategory.map((productGroup) => (
-          <Fragment key={productGroup.category}>
-            <Box display="Flex" flexDir="column" mt="6">
-              <Heading as="h4" size="md" isTruncated mb="4">
-                {productGroup.category}
-              </Heading>
+        <Flex my="6">
+          <AiOutlineShop size={25} />
+          <Text ml="2" fontSize="xl" fontWeight="medium">
+            Shopping
+          </Text>
+        </Flex>
+        <Box bg="whiteAlpha.900" px="8" borderTopRadius="2xl" pb="5rem">
+          {productsAgrupedByCategory.map((productGroup) => (
+            <Fragment key={productGroup.category}>
+              <Box display="Flex" flexDir="column" mt="4">
+                <Heading as="h4" fontSize="x-large" isTruncated mb="2">
+                  {productGroup.category}
+                </Heading>
+                <Divider />
 
-              {productGroup.products.map((product) => (
-                <Flex
-                  key={product._id}
-                  alignItems="center"
-                  justifyContent="space-between"
-                  my="4"
-                  cursor="pointer"
-                  onClick={() => handleOpenProductModal(product)}
-                >
-                  <Box flex={1}>
-                    <Heading as="h5" size="sm" isTruncated>
-                      {product.name}
-                    </Heading>
-                    <Text mt="1" maxW="40rem">
-                      {product.description}
-                    </Text>
-                    <Text fontSize="lg">{product.priceFormated}</Text>
-                  </Box>
-                  <Image
-                    boxSize="6rem"
-                    name={product.name}
-                    src={product.imageUrl ? product.imageUrl : '/images/default-picture.jpg'}
-                  />
-                </Flex>
-              ))}
-            </Box>
-
-            <Divider />
-          </Fragment>
-        ))}
+                {productGroup.products.map((product) => (
+                  <CatalogProduct key={product._id} product={product} />
+                ))}
+              </Box>
+            </Fragment>
+          ))}
+        </Box>
       </Box>
     </Container>
   )
