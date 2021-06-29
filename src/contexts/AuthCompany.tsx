@@ -4,7 +4,11 @@ import { apiCompany } from '../services/api'
 import Router from 'next/router'
 import { Company } from '../services/apiFunctions/companies/company/types'
 import { getMyCompany, signInCompany } from '../services/apiFunctions/companies/company'
-import { COOKIE_COMPANY_TOKEN } from '../configs/constants'
+import { COOKIE_COMPANY_TOKEN, NOTIFICATION_SOUND } from '../configs/constants'
+import { useWebSockets } from '../hooks/useWebSocket'
+import { IPaginatedNotifications } from '../services/apiFunctions/clients/notifications/types'
+import { getCompanyNotifications } from '../services/apiFunctions/companies/notifications'
+// import { emmitEvent } from '../services/socket'
 
 type SignInCredentials = {
   email: string
@@ -16,6 +20,8 @@ type AuthContextData = {
   loginCompany(credentials: SignInCredentials): Promise<void>
   isAuthenticated: boolean
   company: Company
+  companyNotifications: IPaginatedNotifications
+  setCompanyNotifications: React.Dispatch<React.SetStateAction<IPaginatedNotifications>>
 }
 
 const AuthContext = createContext({} as AuthContextData)
@@ -27,14 +33,21 @@ export function signOutCompany() {
 
 export const AuthCompanyProvider: React.FC = ({ children }) => {
   const [company, setCompany] = useState<Company>()
+  const [companyNotifications, setCompanyNotifications] = useState<IPaginatedNotifications>()
+
   const isAuthenticated = !!company
+
+  const { newNotification, setNewNotification } = useWebSockets({
+    userId: company && company._id,
+    enabled: !!company,
+  })
 
   useEffect(() => {
     const { '@CatalogBot.token.company': token } = parseCookies()
 
     if (token) {
-      getMyCompany({})
-        .then((response) => {
+      Promise.all([getMyCompany({}), getCompanyNotifications({})])
+        .then(([companyResponse, notificationsResponse]) => {
           const {
             _id,
             email,
@@ -44,7 +57,7 @@ export const AuthCompanyProvider: React.FC = ({ children }) => {
             shortDescription,
             workTime,
             acceptedPaymentMethods,
-          } = response
+          } = companyResponse
 
           setCompany({
             _id,
@@ -56,16 +69,27 @@ export const AuthCompanyProvider: React.FC = ({ children }) => {
             workTime,
             acceptedPaymentMethods,
           })
+
+          setCompanyNotifications(notificationsResponse)
         })
-        .catch((err) => {
-          console.log('aqyuu')
-          console.log({ err })
-          if (err.response.status === 401) {
-            signOutCompany()
-          }
+        .catch(() => {
+          signOutCompany()
         })
     }
   }, [])
+
+  useEffect(() => {
+    if (newNotification && String(newNotification.Receiver) === String(company._id)) {
+      new Audio(NOTIFICATION_SOUND).play()
+      setCompanyNotifications(({ results, total, next, previous }) => ({
+        results: [newNotification, ...results],
+        total,
+        next,
+        previous,
+      }))
+      setNewNotification(null)
+    }
+  }, [company, newNotification, setNewNotification])
 
   async function loginCompany({ email, password }: SignInCredentials) {
     const { company, token } = await signInCompany({ email, password })
@@ -83,7 +107,16 @@ export const AuthCompanyProvider: React.FC = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ loginCompany, signOutCompany, isAuthenticated, company }}>
+    <AuthContext.Provider
+      value={{
+        loginCompany,
+        signOutCompany,
+        isAuthenticated,
+        company,
+        companyNotifications,
+        setCompanyNotifications,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )

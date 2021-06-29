@@ -12,7 +12,12 @@ export const FormButton: React.FC<ButtonProps> = ({
   secondary = false,
   ...rest
 }) => (
-  <ChakraButton colorScheme={secondary ? 'blue' : 'teal'} isLoading={isSubmitting} {...rest}>
+  <ChakraButton
+    colorScheme={secondary ? 'blue' : 'teal'}
+    isLoading={isSubmitting}
+    {...rest}
+    disabled={isSubmitting}
+  >
     {children}
   </ChakraButton>
 )

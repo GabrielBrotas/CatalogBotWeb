@@ -3,7 +3,7 @@ import React, { useCallback } from 'react'
 import { Box, Flex, Heading, Text, Image, useMediaQuery } from '@chakra-ui/react'
 
 import { Product } from '../services/apiFunctions/companies/products/types'
-import { useProductModal } from '../contexts/ProductModal'
+import { useProductModal } from '../contexts/Modals/ProductModal'
 
 interface CatalogProductProps {
   product: Product

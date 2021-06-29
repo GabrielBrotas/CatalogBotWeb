@@ -44,7 +44,7 @@ export const CartProducts = ({ orderProducts, setCartOrderProducts }: CartProduc
           py="2"
           mb="4"
         >
-          <Box ml="8" display="flex" flexDir="column" h="full" minH="160px">
+          <Box display="flex" flexDir="column" h="full" minH="160px">
             <Text fontSize="2xl" fontWeight="medium" mb="2" flex="1">
               {orderProduct.product.name}
             </Text>

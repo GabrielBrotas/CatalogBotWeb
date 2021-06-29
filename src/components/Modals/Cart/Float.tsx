@@ -1,17 +1,15 @@
 import React from 'react'
 import { Box, Container, Flex, Icon, Text } from '@chakra-ui/react'
 import { useCart } from '../../../contexts/Cart'
-import { RiShoppingCart2Line } from 'react-icons/ri'
-import { getTotalPriceFromCartOrderProduct } from '../../../utils/maths'
 import { FiShoppingBag } from 'react-icons/fi'
 
 export const FloatCart = () => {
   const { cart, openCartModal } = useCart()
 
   if (!cart || cart.orderProducts.length === 0) return <></>
-  console.log(cart.orderProducts)
+
   return (
-    <Container position="fixed" bottom="0" maxW={1480}>
+    <Container position="fixed" bottom="0" p="0" maxW={1480}>
       <Flex
         w="100%"
         maxWidth={800}

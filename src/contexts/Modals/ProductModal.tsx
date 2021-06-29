@@ -1,6 +1,6 @@
 import { useDisclosure } from '@chakra-ui/react'
 import { createContext, ReactNode, useCallback, useContext, useState } from 'react'
-import { Product } from '../services/apiFunctions/companies/products/types'
+import { Product } from '../../services/apiFunctions/companies/products/types'
 
 interface ProductModalProps {
   children: ReactNode

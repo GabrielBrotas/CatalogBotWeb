@@ -2,9 +2,15 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { setCookie, parseCookies, destroyCookie } from 'nookies'
 import { apiClient } from '../services/api'
 import { getMyClient, signInClient } from '../services/apiFunctions/clients/client'
-import { COOKIE_CLIENT_TOKEN } from '../configs/constants'
+import { COOKIE_CLIENT_TOKEN, NOTIFICATION_SOUND } from '../configs/constants'
 import { Client } from '../services/apiFunctions/clients/client/types'
 import { useDisclosure } from '@chakra-ui/react'
+import { useWebSockets } from '../hooks/useWebSocket'
+import { IPaginatedNotifications } from '../services/apiFunctions/clients/notifications/types'
+import { getClientNotifications } from '../services/apiFunctions/clients/notifications'
+import { useCart } from './Cart'
+import { useRouter } from 'next/router'
+// import { emmitEvent } from '../services/socket'
 
 type SignInCredentials = {
   user: string
@@ -21,6 +27,8 @@ type AuthContextData = {
   setFormType: React.Dispatch<React.SetStateAction<'register' | 'login'>>
   openModal: ({ type }: { type: 'register' | 'login' }) => void
   closeModal: () => void
+  clientsNotifications: IPaginatedNotifications
+  setClientsNotifications: React.Dispatch<React.SetStateAction<IPaginatedNotifications>>
 }
 
 const AuthContext = createContext({} as AuthContextData)
@@ -36,17 +44,27 @@ export const AuthClientProvider: React.FC = ({ children }) => {
     onOpen: openRegisterModal,
     onClose: closeRegisterModal,
   } = useDisclosure()
+  const router = useRouter()
 
   const [client, setClient] = useState<Client>()
+  const [clientsNotifications, setClientsNotifications] = useState<IPaginatedNotifications>()
   const isAuthenticated = !!client
+
+  const { newNotification, setNewNotification } = useWebSockets({
+    userId: client && client._id,
+    enabled: !!client,
+  })
 
   useEffect(() => {
     const { '@CatalogBot.token.client': token } = parseCookies()
 
     if (token) {
-      getMyClient({})
-        .then((response) => {
-          const { _id, email, cellphone, name, defaultAddress } = response
+      Promise.all([
+        getMyClient({}),
+        getClientNotifications({ Sender: String(router.query.companyId) }),
+      ])
+        .then(([clientResponse, notificationsResponse]) => {
+          const { _id, email, cellphone, name, defaultAddress } = clientResponse
 
           setClient({
             _id,
@@ -55,14 +73,27 @@ export const AuthClientProvider: React.FC = ({ children }) => {
             name,
             defaultAddress,
           })
+
+          setClientsNotifications(notificationsResponse)
         })
-        .catch((err) => {
-          if (err.response.status === 401) {
-            signOutClient()
-          }
+        .catch(() => {
+          signOutClient()
         })
     }
-  }, [])
+  }, [router.query.companyId])
+
+  useEffect(() => {
+    if (newNotification && String(newNotification.Receiver) === String(client._id)) {
+      new Audio(NOTIFICATION_SOUND).play()
+      setClientsNotifications(({ results, total, next, previous }) => ({
+        results: [newNotification, ...results],
+        total,
+        next,
+        previous,
+      }))
+      setNewNotification(null)
+    }
+  }, [client, newNotification, setNewNotification])
 
   async function loginClient({ user, password }: SignInCredentials) {
     const { client, token } = await signInClient({ user, password })
@@ -97,6 +128,8 @@ export const AuthClientProvider: React.FC = ({ children }) => {
         closeModal,
         formType,
         setFormType,
+        clientsNotifications,
+        setClientsNotifications,
       }}
     >
       {children}

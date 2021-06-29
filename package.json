@@ -29,6 +29,7 @@
     "react-hook-form": "^7.7.0",
     "react-icons": "^4.2.0",
     "react-query": "^3.16.0",
+    "socket.io-client": "^4.1.2",
     "yarn": "^1.22.10",
     "yup": "^0.32.9"
   },

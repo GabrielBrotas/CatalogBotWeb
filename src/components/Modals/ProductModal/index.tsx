@@ -1,6 +1,6 @@
 import React from 'react'
 import { Drawer, DrawerContent, DrawerOverlay } from '@chakra-ui/react'
-import { useProductModal } from '../../../contexts/ProductModal'
+import { useProductModal } from '../../../contexts/Modals/ProductModal'
 import { ProductModalBody } from './body'
 import { ProductModalHeader } from './header'
 

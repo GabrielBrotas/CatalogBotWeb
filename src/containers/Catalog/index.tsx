@@ -60,10 +60,11 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
       flexDir="column"
       maxHeight={cart ? (cart.orderProducts.length > 0 ? '91%' : '100%') : '100%'}
       maxW="800px"
+      p="0"
     >
       <CatalogHeader />
 
-      <Box padding="2" flex={1} display="flex" flexDir="column" mt={6} w="full">
+      <Box padding="4" flex={1} display="flex" flexDir="column" mt={6} w="full">
         <Flex alignItems="flex-start" justifyContent="space-between">
           <Box>
             <Heading as="h4" fontSize="x-large" isTruncated>
@@ -78,7 +79,7 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
           </Box>
         </Flex>
 
-        <CompanyBenefitsTag tags={company.benefits} />
+        <CompanyBenefitsTag tags={company.benefits} secondary />
 
         {!isCompanyOpen && (
           <Alert status="info" mt="6" textColor="gray.600">
@@ -92,7 +93,12 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
             Shopping
           </Text>
         </Flex>
-        <Box bg="whiteAlpha.900" px="8" borderTopRadius="2xl" pb="5rem">
+        <Box
+          bg="whiteAlpha.900"
+          px="8"
+          borderTopRadius="2xl"
+          pb={cart ? (cart.orderProducts.length > 0 ? '5rem' : '2') : '2'}
+        >
           {productsAgrupedByCategory.map((productGroup) => (
             <Fragment key={productGroup.category}>
               <Box display="Flex" flexDir="column" mt="4">

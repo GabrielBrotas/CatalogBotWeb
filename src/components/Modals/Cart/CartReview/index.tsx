@@ -20,7 +20,7 @@ import { AddressForm } from './AddressForm'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Address } from '../../../../services/apiFunctions/clients/client/types'
-import { useToast } from '../../../../contexts/Toast'
+import { useToast } from '../../../../contexts/Modals/Toast'
 import { FormButton } from '../../../Form/button'
 import { PaymentMethods } from '../../../../services/apiFunctions/clients/orders/types'
 import { RiShoppingCart2Line } from 'react-icons/ri'
@@ -37,12 +37,12 @@ interface HandleBuyProductsProps {
 
 const buyProductsFormSchema = yup.object().shape({
   deliveryAddress: yup.object().shape({
-    state: yup.string().required(),
-    city: yup.string().required(),
-    street: yup.string().required(),
-    neighborhood: yup.string().required(),
-    number: yup.string().required(),
-    cep: yup.string().required(),
+    state: yup.string().required('Estádo obrigatório'),
+    city: yup.string().required('Cidade obrigatório'),
+    street: yup.string().required('Endereço obrigatório'),
+    neighborhood: yup.string().required('Bairro obrigatório'),
+    number: yup.string().required('Número da casa obrigatório'),
+    cep: yup.string().required('CEP obrigatório'),
   }),
   saveAddressAsDefault: yup.boolean().optional(),
 })
@@ -52,6 +52,9 @@ export const CartModal = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setValue,
+    setError,
+    clearErrors,
   } = useForm({
     resolver: yupResolver(buyProductsFormSchema),
   })
@@ -61,6 +64,7 @@ export const CartModal = () => {
 
   const [cartOrderProducts, setCartOrderProducts] = useState<CartOrderProduct[]>()
   const [step, setStep] = useState(1)
+  const [loading, setLoading] = useState(false)
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethods>('money')
 
@@ -75,14 +79,14 @@ export const CartModal = () => {
     const { deliveryAddress, saveAddressAsDefault = true } = data
 
     try {
-      console.log(data)
-      // await storeOrder({ deliveryAddress, paymentMethod, cartOrderProducts })
-      // closeCartModal()
-      // addToast({
-      //   title: 'Ordem registrada com sucesso!',
-      //   description: 'Agora basta aguardar o fornecedor confirmar o seu pedido.',
-      //   status: 'success',
-      // })
+      await storeOrder({ deliveryAddress, paymentMethod, cartOrderProducts, saveAddressAsDefault })
+      closeCartModal()
+      addToast({
+        title: 'Ordem registrada com sucesso!',
+        description: 'Agora basta aguardar o fornecedor confirmar o seu pedido.',
+        status: 'success',
+      })
+      setStep(1)
     } catch (err) {
       console.log(err)
       addToast({
@@ -107,7 +111,7 @@ export const CartModal = () => {
       closeCartModal()
       addToast({
         title: 'Carrinho limpo!',
-        status: 'info',
+        status: 'success',
       })
     } catch (err) {
       console.log(err)
@@ -190,9 +194,23 @@ export const CartModal = () => {
 
                 <Divider />
 
-                <AddressForm register={register} errors={errors} />
+                <AddressForm
+                  register={register}
+                  errors={errors}
+                  loading={loading}
+                  setLoading={setLoading}
+                  setValue={setValue}
+                  setError={setError}
+                  clearErrors={clearErrors}
+                />
 
-                <FormButton secondary w="full" py="6" isSubmitting={isSubmitting} type="submit">
+                <FormButton
+                  secondary
+                  w="full"
+                  py="6"
+                  isSubmitting={loading || isSubmitting}
+                  type="submit"
+                >
                   Salvar ordem
                 </FormButton>
               </form>

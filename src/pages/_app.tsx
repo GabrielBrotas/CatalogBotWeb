@@ -1,17 +1,8 @@
 import React from 'react'
-import { ChakraProvider } from '@chakra-ui/react'
-import { QueryClientProvider } from 'react-query'
+import { ThemeProps } from '../styles/theme'
 
-import { queryClient } from '../services/queryClient'
-import { SidebarDrawerProvider } from '../contexts/SidebarDrawerContext'
-import { ToastProvider } from '../contexts/Toast'
-import { AuthCompanyProvider } from '../contexts/AuthCompany'
-import { AuthClientProvider } from '../contexts/AuthClient'
-import { AlertModalProvider } from '../contexts/AlertModal'
-import { ProductModalProvider } from '../contexts/ProductModal'
-
-import { theme, ThemeProps } from '../styles/theme'
 import '../styles/global.css'
+import { AppProvider } from '../contexts'
 
 function handleGlobalStyles(pageProps) {
   const styles: ThemeProps = {}
@@ -32,23 +23,9 @@ function MyApp({ Component, pageProps }) {
   const themeOptions = handleGlobalStyles(pageProps)
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ChakraProvider theme={theme(themeOptions)}>
-        <AuthCompanyProvider>
-          <AuthClientProvider>
-            <ToastProvider>
-              <ProductModalProvider>
-                <AlertModalProvider>
-                  <SidebarDrawerProvider>
-                    <Component {...pageProps} />
-                  </SidebarDrawerProvider>
-                </AlertModalProvider>
-              </ProductModalProvider>
-            </ToastProvider>
-          </AuthClientProvider>
-        </AuthCompanyProvider>
-      </ChakraProvider>
-    </QueryClientProvider>
+    <AppProvider themeOptions={themeOptions}>
+      <Component {...pageProps} />
+    </AppProvider>
   )
 }
 

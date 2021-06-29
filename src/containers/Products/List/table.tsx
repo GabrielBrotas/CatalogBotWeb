@@ -20,8 +20,8 @@ import {
 } from '@chakra-ui/react'
 
 import { ProductFormated } from '../../../pages/products'
-import { useAlertModal } from '../../../contexts/AlertModal'
-import { useToast } from '../../../contexts/Toast'
+import { useAlertModal } from '../../../contexts/Modals/AlertModal'
+import { useToast } from '../../../contexts/Modals/Toast'
 import { queryClient } from '../../../services/queryClient'
 import { deleteProduct } from '../../../services/apiFunctions/companies/products'
 

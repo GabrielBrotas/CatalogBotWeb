@@ -1,10 +1,7 @@
-import {
-  CartOrderProduct,
-  StoreCartOrderProductDTO,
-} from './../services/apiFunctions/clients/cart/types'
+import { StoreCartOrderProductDTO } from './../services/apiFunctions/clients/cart/types'
 import { OptionAdditional, Product } from './../services/apiFunctions/companies/products/types'
 import { OrderFormated } from '../pages/orders/[oId]'
-import { IOrderToUpdateDTO, OrderProduct } from '../services/apiFunctions/companies/orders/types'
+import { IOrderToUpdateDTO } from '../services/apiFunctions/companies/orders/types'
 import { ProductOption } from '../services/apiFunctions/companies/products/types'
 
 export const FORMAT_PAYMENT = {
@@ -28,6 +25,14 @@ export const ORDER_STATUS_COLOR = {
   confimed: 'green.300',
   sent: 'blue.300',
   received: 'blue.300',
+  canceled: 'red.500',
+}
+
+export const ORDER_STATUS_COLOR_SECONDARY = {
+  pending: 'yellow.500',
+  confimed: 'green.500',
+  sent: 'blue.500',
+  received: 'blue.500',
   canceled: 'red.500',
 }
 

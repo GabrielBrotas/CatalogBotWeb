@@ -9,7 +9,7 @@ import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
 import { Sidebar } from '../../../components/Sidebar'
 import { FormInput } from '../../../components/Form/input'
 import { createCategory } from '../../../services/apiFunctions/companies/categories'
-import { useToast } from '../../../contexts/Toast'
+import { useToast } from '../../../contexts/Modals/Toast'
 import { useRouter } from 'next/router'
 import { queryClient } from '../../../services/queryClient'
 

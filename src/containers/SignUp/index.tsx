@@ -10,7 +10,7 @@ import { Box, Flex, FormControl, Image, Text } from '@chakra-ui/react'
 import { FormInput } from '../../components/Form/input'
 import { FormButton } from '../../components/Form/button'
 import { signUpCompany } from '../../services/apiFunctions/companies/company'
-import { useToast } from '../../contexts/Toast'
+import { useToast } from '../../contexts/Modals/Toast'
 
 type SignUpFormData = {
   name: string

@@ -9,7 +9,7 @@ import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
 import { Sidebar } from '../../../components/Sidebar'
 import Upload, { UploadedImages } from '../../../components/Upload'
 import { CreateProductProps } from '../../../pages/products/create'
-import { useToast } from '../../../contexts/Toast'
+import { useToast } from '../../../contexts/Modals/Toast'
 import {
   createProduct,
   updateProductImage,

@@ -4,7 +4,7 @@ import { Address, Client } from './../../clients/client/types'
 type OrderOptionsAdditionals = {
   _id?: string
   name: string
-  price: number
+  price: number | string
   amount: number
   priceFormated?: string
 }

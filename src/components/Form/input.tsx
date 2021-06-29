@@ -32,7 +32,7 @@ const InputContainer: React.ForwardRefRenderFunction<HTMLInputElement, InputProp
         focusBorderColor={secondary ? 'blue.500' : 'pink.500'}
         bgColor={secondary ? 'gray.50' : 'gray.700'}
         variant="outline"
-        _hover={secondary ? { bgColor: 'gray.100' } : { bgColor: 'gray.800' }}
+        _hover={secondary ? { bgColor: 'gray.75' } : { bgColor: 'gray.800' }}
         size="lg"
         ref={ref}
         {...rest}

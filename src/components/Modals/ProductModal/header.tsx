@@ -8,7 +8,7 @@ interface ProductModalHeaderProps {
 
 export const ProductModalHeader = ({ productName, productImageUrl }: ProductModalHeaderProps) => {
   return (
-    <DrawerHeader rHeader borderBottomWidth="1px" w="full" display="flex" justifyContent="center">
+    <DrawerHeader borderBottomWidth="1px" w="full" display="flex" justifyContent="center">
       <Image
         boxSize="10rem"
         name={productName}

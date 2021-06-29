@@ -18,7 +18,8 @@ export const theme = ({ bg = 'gray.900', color = 'gray.50' }: ThemeProps) =>
         '300': '#9699B0',
         '200': '#B3B5C6',
         '100': '#D1D2DC',
-        '50': '#EEEEF2',
+        '75': '#EEEEF2',
+        '50': '#f7f7f7',
       },
     },
     fonts: {

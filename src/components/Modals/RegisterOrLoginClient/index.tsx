@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useToast } from '../../../contexts/Toast'
+import { useToast } from '../../../contexts/Modals/Toast'
 import { signUpClient } from '../../../services/apiFunctions/clients/client'
 import { useClientAuth } from '../../../contexts/AuthClient'
 import { Address } from '../../../services/apiFunctions/clients/client/types'

@@ -70,7 +70,6 @@ export const OrdersContainer = (props: OrdersContainerProps) => {
       },
     }
   )
-
   return (
     <Box>
       <CompanyHeader />

@@ -9,7 +9,7 @@ import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
 import { Sidebar } from '../../../components/Sidebar'
 import { FormInput } from '../../../components/Form/input'
 import { EditCategoryProps } from '../../../pages/categories/edit/[cId]'
-import { useToast } from '../../../contexts/Toast'
+import { useToast } from '../../../contexts/Modals/Toast'
 import { updateCategory } from '../../../services/apiFunctions/companies/categories'
 import { useRouter } from 'next/router'
 

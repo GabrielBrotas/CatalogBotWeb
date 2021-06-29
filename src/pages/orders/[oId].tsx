@@ -61,7 +61,7 @@ export const getServerSideProps: GetServerSideProps = withCompanySSRAuth(async (
           ...pickedOption,
           optionAdditionals: pickedOption.optionAdditionals.map((optionAdditional) => ({
             ...optionAdditional,
-            priceFormated: formatterPrice.format(optionAdditional.price),
+            priceFormated: formatterPrice.format(Number(optionAdditional.price)),
           })),
         })),
       })),

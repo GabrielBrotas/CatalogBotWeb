@@ -8,7 +8,7 @@ import * as yup from 'yup'
 import { Box, Flex, FormControl, Image, Text } from '@chakra-ui/react'
 import { FormInput } from '../../components/Form/input'
 import { FormButton } from '../../components/Form/button'
-import { useToast } from '../../contexts/Toast'
+import { useToast } from '../../contexts/Modals/Toast'
 import { useCompanyAuth } from '../../contexts/AuthCompany'
 
 type SignInFormData = {

@@ -7,7 +7,7 @@ export function ClientNav() {
 
   const handleLogout = useCallback(() => {
     signOutClient()
-  }, [])
+  }, [signOutClient])
 
   const openLoginModal = () => {
     openModal({ type: 'login' })

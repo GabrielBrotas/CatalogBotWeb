@@ -1,7 +1,7 @@
 import React, { createContext, useState, useCallback, useContext, useEffect, useMemo } from 'react'
 import { OrderProduct, PaymentMethods } from '../services/apiFunctions/clients/orders/types'
 import { Company } from '../services/apiFunctions/companies/company/types'
-import { useToast } from './Toast'
+import { useToast } from './Modals/Toast'
 import { useClientAuth } from './AuthClient'
 import {
   addProductInCart,
@@ -19,11 +19,13 @@ import { Address } from '../services/apiFunctions/clients/client/types'
 import { useDisclosure } from '@chakra-ui/react'
 import { getTotalPriceFromCartOrderProduct } from '../utils/maths'
 import { currencyFormat } from '../utils/dataFormat'
+import { useWebSockets } from '../hooks/useWebSocket'
 
 type StoreOrderDTO = {
   deliveryAddress: Address
   paymentMethod: PaymentMethods
   cartOrderProducts: CartOrderProduct[]
+  saveAddressAsDefault?: boolean
 }
 
 interface CartFormated extends Cart {
@@ -44,7 +46,7 @@ interface CartContext {
   orderTotalPrice: number
 }
 
-const CartContext = createContext<CartContext | null>(null)
+const CartContext = createContext<CartContext>({} as CartContext)
 
 function formatCartProductsToOrderProducts(cartProducts: CartOrderProduct[]): OrderProduct[] {
   const formatedCartProducts = cartProducts.map((cartProduct) => ({
@@ -64,25 +66,43 @@ function formatCartProductsToOrderProducts(cartProducts: CartOrderProduct[]): Or
 
 const CartProvider: React.FC = ({ children }) => {
   const [cart, setCart] = useState<CartFormated | null>()
-  const [company, setCompany] = useState<Company | null>(null)
-  const { isOpen: isModalOpen, onOpen: openCartModal, onClose: closeCartModal } = useDisclosure()
+  const [company, setCompany] = useState<Company>()
+  const { isOpen: isModalOpen, onOpen, onClose: closeCartModal } = useDisclosure()
 
   const { addToast } = useToast()
   const { client } = useClientAuth()
 
+  const { eventUpdateOrderStatus } = useWebSockets({
+    userId: client && client._id,
+    enabled: !!client,
+  })
+
   useEffect(() => {
     if (!client) return
-
+    if (!company) return
     getCart({ companyId: company._id }).then((response) => {
-      setCart({
-        ...response,
-        cartTotalPrice: getTotalPriceFromCartOrderProduct(response.orderProducts),
-        cartTotalPriceFormated: currencyFormat(
-          getTotalPriceFromCartOrderProduct(response.orderProducts)
-        ),
-      })
+      if (response) {
+        setCart({
+          ...response,
+          cartTotalPrice: getTotalPriceFromCartOrderProduct(response.orderProducts),
+          cartTotalPriceFormated: currencyFormat(
+            getTotalPriceFromCartOrderProduct(response.orderProducts)
+          ),
+        })
+      }
     })
   }, [company, client])
+
+  const openCartModal = () => {
+    if (cart && cart.orderProducts && cart.orderProducts.length > 0) {
+      onOpen()
+    } else {
+      addToast({
+        title: 'Seu carrinho está vazio',
+        status: 'info',
+      })
+    }
+  }
 
   const addToCart = useCallback(
     async (orderProduct: StoreCartOrderProductDTO) => {
@@ -157,7 +177,7 @@ const CartProvider: React.FC = ({ children }) => {
             acc +
             currentOption.optionAdditionals.reduce(
               (acc, currentOptionAdditional) =>
-                acc + currentOptionAdditional.price * currentOptionAdditional.amount,
+                acc + Number(currentOptionAdditional.price) * currentOptionAdditional.amount,
               0
             ),
           0
@@ -168,19 +188,33 @@ const CartProvider: React.FC = ({ children }) => {
   }, [cart, client, company])
 
   const storeOrder = useCallback(
-    async ({ deliveryAddress, paymentMethod, cartOrderProducts }: StoreOrderDTO) => {
+    async ({
+      deliveryAddress,
+      paymentMethod,
+      cartOrderProducts,
+      saveAddressAsDefault = true,
+    }: StoreOrderDTO) => {
       if (!company) return
       if (!client) return
 
       try {
         const orderProducts = formatCartProductsToOrderProducts(cartOrderProducts)
+
         await createOrder({
           companyId: company._id,
           deliveryAddress,
           orderProducts,
           paymentMethod,
           totalPrice: orderTotalPrice,
+          saveAddressAsDefault,
         })
+
+        eventUpdateOrderStatus({
+          status: 'pending',
+          Receiver: company._id,
+          Sender: client._id,
+        })
+
         await clearCart()
       } catch (err) {
         console.log(err)
@@ -190,7 +224,7 @@ const CartProvider: React.FC = ({ children }) => {
         })
       }
     },
-    [addToast, clearCart, client, company, orderTotalPrice]
+    [addToast, clearCart, client, company, eventUpdateOrderStatus, orderTotalPrice]
   )
 
   return (

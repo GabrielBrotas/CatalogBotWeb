@@ -8,10 +8,10 @@ import * as yup from 'yup'
 import { Box, Flex, Heading, Avatar, VStack, useBreakpointValue } from '@chakra-ui/react'
 import { Sidebar } from '../../../components/Sidebar'
 import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
-import { Button } from '../../../components/Form/button'
+import { FormButton } from '../../../components/Form/button'
 import { UpdateProfileProps } from '../../../pages/profile/update'
 import { IUpdateCompanyDTO } from '../../../services/apiFunctions/companies/company/types'
-import { useToast } from '../../../contexts/Toast'
+import { useToast } from '../../../contexts/Modals/Toast'
 import { updateCompany, updateCompanyImage } from '../../../services/apiFunctions/companies/company'
 import { CompanyMainDataForm } from './main-data.form'
 import { CompanyWorkTimeForm } from './work-time.form'
@@ -199,7 +199,7 @@ export const UpdateProfileContainer = ({ company }: UpdateProfileProps) => {
               <CompanyPaymentMethodsForm register={register} />
 
               <Flex justifyContent="flex-end" w="full">
-                <Button
+                <FormButton
                   bg="gray.300"
                   type="submit"
                   alignSelf="flex-end"
@@ -208,16 +208,16 @@ export const UpdateProfileContainer = ({ company }: UpdateProfileProps) => {
                   mr="6"
                 >
                   Cancelar
-                </Button>
+                </FormButton>
 
-                <Button
+                <FormButton
                   type="submit"
                   alignSelf="flex-end"
                   w={isMobileView ? '100%' : '10rem'}
                   isLoading={isSubmitting}
                 >
                   Atualizar
-                </Button>
+                </FormButton>
               </Flex>
             </VStack>
           </Box>

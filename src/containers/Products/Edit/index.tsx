@@ -7,7 +7,7 @@ import { Box, Button, Divider, Flex, Heading, HStack, VStack } from '@chakra-ui/
 import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
 import { Sidebar } from '../../../components/Sidebar'
 import { EditProductProps } from '../../../pages/products/edit/[pId]'
-import { useToast } from '../../../contexts/Toast'
+import { useToast } from '../../../contexts/Modals/Toast'
 import { useRouter } from 'next/router'
 import Upload, { UploadedImages } from '../../../components/Upload'
 import { EditProductFormData, editProductFormSchema } from './types'

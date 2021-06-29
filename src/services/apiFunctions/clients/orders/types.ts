@@ -1,9 +1,11 @@
+import { Order } from '../../companies/orders/types'
+import { Pagination } from '../../companies/products/types'
 import { Address } from '../client/types'
 
 type OrderOptionsAdditionals = {
   _id?: string
   name: string
-  price: number
+  price: number | string
   amount: number
 }
 
@@ -18,7 +20,7 @@ export type OrderProduct = {
   product: {
     _id: string
     name: string
-    price: number
+    price: number | string
     imageUrl: string
   }
   amount: number
@@ -37,4 +39,32 @@ export type ICreateOrderDTO = {
   comment?: string
   deliveryAddress: Address
   paymentMethod: PaymentMethods
+  saveAddressAsDefault?: boolean
+}
+
+export type IGetMyOrdersDTO = {
+  companyId: string
+  ctx?: any
+}
+
+export interface OrderFormated extends Order {
+  dateFormated: string
+  totalPriceFormated: string
+}
+
+export interface IPaginatedOrders extends Pagination {
+  results: OrderFormated[]
+}
+
+export type IOrderToUpdateDTO = {
+  orderProducts: OrderProduct[]
+  totalPrice: string
+  paymentMethod: PaymentMethods
+  deliveryAddress: Address
+  status: OrderStatus
+}
+
+export type IUpdateOrderDTO = {
+  orderId: string
+  data: IOrderToUpdateDTO
 }

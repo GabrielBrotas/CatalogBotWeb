@@ -12,18 +12,18 @@ import {
   Stack,
   VStack,
   Text,
+  Button,
 } from '@chakra-ui/react'
 import { FormButton } from '../../Form/button'
 import { FormTextArea } from '../../Form/textarea'
 import { OptionAdditional, Product } from '../../../services/apiFunctions/companies/products/types'
 import { useClientAuth } from '../../../contexts/AuthClient'
 import { useCart } from '../../../contexts/Cart'
-import { AddToastProps, useToast } from '../../../contexts/Toast'
+import { AddToastProps, useToast } from '../../../contexts/Modals/Toast'
 import { formatItemToAddInCart } from '../../../utils/dataFormat'
-import { useForm } from 'react-hook-form'
 import { RiShoppingCart2Line } from 'react-icons/ri'
 import { AiOutlineLine, AiOutlinePlus } from 'react-icons/ai'
-import { useProductModal } from '../../../contexts/ProductModal'
+import { useProductModal } from '../../../contexts/Modals/ProductModal'
 
 export type SelectedOptions = {
   selectedAdditionalOptions: {
@@ -194,7 +194,7 @@ export const ProductModalBody = ({ activeProduct }: ProductModalBodyProps) => {
             <Flex
               alignItems="flex-start"
               justifyContent="space-between"
-              bg="gray.100"
+              bg="gray.75"
               borderRadius="md"
               p="2"
             >
@@ -208,7 +208,11 @@ export const ProductModalBody = ({ activeProduct }: ProductModalBodyProps) => {
                 </Text>
               </Box>
 
-              {option.isRequired && <Badge fontSize="sm">Obrigatório</Badge>}
+              {option.isRequired && (
+                <Badge bg="gray.75" fontSize="sm">
+                  Obrigatório
+                </Badge>
+              )}
             </Flex>
 
             {option.maxQuantity > 1 ? (
@@ -221,8 +225,13 @@ export const ProductModalBody = ({ activeProduct }: ProductModalBodyProps) => {
                         <Text>{additionalOption.priceFormated}</Text>
                       )}
                     </Box>
-                    <HStack maxW="320px">
-                      <FormButton
+                    <HStack border="1px" borderColor="gray.100" my="4">
+                      <Button
+                        bg="transparent"
+                        _hover={{ bg: 'transparent' }}
+                        _focus={{ bg: 'transparent' }}
+                        _active={{ bg: '#dddfe2' }}
+                        borderRadius="0"
                         onClick={() =>
                           handleMultipleOptionChange({
                             optionId: option._id,
@@ -234,24 +243,31 @@ export const ProductModalBody = ({ activeProduct }: ProductModalBodyProps) => {
                           getTotalAdditionalPicked(option.selectedAdditionalOptions) <
                           option.minQuantity
                         }
-                        secondary
+                        cursor="pointer"
                       >
-                        <AiOutlineLine size={20} color="#fff" />
-                      </FormButton>
+                        <AiOutlineLine size={20} color="#007aff" />
+                      </Button>
                       <Input
+                        border="none"
+                        readOnly
+                        min={0}
+                        w="3rem"
+                        textAlign="center"
+                        fontSize="lg"
+                        textColor="gray.600"
                         value={
                           option.selectedAdditionalOptions.find(
                             (addOption) => addOption._id === additionalOption._id
                           ).amount
                         }
-                        border="none"
-                        readOnly
-                        min={0}
-                        w="4rem"
-                        textAlign="center"
-                        fontSize="lg"
+                        p="0"
                       />
-                      <FormButton
+                      <Button
+                        bg="transparent"
+                        _hover={{ bg: 'transparent' }}
+                        _focus={{ bg: 'transparent' }}
+                        _active={{ bg: '#dddfe2' }}
+                        borderRadius="0"
                         onClick={() =>
                           handleMultipleOptionChange({
                             optionId: option._id,
@@ -263,10 +279,9 @@ export const ProductModalBody = ({ activeProduct }: ProductModalBodyProps) => {
                           getTotalAdditionalPicked(option.selectedAdditionalOptions) >=
                           option.maxQuantity
                         }
-                        secondary
                       >
-                        <AiOutlinePlus size={20} color="#fff" />
-                      </FormButton>
+                        <AiOutlinePlus size={20} color="#007aff" cursor="pointer" />
+                      </Button>
                     </HStack>
                   </Flex>
                 </Stack>
