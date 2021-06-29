@@ -52,7 +52,7 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
         Receiver,
         Sender,
         Order,
-        Text: 'Parabens, seu peidido foi entregue!',
+        Text: 'Parabens, seu pedido foi entregue!',
         Type: 'order',
       })
       return

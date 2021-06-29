@@ -200,7 +200,7 @@ const CartProvider: React.FC = ({ children }) => {
       try {
         const orderProducts = formatCartProductsToOrderProducts(cartOrderProducts)
 
-        await createOrder({
+        const order = await createOrder({
           companyId: company._id,
           deliveryAddress,
           orderProducts,
@@ -213,6 +213,7 @@ const CartProvider: React.FC = ({ children }) => {
           status: 'pending',
           Receiver: company._id,
           Sender: client._id,
+          Order: order._id,
         })
 
         await clearCart()
