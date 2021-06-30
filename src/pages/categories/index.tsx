@@ -10,6 +10,8 @@ import { AlertDialog } from '../../components/Modals/AlertDialog'
 import { parseCookies } from 'nookies'
 import { COOKIE_COMPANY_TOKEN } from '../../configs/constants'
 import { Pagination } from '../../services/apiFunctions/companies/products/types'
+import { AuthCompanySEO } from '../../components/SEO/auth-company-seo'
+import { useCompanyAuth } from '../../contexts/AuthCompany'
 
 interface CategoryFormated extends Category {
   dateFormated: string
@@ -19,8 +21,10 @@ export interface CategoriesProps extends Pagination {
 }
 
 export default function Categories({ categories, total, next, previous }: CategoriesProps) {
+  const { company } = useCompanyAuth()
   return (
     <>
+      {company && <AuthCompanySEO company={company} page="Categorias" />}
       <CategoriesContainer categories={categories} total={total} next={next} previous={previous} />
       <AlertDialog />
     </>

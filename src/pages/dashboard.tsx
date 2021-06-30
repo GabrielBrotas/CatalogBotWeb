@@ -5,7 +5,9 @@ import { getMyDataAnalysis } from '../services/apiFunctions/companies/company'
 import { getCompanyToken } from '../utils/getToken'
 import { withCompanySSRAuth } from '../utils/withSSRAuth'
 import { groupDataAnalysisByDate } from '../utils/dataFormat'
+import { useCompanyAuth } from '../contexts/AuthCompany'
 
+import { AuthCompanySEO } from '../components/SEO/auth-company-seo'
 export interface DashboardProps {
   dataAnalysis: {
     visit: {
@@ -20,7 +22,13 @@ export interface DashboardProps {
 }
 
 export default function Dashboard({ dataAnalysis }: DashboardProps) {
-  return <DashboardContainer dataAnalysis={dataAnalysis} />
+  const { company } = useCompanyAuth()
+  return (
+    <>
+      {company && <AuthCompanySEO company={company} page="Dashboard" />}
+      <DashboardContainer dataAnalysis={dataAnalysis} />
+    </>
+  )
 }
 
 export const getServerSideProps = withCompanySSRAuth(async (ctx) => {

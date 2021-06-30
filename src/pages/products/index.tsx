@@ -8,6 +8,8 @@ import { Pagination, Product } from '../../services/apiFunctions/companies/produ
 import { withCompanySSRAuth } from '../../utils/withSSRAuth'
 import { parseCookies } from 'nookies'
 import { COOKIE_COMPANY_TOKEN } from '../../configs/constants'
+import { useCompanyAuth } from '../../contexts/AuthCompany'
+import { AuthCompanySEO } from '../../components/SEO/auth-company-seo'
 
 export interface ProductFormated extends Product {
   dateFormated: string
@@ -18,8 +20,11 @@ export interface ProductsProps extends Pagination {
 }
 
 export default function Products({ products, previous, total, next }: ProductsProps) {
+  const { company } = useCompanyAuth()
   return (
     <>
+      {company && <AuthCompanySEO company={company} page="Produtos" />}
+
       <ProductsContainer products={products} previous={previous} total={total} next={next} />
       <AlertDialog />
     </>
