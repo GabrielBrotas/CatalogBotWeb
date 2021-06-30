@@ -33,3 +33,10 @@ export type SignInClientResponse = {
   client: Client
   token: string
 }
+
+export type IAddCompanyDataDTO = {
+  clientId?: string
+  orderId?: string
+  companyId: string
+  type: 'order' | 'view'
+}

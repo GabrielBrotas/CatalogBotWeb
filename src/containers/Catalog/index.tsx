@@ -17,9 +17,12 @@ import { useCart } from '../../contexts/Cart'
 import { CatalogHeader } from '../../components/Headers/CatalogHeader'
 import { AiOutlineShop } from 'react-icons/ai'
 import { CatalogProduct } from '../../components/CatalogProduct'
+import { addCompanyData } from '../../services/apiFunctions/clients/client'
+import { useClientAuth } from '../../contexts/AuthClient'
 
 export const CatalogContainer = ({ company, productsAgrupedByCategory }: CatalogProps) => {
   const { setCompany, cart } = useCart()
+  const { client } = useClientAuth()
 
   const isCompanyOpen = useMemo(() => {
     let open = false
@@ -52,6 +55,14 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
   useEffect(() => {
     setCompany(company)
   }, [company, setCompany])
+
+  useEffect(() => {
+    addCompanyData({
+      companyId: company._id,
+      type: 'view',
+      ...(client && { clientId: client._id }),
+    })
+  }, [client, company._id])
 
   return (
     <Container

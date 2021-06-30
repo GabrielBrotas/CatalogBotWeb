@@ -20,6 +20,7 @@ import { useDisclosure } from '@chakra-ui/react'
 import { getTotalPriceFromCartOrderProduct } from '../utils/maths'
 import { currencyFormat } from '../utils/dataFormat'
 import { useWebSockets } from '../hooks/useWebSocket'
+import { addCompanyData } from '../services/apiFunctions/clients/client'
 
 type StoreOrderDTO = {
   deliveryAddress: Address
@@ -207,6 +208,13 @@ const CartProvider: React.FC = ({ children }) => {
           paymentMethod,
           totalPrice: orderTotalPrice,
           saveAddressAsDefault,
+        })
+
+        addCompanyData({
+          companyId: company._id,
+          type: 'order',
+          orderId: order._id,
+          clientId: client._id,
         })
 
         eventUpdateOrderStatus({

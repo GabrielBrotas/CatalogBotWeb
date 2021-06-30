@@ -1,7 +1,9 @@
 import { apiCompany, apiCompanySSR } from '../../../api'
 import {
   Company,
+  DataAnalysis,
   GetCompanyDTO,
+  IGetMyDataAnalysisDTO,
   IUpdateCompanyDTO,
   IUploadedFile,
   IUploadFile,
@@ -68,5 +70,15 @@ export const updateCompanyImage = async ({
         }
       },
     })
+    .then(({ data }) => data)
+}
+
+export const getMyDataAnalysis = async ({
+  companyId,
+  ctx = false,
+}: IGetMyDataAnalysisDTO): Promise<DataAnalysis[]> => {
+  if (!ctx) return await apiCompany.get(`/companies/${companyId}/data`).then(({ data }) => data)
+  return apiCompanySSR(ctx)
+    .get(`/companies/${companyId}/data`)
     .then(({ data }) => data)
 }

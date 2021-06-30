@@ -57,6 +57,7 @@ export const AuthCompanyProvider: React.FC = ({ children }) => {
             shortDescription,
             workTime,
             acceptedPaymentMethods,
+            Views,
           } = companyResponse
 
           setCompany({
@@ -68,6 +69,7 @@ export const AuthCompanyProvider: React.FC = ({ children }) => {
             shortDescription,
             workTime,
             acceptedPaymentMethods,
+            Views,
           })
 
           setCompanyNotifications(notificationsResponse)

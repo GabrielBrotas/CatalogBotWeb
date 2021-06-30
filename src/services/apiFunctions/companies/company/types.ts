@@ -37,6 +37,7 @@ export type Company = {
   shortDescription?: string
   acceptedPaymentMethods: CompanyPaymentMethods
   benefits?: string[]
+  Views: Array<{ client: string; date: Date }>
 }
 
 export type IUpdateCompanyDTO = {
@@ -65,4 +66,18 @@ export interface IUploadFile {
 export interface IUploadedFile {
   url: string
   mimetype: string
+}
+
+export type DataAnalysis = {
+  _id: string
+  company: string
+  type: 'view' | 'order'
+  client?: string
+  order?: string
+  created_at: string
+}
+
+export type IGetMyDataAnalysisDTO = {
+  companyId: string
+  ctx?: any
 }

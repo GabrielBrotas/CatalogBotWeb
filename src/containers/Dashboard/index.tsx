@@ -1,64 +1,94 @@
-import { Flex, SimpleGrid, theme } from '@chakra-ui/react'
 import React from 'react'
+import { Flex, SimpleGrid, theme } from '@chakra-ui/react'
 
 import { CompanyHeader } from '../../components/Headers/CompanyHeader'
 import { Section } from '../../components/Section'
 import { Sidebar } from '../../components/Sidebar'
+import { groupDataAnalysisByDate } from '../../utils/dataFormat'
 import { Chart } from './chart'
+import { DashboardProps } from '../../pages/dashboard'
 
-const options: ApexCharts.ApexOptions = {
-  chart: {
-    toolbar: {
+const chartOptions = (dates: string[] | Date[]): ApexCharts.ApexOptions => {
+  return {
+    chart: {
+      toolbar: {
+        show: false,
+      },
+      zoom: {
+        enabled: false,
+      },
+      foreColor: theme.colors.gray[500],
+    },
+    grid: {
       show: false,
     },
-    zoom: {
+    dataLabels: {
       enabled: false,
     },
-    foreColor: theme.colors.gray[500],
-  },
-  grid: {
-    show: false,
-  },
-  dataLabels: {
-    enabled: false,
-  },
-  tooltip: {
-    enabled: false,
-  },
-  xaxis: {
-    type: 'datetime',
-    axisBorder: {
-      color: theme.colors.gray[600],
+    tooltip: {
+      enabled: true,
+      theme: 'dark',
     },
-    categories: [
-      '2021-03-18T00:00:00.000Z',
-      '2021-03-19T00:00:00.000Z',
-      '2021-03-20T00:00:00.000Z',
-      '2021-03-21T00:00:00.000Z',
-      '2021-03-22T00:00:00.000Z',
-      '2021-03-23T00:00:00.000Z',
-      '2021-03-24T00:00:00.000Z',
-    ],
-  },
-  fill: {
-    opacity: 0.3,
-    type: 'gradient',
-    gradient: {
-      shade: 'dark',
-      opacityFrom: 0.7,
-      opacityTo: 0.3,
+    xaxis: {
+      type: 'datetime',
+      axisBorder: {
+        color: theme.colors.gray[600],
+      },
+      categories: dates,
     },
-  },
+    fill: {
+      opacity: 0.3,
+      type: 'gradient',
+      gradient: {
+        shade: 'dark',
+        opacityFrom: 0.7,
+        opacityTo: 0.3,
+      },
+    },
+  }
 }
 
-const series = [
-  {
-    name: 'series 1',
-    data: [31, 120, 10, 28, 61, 70, 100],
-  },
-]
+export const DashboardContainer = ({ dataAnalysis }: DashboardProps) => {
+  const chartVisitsToCatalog = React.useMemo(() => {
+    if (dataAnalysis) {
+      return {
+        options: chartOptions(
+          dataAnalysis.visit.dates.length === 0 ? [] : dataAnalysis.visit.dates
+        ),
+        series: [
+          {
+            name: 'Qtd',
+            data: dataAnalysis.visit.datas.length === 0 ? [] : dataAnalysis.visit.datas,
+          },
+        ],
+      }
+    }
+    return {
+      options: chartOptions([]),
+      series: [{}],
+    }
+  }, [dataAnalysis])
 
-export const DashboardContainer = () => {
+  const chartOrdersCount = React.useMemo(() => {
+    if (dataAnalysis) {
+      return {
+        options: chartOptions(
+          dataAnalysis.order.dates.length === 0 ? [] : dataAnalysis.order.dates
+        ),
+        series: [
+          {
+            name: 'Qtd',
+            data: dataAnalysis.order.datas.length === 0 ? [] : dataAnalysis.order.datas,
+          },
+        ],
+      }
+    }
+    return {
+      options: chartOptions([]),
+      series: [{}],
+    }
+  }, [dataAnalysis])
+
   return (
     <Flex direction="column" h="100vh">
       <CompanyHeader />
@@ -69,8 +99,16 @@ export const DashboardContainer = () => {
 
           {/* o minChildWidht vai fazer com que se o elemento ter menos de 320px de largura vai jogar ele para baixo, deixando responsivo */}
           <SimpleGrid flex="1" gap="4" columns={1} align="flex-start">
-            <Chart title="Visitas ao catalogo" options={options} series={series} />
-            <Chart title="Quantidade de ordens" options={options} series={series} />
+            <Chart
+              title="Visitas ao catalogo"
+              options={chartVisitsToCatalog.options}
+              series={chartVisitsToCatalog.series}
+            />
+            <Chart
+              title="Quantidade de ordens"
+              options={chartOrdersCount.options}
+              series={chartOrdersCount.series}
+            />
           </SimpleGrid>
         </Flex>
       </Section>
