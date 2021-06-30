@@ -132,7 +132,6 @@ export const CartModal = () => {
   }
 
   if (!cart || cart.orderProducts.length === 0) return <></>
-
   return (
     <Drawer placement="bottom" onClose={closeCartModal} isOpen={isModalOpen}>
       <DrawerOverlay />

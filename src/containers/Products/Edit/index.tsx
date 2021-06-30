@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
-import { Box, Button, Divider, Flex, Heading, HStack, VStack } from '@chakra-ui/react'
+import { Box, Button, Divider, Flex, Heading, HStack, Tooltip, VStack } from '@chakra-ui/react'
 import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
 import { Sidebar } from '../../../components/Sidebar'
 import { EditProductProps } from '../../../pages/products/edit/[pId]'
@@ -149,9 +149,16 @@ export const EditProductContainer = ({ product, categories }: EditProductProps) 
                 defaultOptionMinQuantity={field.minQuantity}
               />
             ))}
-            <Button type="button" colorScheme="pink" onClick={addMoreProductOptions}>
-              Adicionar opções adicionais
-            </Button>
+
+            <Tooltip
+              label="Opções adicionais são subcategorias do seu produto!"
+              aria-label="A tooltip"
+              textAlign="center"
+            >
+              <Button type="button" colorScheme="pink" onClick={addMoreProductOptions}>
+                Adicionar opções adicionais
+              </Button>
+            </Tooltip>
           </VStack>
 
           <Flex mt="8" justify="flex-end">

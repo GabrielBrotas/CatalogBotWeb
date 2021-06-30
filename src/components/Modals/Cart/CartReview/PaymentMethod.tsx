@@ -21,11 +21,14 @@ export const PaymentMethod = ({
       </Text>
       <RadioGroup onChange={setPaymentMethod} value={paymentMethod}>
         <VStack alignItems="flex-start">
-          {Object.keys(acceptedPaymentMethods).map((paymentMethod) => (
-            <Radio key={paymentMethod} value={paymentMethod} size="lg">
-              {FORMAT_PAYMENT[paymentMethod]}
-            </Radio>
-          ))}
+          {Object.keys(acceptedPaymentMethods).map(
+            (paymentMethod) =>
+              acceptedPaymentMethods[paymentMethod] && (
+                <Radio key={paymentMethod} value={paymentMethod} size="lg">
+                  {FORMAT_PAYMENT[paymentMethod]}
+                </Radio>
+              )
+          )}
         </VStack>
       </RadioGroup>
     </Box>

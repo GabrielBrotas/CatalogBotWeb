@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { SubmitHandler, useForm, useFieldArray } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
-import { Box, Button, Divider, Flex, Heading, HStack, VStack } from '@chakra-ui/react'
+import { Box, Button, Divider, Flex, Heading, HStack, Tooltip, VStack } from '@chakra-ui/react'
 import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
 import { Sidebar } from '../../../components/Sidebar'
 import Upload, { UploadedImages } from '../../../components/Upload'
@@ -133,9 +133,20 @@ export const CreateProductContainer = ({ categories }: CreateProductProps) => {
               />
             ))}
 
-            <Button type="button" colorScheme="pink" onClick={addMoreProductOptions}>
-              Adicionar opções adicionais
-            </Button>
+            <Tooltip
+              label="Opções adicionais são subcategorias do seu produto!"
+              aria-label="A tooltip"
+              textAlign="center"
+            >
+              <Button
+                display="flex"
+                type="button"
+                colorScheme="pink"
+                onClick={addMoreProductOptions}
+              >
+                Adicionar opções adicionais
+              </Button>
+            </Tooltip>
           </VStack>
 
           <Flex mt="8" justify="flex-end">
