@@ -2,7 +2,7 @@ import React from 'react'
 import { parseCookies } from 'nookies'
 import jwtDecode from 'jwt-decode'
 
-import { EditProductContainer } from '../../../containers/Products/Edit'
+import { useCompanyAuth } from '../../../contexts/AuthCompany'
 import { getCategories } from '../../../services/apiFunctions/companies/categories'
 import { Category } from '../../../services/apiFunctions/companies/categories/types'
 import { getProduct } from '../../../services/apiFunctions/companies/products'
@@ -10,13 +10,22 @@ import { Product } from '../../../services/apiFunctions/companies/products/types
 import { withCompanySSRAuth } from '../../../utils/withSSRAuth'
 import { COOKIE_COMPANY_TOKEN } from '../../../configs/constants'
 
+import { EditProductContainer } from '../../../containers/Products/Edit'
+import { AuthCompanySEO } from '../../../components/SEO/auth-company-seo'
+
 export interface EditProductProps {
   product: Product
   categories: Category[]
 }
 
 export default function EditProduct({ product, categories }: EditProductProps) {
-  return <EditProductContainer product={product} categories={categories} />
+  const { company } = useCompanyAuth()
+  return (
+    <>
+      {company && <AuthCompanySEO company={company} page="Produtos" />}
+      <EditProductContainer product={product} categories={categories} />
+    </>
+  )
 }
 
 export const getServerSideProps = withCompanySSRAuth(async (ctx) => {

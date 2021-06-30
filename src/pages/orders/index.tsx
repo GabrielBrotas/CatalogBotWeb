@@ -5,6 +5,8 @@ import { listOrders } from '../../services/apiFunctions/companies/orders'
 import { Order } from '../../services/apiFunctions/companies/orders/types'
 import { OrdersContainer } from '../../containers/Orders/list'
 import { Pagination } from '../../services/apiFunctions/companies/products/types'
+import { AuthCompanySEO } from '../../components/SEO/auth-company-seo'
+import { useCompanyAuth } from '../../contexts/AuthCompany'
 
 interface OrderFormated extends Order {
   dateFormated: string
@@ -16,8 +18,10 @@ export interface OrdersContainerProps extends Pagination {
 }
 
 export default function Orders({ orders, total, next, previous }: OrdersContainerProps) {
+  const { company } = useCompanyAuth()
   return (
     <>
+      {company && <AuthCompanySEO company={company} page="Ordens" />}
       <OrdersContainer orders={orders} total={total} next={next} previous={previous} />
     </>
   )

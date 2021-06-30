@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 
-import { Box, Flex, Heading, Avatar, VStack, useBreakpointValue } from '@chakra-ui/react'
+import { Box, Flex, Heading, Avatar, VStack, useBreakpointValue, Button } from '@chakra-ui/react'
 import { Sidebar } from '../../../components/Sidebar'
 import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
 import { FormButton } from '../../../components/Form/button'
@@ -16,6 +16,7 @@ import { updateCompany, updateCompanyImage } from '../../../services/apiFunction
 import { CompanyMainDataForm } from './main-data.form'
 import { CompanyWorkTimeForm } from './work-time.form'
 import { CompanyPaymentMethodsForm } from './payments-method.form'
+import Link from 'next/link'
 
 const updateCompanySchema = yup.object().shape({
   name: yup.string().required('Nome obrigatório'),
@@ -199,22 +200,25 @@ export const UpdateProfileContainer = ({ company }: UpdateProfileProps) => {
               <CompanyPaymentMethodsForm register={register} />
 
               <Flex justifyContent="flex-end" w="full">
-                <FormButton
-                  bg="gray.300"
-                  type="submit"
-                  alignSelf="flex-end"
-                  w={isMobileView ? '100%' : '10rem'}
-                  isLoading={isSubmitting}
-                  mr="6"
-                >
-                  Cancelar
-                </FormButton>
+                <Link href="/profile" passHref>
+                  <Button
+                    colorScheme="whiteAlpha"
+                    type="button"
+                    alignSelf="flex-end"
+                    w={isMobileView ? '100%' : '10rem'}
+                    isLoading={isSubmitting}
+                    mr="6"
+                  >
+                    Cancelar
+                  </Button>
+                </Link>
 
                 <FormButton
                   type="submit"
                   alignSelf="flex-end"
                   w={isMobileView ? '100%' : '10rem'}
                   isLoading={isSubmitting}
+                  colorScheme="pink"
                 >
                   Atualizar
                 </FormButton>

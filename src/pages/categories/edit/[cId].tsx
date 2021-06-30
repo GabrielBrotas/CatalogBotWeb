@@ -1,5 +1,7 @@
 import React from 'react'
+import { AuthCompanySEO } from '../../../components/SEO/auth-company-seo'
 import { EditCategoryContainer } from '../../../containers/Categories/Edit'
+import { useCompanyAuth } from '../../../contexts/AuthCompany'
 import { getCategory } from '../../../services/apiFunctions/companies/categories'
 import { Category } from '../../../services/apiFunctions/companies/categories/types'
 import { withCompanySSRAuth } from '../../../utils/withSSRAuth'
@@ -9,7 +11,13 @@ export interface EditCategoryProps {
 }
 
 export default function EditCategory({ category }: EditCategoryProps) {
-  return <EditCategoryContainer category={category} />
+  const { company } = useCompanyAuth()
+  return (
+    <>
+      {company && <AuthCompanySEO company={company} page="Categorias" />}{' '}
+      <EditCategoryContainer category={category} />
+    </>
+  )
 }
 
 export const getServerSideProps = withCompanySSRAuth(async (ctx) => {

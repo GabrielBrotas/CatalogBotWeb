@@ -1,13 +1,14 @@
 import React from 'react'
 import { GetStaticPaths, GetStaticProps } from 'next'
 
-import { CatalogContainer } from '../../../containers/Catalog'
 import { useProductModal } from '../../../contexts/Modals/ProductModal'
 import { getCategories } from '../../../services/apiFunctions/companies/categories'
 import { getCompany } from '../../../services/apiFunctions/companies/company'
 import { Company } from '../../../services/apiFunctions/companies/company/types'
 import { getProducts } from '../../../services/apiFunctions/companies/products'
 import { Product } from '../../../services/apiFunctions/companies/products/types'
+
+import { CatalogContainer } from '../../../containers/Catalog'
 import { ProductModal } from '../../../components/Modals/ProductModal'
 import { Section } from '../../../components/Section'
 import { FloatCart } from '../../../components/Modals/Cart/Float'
@@ -15,6 +16,7 @@ import { CartModal } from '../../../components/Modals/Cart/CartReview'
 import { RegisterOrLoginClient } from '../../../components/Modals/RegisterOrLoginClient'
 import { OrderModal } from '../../../components/Modals/Orders'
 import { AlertDialog } from '../../../components/Modals/AlertDialog'
+import { AuthCompanySEO } from '../../../components/SEO/auth-company-seo'
 
 export interface CatalogProps {
   company: Company
@@ -26,18 +28,20 @@ export interface CatalogProps {
 
 export default function Catalog({ company, productsAgrupedByCategory }: CatalogProps) {
   const { isProductModalOpen } = useProductModal()
-
   return (
-    <Section>
-      <CatalogContainer company={company} productsAgrupedByCategory={productsAgrupedByCategory} />
+    <>
+      {company && <AuthCompanySEO company={company} page="Catálogo" />}
+      <Section>
+        <CatalogContainer company={company} productsAgrupedByCategory={productsAgrupedByCategory} />
 
-      {isProductModalOpen && <ProductModal />}
-      <FloatCart />
-      <CartModal />
-      <RegisterOrLoginClient />
-      <OrderModal />
-      <AlertDialog />
-    </Section>
+        {isProductModalOpen && <ProductModal />}
+        <FloatCart />
+        <CartModal />
+        <RegisterOrLoginClient />
+        <OrderModal />
+        <AlertDialog />
+      </Section>
+    </>
   )
 }
 
