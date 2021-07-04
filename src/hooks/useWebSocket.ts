@@ -96,7 +96,7 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
       console.log('connecting whatsapp..')
       setIsWppConnected(false)
       setWppConnIsLoading(true)
-      ref.current?.emit('connectWhatsapp')
+      ref.current?.emit('connectWhatsapp', userId)
     }
   }
 
