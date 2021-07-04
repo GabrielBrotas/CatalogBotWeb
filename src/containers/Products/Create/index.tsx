@@ -18,7 +18,6 @@ import { queryClient } from '../../../services/queryClient'
 import { CreateProductFormData, createProductFormSchema } from './types'
 import { ProductMainData } from '../forms/main-data.form.'
 import { ProductOptionForm } from '../forms/product-options.form'
-import { ProductOption } from '../../../services/apiFunctions/companies/products/types'
 import { removeIdFromProductOptions } from '../../../utils/dataFormat'
 
 export const CreateProductContainer = ({ categories }: CreateProductProps) => {

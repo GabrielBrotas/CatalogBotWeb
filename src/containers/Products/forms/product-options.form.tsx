@@ -41,7 +41,7 @@ export const ProductOptionForm = ({
 }: ProductOptionFormProps) => {
   const { fields, append, remove } = useFieldArray({
     control,
-    name: `options.${productOptionIndex}.additionals`,
+    name: `options.${productOptionIndex}.additionals` as const,
   })
 
   const removeProductAdditionalOptions = (nestedIndex: number) => {
@@ -82,7 +82,7 @@ export const ProductOptionForm = ({
         <FormSelect
           name="isRequired"
           label="É obrigatório?"
-          {...register(`options.${productOptionIndex}.isRequired`)}
+          {...register(`options.${productOptionIndex}.isRequired` as const)}
           options={[
             { value: 'true', label: 'Sim' },
             { value: 'false', label: 'Não' },
@@ -100,7 +100,7 @@ export const ProductOptionForm = ({
           name={`options.${productOptionIndex}.minQuantity`}
           label="Quantidade mínima"
           type="number"
-          {...register(`options.${productOptionIndex}.minQuantity`)}
+          {...register(`options.${productOptionIndex}.minQuantity` as const)}
           error={
             errors.options &&
             errors.options[productOptionIndex] &&
@@ -112,7 +112,7 @@ export const ProductOptionForm = ({
           label="Quantidade máxima"
           name={`options.${productOptionIndex}.maxQuantity`}
           type="number"
-          {...register(`options.${productOptionIndex}.maxQuantity`)}
+          {...register(`options.${productOptionIndex}.maxQuantity` as const)}
           error={
             errors.options &&
             errors.options[productOptionIndex] &&
@@ -122,7 +122,7 @@ export const ProductOptionForm = ({
         />
       </SimpleGrid>
 
-      {fields.map((itemNest, nestedIndex) => (
+      {fields.map((itemNest: any, nestedIndex) => (
         <AdditionalProductOptionForm
           key={itemNest._id}
           errors={errors}

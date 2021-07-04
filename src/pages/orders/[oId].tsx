@@ -8,6 +8,8 @@ import { OrderContainer } from '../../containers/Orders/Order'
 import dayjs from 'dayjs'
 import { getTotalPriceFromOrderProduct } from '../../utils/maths'
 import { AlertDialog } from '../../components/Modals/AlertDialog'
+import { useCompanyAuth } from '../../contexts/AuthCompany'
+import { AuthCompanySEO } from '../../components/SEO/auth-company-seo'
 
 export interface OrderFormated extends Order {
   dateFormated: string
@@ -18,11 +20,16 @@ export interface OrderContainerProps {
 }
 
 export default function OrderPage({ order }: OrderContainerProps) {
+  const { company } = useCompanyAuth()
   return (
-    <Section>
-      <OrderContainer order={order} />
-      <AlertDialog />
-    </Section>
+    <>
+      {company && <AuthCompanySEO company={company} page="Ordens" />}
+
+      <Section>
+        <OrderContainer order={order} />
+        <AlertDialog />
+      </Section>
+    </>
   )
 }
 

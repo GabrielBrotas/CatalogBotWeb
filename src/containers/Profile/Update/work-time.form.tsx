@@ -58,7 +58,7 @@ export const CompanyWorkTimeForm = ({
             options={weekDays}
             defaultValue={workDay.day}
             maxW="12rem"
-            {...register(`workTime.${index}.day`)}
+            {...register(`workTime.${index}.day` as const)}
           />
 
           <Flex>
@@ -68,7 +68,7 @@ export const CompanyWorkTimeForm = ({
               options={hours}
               defaultValue={workDay.from}
               containerStyle={{ mr: '4' }}
-              {...register(`workTime.${index}.from`)}
+              {...register(`workTime.${index}.from` as const)}
             />
             <FormSelect
               minW="7rem"
@@ -76,7 +76,7 @@ export const CompanyWorkTimeForm = ({
               options={hours}
               defaultValue={workDay.to}
               containerStyle={{ mr: '4' }}
-              {...register(`workTime.${index}.to`)}
+              {...register(`workTime.${index}.to` as const)}
             />
           </Flex>
 

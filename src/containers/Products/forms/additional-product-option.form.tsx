@@ -34,7 +34,7 @@ export const AdditionalProductOptionForm = ({
         name={`options.${productOptionIndex}.additionals.${additionalProductOptionIndex}.name`}
         label="Nome"
         {...register(
-          `options.${productOptionIndex}.additionals.${additionalProductOptionIndex}.name`
+          `options.${productOptionIndex}.additionals.${additionalProductOptionIndex}.name` as const
         )}
         maxLength={20}
         error={
@@ -51,7 +51,7 @@ export const AdditionalProductOptionForm = ({
         name={`options.${productOptionIndex}.additionals.${additionalProductOptionIndex}.price`}
         label="Preço"
         {...register(
-          `options.${productOptionIndex}.additionals.${additionalProductOptionIndex}.price`
+          `options.${productOptionIndex}.additionals.${additionalProductOptionIndex}.price` as const
         )}
         error={
           errors.options &&

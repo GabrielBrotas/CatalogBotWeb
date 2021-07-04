@@ -1,4 +1,5 @@
 import React from 'react'
+import { AuthCompanySEO } from '../../components/SEO/auth-company-seo'
 import { ProfileContainer } from '../../containers/Profile/Me'
 import { getMyCompany } from '../../services/apiFunctions/companies/company'
 import { Company } from '../../services/apiFunctions/companies/company/types'
@@ -9,7 +10,12 @@ export interface ProfileProps {
 }
 
 export default function Profile({ company }) {
-  return <ProfileContainer company={company} />
+  return (
+    <>
+      {company && <AuthCompanySEO company={company} page="Perfil" />}
+      <ProfileContainer company={company} />
+    </>
+  )
 }
 
 export const getServerSideProps = withCompanySSRAuth(async (ctx) => {

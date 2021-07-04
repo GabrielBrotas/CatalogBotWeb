@@ -5,10 +5,9 @@ import Router from 'next/router'
 import { Company } from '../services/apiFunctions/companies/company/types'
 import { getMyCompany, signInCompany } from '../services/apiFunctions/companies/company'
 import { COOKIE_COMPANY_TOKEN, NOTIFICATION_SOUND } from '../configs/constants'
-import { useWebSockets } from '../hooks/useWebSocket'
+import { useWebSockets, WppConnectionData } from '../hooks/useWebSocket'
 import { IPaginatedNotifications } from '../services/apiFunctions/clients/notifications/types'
 import { getCompanyNotifications } from '../services/apiFunctions/companies/notifications'
-// import { emmitEvent } from '../services/socket'
 
 type SignInCredentials = {
   email: string
@@ -22,6 +21,13 @@ type AuthContextData = {
   company: Company
   companyNotifications: IPaginatedNotifications
   setCompanyNotifications: React.Dispatch<React.SetStateAction<IPaginatedNotifications>>
+  connectWhatsapp: () => void
+  wppConnectionData: WppConnectionData
+  qrCode: string
+  isWppConnected: boolean
+  wppConnIsLoading: boolean
+  disconnectWhatsApp: () => void
+  isSocketConnected: boolean
 }
 
 const AuthContext = createContext({} as AuthContextData)
@@ -37,7 +43,17 @@ export const AuthCompanyProvider: React.FC = ({ children }) => {
 
   const isAuthenticated = !!company
 
-  const { newNotification, setNewNotification } = useWebSockets({
+  const {
+    newNotification,
+    setNewNotification,
+    connectToWhatsApp,
+    wppConnectionData,
+    qrCode,
+    isWppConnected,
+    disconnectWhatsApp,
+    wppConnIsLoading,
+    isSocketConnected,
+  } = useWebSockets({
     userId: company && company._id,
     enabled: !!company,
   })
@@ -108,6 +124,12 @@ export const AuthCompanyProvider: React.FC = ({ children }) => {
     Router.push('/dashboard')
   }
 
+  async function connectWhatsapp() {
+    if (isSocketConnected) {
+      connectToWhatsApp()
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -117,6 +139,13 @@ export const AuthCompanyProvider: React.FC = ({ children }) => {
         company,
         companyNotifications,
         setCompanyNotifications,
+        connectWhatsapp,
+        wppConnectionData,
+        qrCode,
+        isWppConnected,
+        wppConnIsLoading,
+        disconnectWhatsApp,
+        isSocketConnected,
       }}
     >
       {children}
