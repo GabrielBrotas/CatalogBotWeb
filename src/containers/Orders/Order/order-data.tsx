@@ -116,7 +116,9 @@ export const OrderData = ({ order }: OrderDataProps) => {
                                 <Td textAlign="center">{optionAdditional.priceFormated}</Td>
                                 <Td textAlign="center">{optionAdditional.amount}</Td>
                                 <Td textAlign="center">
-                                  {(optionAdditional.amount * optionAdditional.price).toFixed(2)}
+                                  {(
+                                    optionAdditional.amount * Number(optionAdditional.price)
+                                  ).toFixed(2)}
                                 </Td>
                               </Tr>
                             </Tbody>
