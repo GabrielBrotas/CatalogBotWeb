@@ -3,6 +3,8 @@ import { API_URL } from '../configs/constants'
 import socketIoClient, { Socket } from 'socket.io-client'
 import { useToast } from '../contexts/Modals/Toast'
 import { Notification } from '../services/apiFunctions/clients/notifications/types'
+import { useCompanyAuth } from '../contexts/AuthCompany'
+import { toBase64 } from '../utils/dataFormat'
 
 type Props = {
   userId: string
@@ -16,11 +18,26 @@ type EventUpdateOrderStatus = {
   status: string
 }
 
+export type WppConnectionData = {
+  name: string
+  cellphone: string
+  cellphone_model: string
+}
+
 export const useWebSockets = ({ userId, enabled }: Props) => {
   const ref = useRef<Socket>()
 
   const { addToast } = useToast()
+
+  // notifications
   const [newNotification, setNewNotification] = useState<Notification>()
+  const [isSocketConnected, setIsSocketConnected] = useState(false)
+
+  // wpp
+  const [qrCode, setQrCode] = useState<string>()
+  const [wppConnectionData, setWppConnectionData] = useState<WppConnectionData>()
+  const [isWppConnected, setIsWppConnected] = useState(false)
+  const [wppConnIsLoading, setWppConnIsLoading] = useState(false)
 
   const eventUpdateOrderStatus = ({ Receiver, Sender, status, Order }: EventUpdateOrderStatus) => {
     ref.current?.emit('updateOrderStatus', { userID: Receiver, status })
@@ -74,12 +91,40 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
     ref.current?.emit('loggedUser', userId)
   }
 
+  const connectToWhatsApp = () => {
+    if (isSocketConnected) {
+      console.log('connecting whatsapp..')
+      setIsWppConnected(false)
+      setWppConnIsLoading(true)
+      ref.current?.emit('connectWhatsapp', userId)
+    }
+  }
+
+  const disconnectWhatsApp = () => {
+    console.log('disconnecting whatsapp..')
+    ref.current?.emit('disconnectWhatsapp')
+  }
+
   useEffect(() => {
     if (!enabled) {
       return
     }
 
     const socket = socketIoClient(API_URL)
+
+    socket.on('connect', () => {
+      console.log('connected')
+      eventLoggedUser(userId)
+      setIsSocketConnected(true)
+    })
+
+    socket.on('reconnect', () => {
+      console.log('reconnected')
+    })
+
+    socket.on('disconnect', () => {
+      console.log('disconnected')
+    })
 
     socket.on('updatedOrderStatus', (data) => {
       const { status } = data
@@ -121,17 +166,40 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
       setNewNotification(data)
     })
 
-    socket.on('disconnect', () => {
-      console.log('disconnected')
+    socket.on('qr', (data) => {
+      console.log('wpp -> qr')
+      setWppConnIsLoading(false)
+      setIsWppConnected(false)
+      setQrCode(toBase64(new Uint8Array(data)))
     })
 
-    socket.on('connect', () => {
-      console.log('connected')
-      eventLoggedUser(userId)
+    socket.on('open', (data) => {
+      console.log('wpp -> open')
+      console.log(data)
+      setWppConnectionData({
+        name: data.user.name,
+        cellphone: String(data.user.jid).split('@')[0],
+        cellphone_model: data.user.phone.device_model,
+      })
+      setWppConnIsLoading(false)
+      setIsWppConnected(true)
+      setQrCode(null)
     })
 
-    socket.on('reconnect', () => {
-      console.log('reconnected')
+    socket.on('close', (data) => {
+      console.log('wpp -> close')
+      setWppConnIsLoading(false)
+      setIsWppConnected(false)
+      console.log(data)
+      setQrCode(null)
+    })
+
+    socket.on('ws-close', (data) => {
+      console.log('ws-close')
+      setWppConnIsLoading(false)
+      setIsWppConnected(false)
+      console.log(data)
+      setQrCode(null)
     })
 
     ref.current = socket
@@ -146,5 +214,12 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
     eventLoggedUser,
     newNotification,
     setNewNotification,
+    connectToWhatsApp,
+    wppConnectionData,
+    isWppConnected,
+    qrCode,
+    wppConnIsLoading,
+    disconnectWhatsApp,
+    isSocketConnected,
   }
 }

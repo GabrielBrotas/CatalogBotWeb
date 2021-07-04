@@ -192,3 +192,7 @@ export function groupDataAnalysisByDate({ data, type }: GroupDataAnalysisByDate)
     datas: groupArrays.map((date) => date.data.length),
   }
 }
+
+export function toBase64(arr: Uint8Array) {
+  return btoa(arr.reduce((data, byte) => data + String.fromCharCode(byte), ''))
+}

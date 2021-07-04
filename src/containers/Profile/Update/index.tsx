@@ -87,7 +87,7 @@ export const UpdateProfileContainer = ({ company }: UpdateProfileProps) => {
     (index: number) => {
       setCompanyWorkTime(companyWorkTime.filter((_, i) => i !== index))
       clearErrors()
-      unregister([`workTime.${index}`])
+      unregister([`workTime.${index}` as const])
     },
     [clearErrors, companyWorkTime, unregister]
   )
