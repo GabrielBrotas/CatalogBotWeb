@@ -1,14 +1,16 @@
 import dayjs from 'dayjs'
 import React from 'react'
 import jwt_decode from 'jwt-decode'
-import { AlertDialog } from '../../components/Modals/AlertDialog'
-import { ProductsContainer } from '../../containers/Products/List'
+import { parseCookies } from 'nookies'
+
 import { getProducts } from '../../services/apiFunctions/companies/products'
 import { Pagination, Product } from '../../services/apiFunctions/companies/products/types'
-import { withCompanySSRAuth } from '../../utils/withSSRAuth'
-import { parseCookies } from 'nookies'
-import { COOKIE_COMPANY_TOKEN } from '../../configs/constants'
 import { useCompanyAuth } from '../../contexts/AuthCompany'
+import { withCompanySSRAuth } from '../../utils/withSSRAuth'
+import { COOKIE_COMPANY_TOKEN } from '../../configs/constants'
+
+import { ProductsContainer } from '../../containers/Products/List'
+import { AlertDialog } from '../../components/Modals/AlertDialog'
 import { AuthCompanySEO } from '../../components/SEO/auth-company-seo'
 
 export interface ProductFormated extends Product {

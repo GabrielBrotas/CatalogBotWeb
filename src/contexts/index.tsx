@@ -26,15 +26,15 @@ export const AppProvider: React.FC<AppProviderProps> = ({ themeOptions, children
         <ToastProvider>
           <AuthCompanyProvider>
             <AuthClientProvider>
-              <CartProvider>
-                <OrderModalProvider>
+              <OrderModalProvider>
+                <CartProvider>
                   <ProductModalProvider>
                     <AlertModalProvider>
                       <SidebarDrawerProvider>{children}</SidebarDrawerProvider>
                     </AlertModalProvider>
                   </ProductModalProvider>
-                </OrderModalProvider>
-              </CartProvider>
+                </CartProvider>
+              </OrderModalProvider>
             </AuthClientProvider>
           </AuthCompanyProvider>
         </ToastProvider>

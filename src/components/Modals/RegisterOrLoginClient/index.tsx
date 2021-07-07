@@ -56,7 +56,15 @@ export const RegisterOrLoginClient = () => {
 
     const { email, name, password, cellphone, defaultAddress } = data
     try {
-      await signUpClient({ email, name, password, cellphone, defaultAddress })
+      await signUpClient({
+        email,
+        name,
+        password,
+        cellphone: String(cellphone)
+          .replace(/[^0-9]/gi, '')
+          .trim(),
+        defaultAddress,
+      })
       await loginClient({ user: cellphone, password })
 
       addToast({

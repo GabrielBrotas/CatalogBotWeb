@@ -6,6 +6,7 @@ import { CartNav } from './CartNav'
 import { OrdersNav } from './OrdersNav'
 import { useClientAuth } from '../../../contexts/AuthClient'
 import { ClientNav } from './ClientNav'
+import { LogoutNav } from './LogoutNav'
 
 export function CatalogHeader() {
   const { isAuthenticated } = useClientAuth()
@@ -23,6 +24,7 @@ export function CatalogHeader() {
       bg="#007AFF"
     >
       {/* <Logo /> */}
+      {isAuthenticated && <LogoutNav />}
 
       <Flex align="center" ml="auto">
         {isAuthenticated ? (

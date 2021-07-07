@@ -30,7 +30,7 @@ export type OrderProduct = {
   totalPriceFormated?: string
 }
 
-export type OrderStatus = 'pending' | 'confimed' | 'sent' | 'received' | 'canceled'
+export type OrderStatus = 'pending' | 'confirmed' | 'sent' | 'received' | 'canceled'
 
 export type PaymentMethods = 'boleto' | 'creditCard' | 'debit' | 'pix' | 'money'
 

@@ -8,9 +8,7 @@ import { useDisclosure } from '@chakra-ui/react'
 import { useWebSockets } from '../hooks/useWebSocket'
 import { IPaginatedNotifications } from '../services/apiFunctions/clients/notifications/types'
 import { getClientNotifications } from '../services/apiFunctions/clients/notifications'
-import { useCart } from './Cart'
 import { useRouter } from 'next/router'
-// import { emmitEvent } from '../services/socket'
 
 type SignInCredentials = {
   user: string
@@ -18,7 +16,7 @@ type SignInCredentials = {
 }
 
 type AuthContextData = {
-  signOutClient(): void
+  signOut(): void
   loginClient(credentials: SignInCredentials): Promise<void>
   isAuthenticated: boolean
   client: Client
@@ -34,7 +32,7 @@ type AuthContextData = {
 const AuthContext = createContext({} as AuthContextData)
 
 export function signOutClient() {
-  destroyCookie(undefined, COOKIE_CLIENT_TOKEN)
+  destroyCookie(undefined, COOKIE_CLIENT_TOKEN, { path: '/' })
 }
 
 export const AuthClientProvider: React.FC = ({ children }) => {
@@ -116,11 +114,16 @@ export const AuthClientProvider: React.FC = ({ children }) => {
     closeRegisterModal()
   }
 
+  const signOut = () => {
+    signOutClient()
+    setClient(null)
+  }
+
   return (
     <AuthContext.Provider
       value={{
         loginClient,
-        signOutClient,
+        signOut,
         isAuthenticated,
         client,
         isModalOpen,

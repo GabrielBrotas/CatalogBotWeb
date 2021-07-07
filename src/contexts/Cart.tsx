@@ -17,10 +17,12 @@ import {
 import { createOrder } from '../services/apiFunctions/clients/orders'
 import { Address } from '../services/apiFunctions/clients/client/types'
 import { useDisclosure } from '@chakra-ui/react'
-import { getTotalPriceFromCartOrderProduct } from '../utils/maths'
+import { getTotalPriceFromCartOrderProduct, getTotalPriceFromOrderProduct } from '../utils/maths'
 import { currencyFormat } from '../utils/dataFormat'
 import { useWebSockets } from '../hooks/useWebSocket'
 import { addCompanyData } from '../services/apiFunctions/clients/client'
+import { useOrderModal } from './Modals/OrderModal'
+import dayjs from 'dayjs'
 
 type StoreOrderDTO = {
   deliveryAddress: Address
@@ -72,6 +74,7 @@ const CartProvider: React.FC = ({ children }) => {
 
   const { addToast } = useToast()
   const { client } = useClientAuth()
+  const { setOrders } = useOrderModal()
 
   const { eventUpdateOrderStatus } = useWebSockets({
     userId: client && client._id,
@@ -223,6 +226,35 @@ const CartProvider: React.FC = ({ children }) => {
           Sender: client._id,
           Order: order._id,
         })
+
+        setOrders((prevState) => ({
+          total: prevState.total,
+          next: prevState.next,
+          previous: prevState.previous,
+          results: [
+            {
+              ...order,
+              dateFormated: dayjs(order.created_at).format('DD/MM/YYYY - HH:mm'),
+              totalPriceFormated: currencyFormat(Number(order.totalPrice)),
+              orderProducts: order.orderProducts.map((orderProduct) => ({
+                ...orderProduct,
+                totalPriceFormated: currencyFormat(getTotalPriceFromOrderProduct(orderProduct)),
+                product: {
+                  ...orderProduct.product,
+                  priceFormated: currencyFormat(orderProduct.product.price),
+                },
+                pickedOptions: orderProduct.pickedOptions.map((pickedOption) => ({
+                  ...pickedOption,
+                  optionAdditionals: pickedOption.optionAdditionals.map((optionAdditional) => ({
+                    ...optionAdditional,
+                    priceFormated: currencyFormat(Number(optionAdditional.price)),
+                  })),
+                })),
+              })),
+            },
+            ...prevState.results,
+          ],
+        }))
 
         await clearCart()
       } catch (err) {

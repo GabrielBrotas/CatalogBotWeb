@@ -29,6 +29,8 @@ apiCompany.interceptors.response.use(
     // resposta deu erro
     if (error && error.response && error.response.status === 401) {
       signOutCompany()
+    } else {
+      return Promise.reject(error)
     }
   }
 )

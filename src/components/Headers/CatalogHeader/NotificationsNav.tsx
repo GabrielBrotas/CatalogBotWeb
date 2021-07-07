@@ -58,7 +58,7 @@ export function NotificationsNav() {
   }
 
   return (
-    <HStack color="whiteAlpha.800" cursor="pointer">
+    <HStack color="whiteAlpha.900" cursor="pointer">
       <Menu onClose={markNotificationsAsViewd}>
         <MenuButton
           bg="transparent"

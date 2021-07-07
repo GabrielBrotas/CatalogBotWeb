@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FormControl, Text } from '@chakra-ui/react'
 
 import { FormInput } from '../../Form/input'
 import { FormButton } from '../../Form/button'
 import { DeepMap, FieldError, FieldValues, UseFormRegister } from 'react-hook-form'
 import { useClientAuth } from '../../../contexts/AuthClient'
+import { FormCellphoneMaskedInput } from '../../Form/cellphone-masked-input'
 
 interface RegisterFormProps {
   register: UseFormRegister<FieldValues>
@@ -49,13 +50,13 @@ export const RegisterForm = ({ register, errors, isSubmitting }: RegisterFormPro
           containerStyle={{ mb: '4' }}
         />
 
-        <FormInput
-          secondary={true}
+        <FormCellphoneMaskedInput
           name="cellphone"
-          placeholder="Telefone"
-          {...register('cellphone')}
           error={errors.cellphone}
           containerStyle={{ mb: '4' }}
+          {...register('cellphone')}
+          secondary={true}
+          placeholder="Telefone"
         />
       </FormControl>
 

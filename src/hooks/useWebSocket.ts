@@ -92,7 +92,7 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
   }
 
   const connectToWhatsApp = () => {
-    if (isSocketConnected) {
+    if (isSocketConnected && !isWppConnected) {
       console.log('connecting whatsapp..')
       setIsWppConnected(false)
       setWppConnIsLoading(true)
@@ -102,7 +102,8 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
 
   const disconnectWhatsApp = () => {
     console.log('disconnecting whatsapp..')
-    ref.current?.emit('disconnectWhatsapp')
+    ref.current?.emit('disconnectWhatsapp', userId)
+    window.location.reload()
   }
 
   useEffect(() => {

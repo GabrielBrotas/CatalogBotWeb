@@ -1,5 +1,6 @@
 import { useDisclosure } from '@chakra-ui/react'
 import dayjs from 'dayjs'
+import { useRouter } from 'next/router'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { createContext, ReactNode, useCallback, useContext } from 'react'
 import { useWebSockets } from '../../hooks/useWebSocket'
@@ -29,21 +30,23 @@ const OrderModalContext = createContext({} as OrderModalContextProps)
 
 export function OrderModalProvider({ children }: OrderModalProps) {
   const { isOpen: isOrderModalOpen, onOpen, onClose } = useDisclosure()
+  const router = useRouter()
 
   const [orders, setOrders] = useState<IPaginatedOrders>()
   const [selectedOrder, setSelectedOrder] = useState<OrderFormated>()
 
   const { isAuthenticated: isClientAuthenticated, client } = useClientAuth()
-  const { company } = useCart()
 
   const { eventUpdateOrderStatus } = useWebSockets({
     userId: client && client._id,
     enabled: !!isClientAuthenticated,
   })
 
+  const companyId = router.query.companyId && String(router.query.companyId)
+
   useEffect(() => {
-    if (isClientAuthenticated && !!company) {
-      getMyOrders({ companyId: company._id })
+    if (isClientAuthenticated && !!companyId) {
+      getMyOrders({ companyId: companyId })
         .then((res) => {
           const ordersFormated = res.results.map((order) => ({
             ...order,
@@ -75,7 +78,7 @@ export function OrderModalProvider({ children }: OrderModalProps) {
         })
         .catch((err) => console.log(err))
     }
-  }, [company, isClientAuthenticated])
+  }, [companyId, isClientAuthenticated])
 
   const openOrderModal = useCallback(() => {
     onOpen()
@@ -97,7 +100,7 @@ export function OrderModalProvider({ children }: OrderModalProps) {
       })
 
       eventUpdateOrderStatus({
-        Receiver: company._id,
+        Receiver: companyId,
         status: 'canceled',
         Sender: client._id,
         Order: order._id,
@@ -111,7 +114,7 @@ export function OrderModalProvider({ children }: OrderModalProps) {
       }))
       setSelectedOrder(null)
     },
-    [client, company, eventUpdateOrderStatus]
+    [client, companyId, eventUpdateOrderStatus]
   )
 
   return (

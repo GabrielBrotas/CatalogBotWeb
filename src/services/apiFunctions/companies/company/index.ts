@@ -21,7 +21,7 @@ export const signInCompany = async ({
   email,
   password,
 }: LoginDTO): Promise<SignInCompanyResponse> => {
-  return apiCompany.post('/companies/auth', { email, password }).then(({ data }) => data)
+  return await apiCompany.post('/companies/auth', { email, password }).then(({ data }) => data)
 }
 
 export const getCompany = async ({ companyId, ctx = false }: GetCompanyDTO): Promise<Company> => {
@@ -33,7 +33,7 @@ export const getCompany = async ({ companyId, ctx = false }: GetCompanyDTO): Pro
 
 export const getMyCompany = async ({ ctx = false }: RequestFromSSR): Promise<Company> => {
   if (!ctx) return await apiCompany.get('/companies').then(({ data }) => data)
-  return apiCompanySSR(ctx)
+  return await apiCompanySSR(ctx)
     .get('/companies')
     .then(({ data }) => data)
 }
@@ -78,7 +78,7 @@ export const getMyDataAnalysis = async ({
   ctx = false,
 }: IGetMyDataAnalysisDTO): Promise<DataAnalysis[]> => {
   if (!ctx) return await apiCompany.get(`/companies/${companyId}/data`).then(({ data }) => data)
-  return apiCompanySSR(ctx)
+  return await apiCompanySSR(ctx)
     .get(`/companies/${companyId}/data`)
     .then(({ data }) => data)
 }

@@ -74,7 +74,7 @@ export const OrderContainer = ({ order }: OrderContainerProps) => {
         orderId: order._id,
         data: {
           ...tranformOrderFormatedInOrderToUpdate(order),
-          status: 'confimed',
+          status: 'confirmed',
         },
       })
 
@@ -184,13 +184,15 @@ export const OrderContainer = ({ order }: OrderContainerProps) => {
                     as="a"
                     size="sm"
                     fontSize="sm"
-                    colorScheme={order.status === 'confimed' ? 'blue' : 'green'}
+                    colorScheme={order.status === 'confirmed' ? 'blue' : 'green'}
                     w="9rem"
                     h="12"
                     cursor="pointer"
-                    onClick={order.status === 'confimed' ? handleOrderReceived : handleConfirmOrder}
+                    onClick={
+                      order.status === 'confirmed' ? handleOrderReceived : handleConfirmOrder
+                    }
                   >
-                    {order.status === 'confimed' ? 'Pedido entregue' : 'Aceitar pedido'}
+                    {order.status === 'confirmed' ? 'Pedido entregue' : 'Aceitar pedido'}
                   </Button>
                 </>
               )}

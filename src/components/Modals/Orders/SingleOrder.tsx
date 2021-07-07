@@ -18,10 +18,12 @@ import {
   FORMAT_ORDER_STATUS,
   currencyFormat,
   ORDER_STATUS_COLOR_SECONDARY,
+  tranformOrderFormatedInOrderToUpdate,
 } from '../../../utils/dataFormat'
 import { useOrderModal } from '../../../contexts/Modals/OrderModal'
 import { useToast } from '../../../contexts/Modals/Toast'
 import { useAlertModal } from '../../../contexts/Modals/AlertModal'
+import { updateOrder } from '../../../services/apiFunctions/companies/orders'
 
 export const SingleOrder = () => {
   const { selectedOrder, cancelOrder } = useOrderModal()
@@ -33,7 +35,6 @@ export const SingleOrder = () => {
     md: false,
     lg: false,
   })
-
   const handleCancelOrder = async () => {
     try {
       handleOpenAlertModal({
@@ -56,6 +57,30 @@ export const SingleOrder = () => {
       })
     }
   }
+
+  const handleReceivedOrder = async () => {
+    try {
+      await updateOrder({
+        orderId: selectedOrder._id,
+        data: {
+          ...tranformOrderFormatedInOrderToUpdate(selectedOrder),
+          status: 'received',
+        },
+      })
+
+      addToast({
+        title: 'Parabens pela sua nova compra!',
+        status: 'success',
+      })
+    } catch (err) {
+      addToast({
+        status: 'error',
+        title: 'Desculpe, algo deu errado!',
+        description: 'Tente novamente mais tarde',
+      })
+    }
+  }
+
   if (!selectedOrder) return <></>
 
   return (
@@ -174,20 +199,20 @@ export const SingleOrder = () => {
           ))}
         </Box>
       </VStack>
-      {selectedOrder.status === 'pending' && (
+      {(selectedOrder.status === 'pending' || selectedOrder.status === 'confirmed') && (
         <Flex w="full" justifyContent="flex-end" alignItems="center" mt="8">
           <Button
             as="a"
             size="sm"
             fontSize="sm"
-            colorScheme="red"
+            colorScheme={selectedOrder.status === 'pending' ? 'red' : 'blue'}
             w="9rem"
             mr="6"
             cursor="pointer"
             h="12"
-            onClick={handleCancelOrder}
+            onClick={selectedOrder.status === 'pending' ? handleCancelOrder : handleReceivedOrder}
           >
-            Cancelar pedido
+            {selectedOrder.status === 'pending' ? 'Cancelar pedido' : 'Pedido Recebido'}
           </Button>
         </Flex>
       )}
