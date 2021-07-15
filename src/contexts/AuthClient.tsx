@@ -59,7 +59,10 @@ export const AuthClientProvider: React.FC = ({ children }) => {
     const { '@CatalogBot.token.client': token } = parseCookies()
 
     if (token) {
-      Promise.all([getMyClient({}), getClientNotifications({ Sender: router.query.companyId })])
+      Promise.all([
+        getMyClient({}),
+        getClientNotifications({ Sender: String(router.query.companyId) }),
+      ])
         .then(([clientResponse, notificationsResponse]) => {
           const { _id, email, cellphone, name, defaultAddress } = clientResponse
 
