@@ -88,12 +88,18 @@ export const CartModal = () => {
       })
       setStep(1)
     } catch (err) {
-      console.log(err)
-      addToast({
-        title: 'Error',
-        description: 'Algo deu errado, tente novamente',
-        status: 'error',
-      })
+      if (err.response && err.response.data && err.response.data.message) {
+        console.log(err.response)
+        addToast({
+          title: err.response.data.message.message,
+          status: 'error',
+        })
+      } else {
+        addToast({
+          title: 'Algo deu errado, tente novamente mais tarde',
+          status: 'error',
+        })
+      }
     }
   }
 

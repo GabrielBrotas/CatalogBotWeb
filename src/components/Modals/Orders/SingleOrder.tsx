@@ -23,10 +23,10 @@ import {
 import { useOrderModal } from '../../../contexts/Modals/OrderModal'
 import { useToast } from '../../../contexts/Modals/Toast'
 import { useAlertModal } from '../../../contexts/Modals/AlertModal'
-import { updateOrder } from '../../../services/apiFunctions/companies/orders'
+import { updateOrder } from '../../../services/apiFunctions/clients/orders'
 
 export const SingleOrder = () => {
-  const { selectedOrder, cancelOrder } = useOrderModal()
+  const { selectedOrder, cancelOrder, setSelectedOrder, setOrders } = useOrderModal()
   const { handleOpenAlertModal } = useAlertModal()
   const { addToast } = useToast()
 
@@ -67,6 +67,15 @@ export const SingleOrder = () => {
           status: 'received',
         },
       })
+      setOrders(({ results, total, next, previous }) => ({
+        total,
+        next,
+        previous,
+        results: results.map((order) =>
+          order._id === selectedOrder._id ? { ...selectedOrder, status: 'received' } : order
+        ),
+      }))
+      setSelectedOrder(null)
 
       addToast({
         title: 'Parabens pela sua nova compra!',

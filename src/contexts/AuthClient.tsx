@@ -8,6 +8,7 @@ import { useDisclosure } from '@chakra-ui/react'
 import { useWebSockets } from '../hooks/useWebSocket'
 import { IPaginatedNotifications } from '../services/apiFunctions/clients/notifications/types'
 import { getClientNotifications } from '../services/apiFunctions/clients/notifications'
+import { Notification } from '../services/apiFunctions/clients/notifications/types'
 import { useRouter } from 'next/router'
 
 type SignInCredentials = {
@@ -27,6 +28,7 @@ type AuthContextData = {
   closeModal: () => void
   clientsNotifications: IPaginatedNotifications
   setClientsNotifications: React.Dispatch<React.SetStateAction<IPaginatedNotifications>>
+  newNotification: Notification
 }
 
 const AuthContext = createContext({} as AuthContextData)
@@ -57,10 +59,7 @@ export const AuthClientProvider: React.FC = ({ children }) => {
     const { '@CatalogBot.token.client': token } = parseCookies()
 
     if (token) {
-      Promise.all([
-        getMyClient({}),
-        getClientNotifications({ Sender: String(router.query.companyId) }),
-      ])
+      Promise.all([getMyClient({}), getClientNotifications({ Sender: router.query.companyId })])
         .then(([clientResponse, notificationsResponse]) => {
           const { _id, email, cellphone, name, defaultAddress } = clientResponse
 
@@ -83,6 +82,7 @@ export const AuthClientProvider: React.FC = ({ children }) => {
   useEffect(() => {
     if (newNotification && String(newNotification.Receiver) === String(client._id)) {
       new Audio(NOTIFICATION_SOUND).play()
+
       setClientsNotifications(({ results, total, next, previous }) => ({
         results: [newNotification, ...results],
         total,
@@ -91,7 +91,7 @@ export const AuthClientProvider: React.FC = ({ children }) => {
       }))
       setNewNotification(null)
     }
-  }, [client, newNotification, setNewNotification])
+  }, [client, newNotification, setNewNotification, setClientsNotifications])
 
   async function loginClient({ user, password }: SignInCredentials) {
     const { client, token } = await signInClient({ user, password })
@@ -133,6 +133,7 @@ export const AuthClientProvider: React.FC = ({ children }) => {
         setFormType,
         clientsNotifications,
         setClientsNotifications,
+        newNotification,
       }}
     >
       {children}

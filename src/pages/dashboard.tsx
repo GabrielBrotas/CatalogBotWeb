@@ -56,6 +56,8 @@ export const getServerSideProps = withCompanySSRAuth(async (ctx) => {
       },
     }
   } catch (err) {
+    console.log('err here 2 = ', err)
+
     destroyCookie(ctx, COOKIE_COMPANY_TOKEN)
     return {
       redirect: {

@@ -9,7 +9,6 @@ import { IPaginatedOrders, OrderFormated } from '../../services/apiFunctions/cli
 import { currencyFormat, tranformOrderFormatedInOrderToUpdate } from '../../utils/dataFormat'
 import { getTotalPriceFromOrderProduct } from '../../utils/maths'
 import { useClientAuth } from '../AuthClient'
-import { useCart } from '../Cart'
 
 interface OrderModalProps {
   children: ReactNode
@@ -35,7 +34,7 @@ export function OrderModalProvider({ children }: OrderModalProps) {
   const [orders, setOrders] = useState<IPaginatedOrders>()
   const [selectedOrder, setSelectedOrder] = useState<OrderFormated>()
 
-  const { isAuthenticated: isClientAuthenticated, client } = useClientAuth()
+  const { isAuthenticated: isClientAuthenticated, client, newNotification } = useClientAuth()
 
   const { eventUpdateOrderStatus } = useWebSockets({
     userId: client && client._id,
@@ -79,6 +78,23 @@ export function OrderModalProvider({ children }: OrderModalProps) {
         .catch((err) => console.log(err))
     }
   }, [companyId, isClientAuthenticated])
+
+  useEffect(() => {
+    if (newNotification) {
+      if (newNotification.Order && newNotification.Status) {
+        setOrders(({ results, total, next, previous }) => ({
+          total,
+          next,
+          previous,
+          results: results.map((order) =>
+            order._id === newNotification.Order
+              ? { ...order, status: newNotification.Status }
+              : order
+          ),
+        }))
+      }
+    }
+  }, [newNotification])
 
   const openOrderModal = useCallback(() => {
     onOpen()

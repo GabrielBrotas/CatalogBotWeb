@@ -38,9 +38,10 @@ export const updateProduct = async ({
   price,
   description,
   options,
+  removeImage = false,
 }: UpdateProductDTO): Promise<Product> => {
   return await apiCompany
-    .put(`/products/${productId}`, { categoryId, name, price, description, options })
+    .put(`/products/${productId}`, { categoryId, name, price, description, options, removeImage })
     .then(({ data }) => data)
 }
 

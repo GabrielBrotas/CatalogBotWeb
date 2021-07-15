@@ -1,3 +1,4 @@
+import { OrderStatus } from '../../companies/orders/types'
 import { Pagination } from '../../companies/products/types'
 
 export type IGetNotificationsDTO = {
@@ -19,6 +20,7 @@ export interface Notification {
   Type: 'order'
   CreatedAt: string
   UpdatedAt: string
+  Status?: OrderStatus
 }
 
 export interface IPaginatedNotifications extends Pagination {

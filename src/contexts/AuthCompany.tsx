@@ -4,7 +4,11 @@ import { apiCompany } from '../services/api'
 import Router from 'next/router'
 import { Company } from '../services/apiFunctions/companies/company/types'
 import { getMyCompany, signInCompany } from '../services/apiFunctions/companies/company'
-import { COOKIE_COMPANY_TOKEN, NOTIFICATION_SOUND } from '../configs/constants'
+import {
+  COOKIE_COMPANY_REFRESH_TOKEN,
+  COOKIE_COMPANY_TOKEN,
+  NOTIFICATION_SOUND,
+} from '../configs/constants'
 import { useWebSockets, WppConnectionData } from '../hooks/useWebSocket'
 import { IPaginatedNotifications } from '../services/apiFunctions/clients/notifications/types'
 import { getCompanyNotifications } from '../services/apiFunctions/companies/notifications'
@@ -34,6 +38,8 @@ const AuthContext = createContext({} as AuthContextData)
 
 export function signOutCompany() {
   destroyCookie(undefined, COOKIE_COMPANY_TOKEN)
+  destroyCookie(undefined, COOKIE_COMPANY_REFRESH_TOKEN)
+  console.log('destroy')
   Router.push('/')
 }
 
@@ -110,9 +116,14 @@ export const AuthCompanyProvider: React.FC = ({ children }) => {
   }, [company, newNotification, setNewNotification])
 
   async function loginCompany({ email, password }: SignInCredentials) {
-    const { company, token } = await signInCompany({ email, password })
+    const { company, token, refreshToken } = await signInCompany({ email, password })
 
     setCookie(undefined, COOKIE_COMPANY_TOKEN, token, {
+      maxAge: 60 * 60 * 24 * 30,
+      path: '/',
+    })
+
+    setCookie(undefined, COOKIE_COMPANY_REFRESH_TOKEN, refreshToken._id, {
       maxAge: 60 * 60 * 24 * 30,
       path: '/',
     })
