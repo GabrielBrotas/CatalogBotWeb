@@ -17,10 +17,12 @@ import {
 import { createOrder } from '../services/apiFunctions/clients/orders'
 import { Address } from '../services/apiFunctions/clients/client/types'
 import { useDisclosure } from '@chakra-ui/react'
-import { getTotalPriceFromCartOrderProduct } from '../utils/maths'
+import { getTotalPriceFromCartOrderProduct, getTotalPriceFromOrderProduct } from '../utils/maths'
 import { currencyFormat } from '../utils/dataFormat'
 import { useWebSockets } from '../hooks/useWebSocket'
 import { addCompanyData } from '../services/apiFunctions/clients/client'
+import { useOrderModal } from './Modals/OrderModal'
+import dayjs from 'dayjs'
 
 type StoreOrderDTO = {
   deliveryAddress: Address
@@ -72,6 +74,7 @@ const CartProvider: React.FC = ({ children }) => {
 
   const { addToast } = useToast()
   const { client } = useClientAuth()
+  const { setOrders } = useOrderModal()
 
   const { eventUpdateOrderStatus } = useWebSockets({
     userId: client && client._id,
@@ -83,6 +86,7 @@ const CartProvider: React.FC = ({ children }) => {
     if (!company) return
     getCart({ companyId: company._id }).then((response) => {
       if (response) {
+        console.log(response)
         setCart({
           ...response,
           cartTotalPrice: getTotalPriceFromCartOrderProduct(response.orderProducts),
@@ -110,19 +114,15 @@ const CartProvider: React.FC = ({ children }) => {
       if (!company) return
       if (!client) return
 
-      try {
-        const cart = await addProductInCart({ companyId: company._id, orderProduct })
+      const cart = await addProductInCart({ companyId: company._id, orderProduct })
 
-        setCart({
-          ...cart,
-          cartTotalPrice: getTotalPriceFromCartOrderProduct(cart.orderProducts),
-          cartTotalPriceFormated: currencyFormat(
-            getTotalPriceFromCartOrderProduct(cart.orderProducts)
-          ),
-        })
-      } catch (err) {
-        console.log(err)
-      }
+      setCart({
+        ...cart,
+        cartTotalPrice: getTotalPriceFromCartOrderProduct(cart.orderProducts),
+        cartTotalPriceFormated: currencyFormat(
+          getTotalPriceFromCartOrderProduct(cart.orderProducts)
+        ),
+      })
     },
     [client, company]
   )
@@ -198,42 +198,63 @@ const CartProvider: React.FC = ({ children }) => {
       if (!company) return
       if (!client) return
 
-      try {
-        const orderProducts = formatCartProductsToOrderProducts(cartOrderProducts)
+      const orderProducts = formatCartProductsToOrderProducts(cartOrderProducts)
 
-        const order = await createOrder({
-          companyId: company._id,
-          deliveryAddress,
-          orderProducts,
-          paymentMethod,
-          totalPrice: orderTotalPrice,
-          saveAddressAsDefault,
-        })
+      const order = await createOrder({
+        companyId: company._id,
+        deliveryAddress,
+        orderProducts,
+        paymentMethod,
+        totalPrice: orderTotalPrice,
+        saveAddressAsDefault,
+      })
 
-        addCompanyData({
-          companyId: company._id,
-          type: 'order',
-          orderId: order._id,
-          clientId: client._id,
-        })
+      addCompanyData({
+        companyId: company._id,
+        type: 'order',
+        orderId: order._id,
+        clientId: client._id,
+      })
 
-        eventUpdateOrderStatus({
-          status: 'pending',
-          Receiver: company._id,
-          Sender: client._id,
-          Order: order._id,
-        })
+      eventUpdateOrderStatus({
+        status: 'pending',
+        Receiver: company._id,
+        Sender: client._id,
+        Order: order._id,
+      })
 
-        await clearCart()
-      } catch (err) {
-        console.log(err)
-        addToast({
-          title: 'Desculpe, algo deu errado!',
-          status: 'error',
-        })
-      }
+      setOrders(({ results, total, next, previous }) => ({
+        total: total,
+        next: next,
+        previous: previous,
+        results: [
+          {
+            ...order,
+            dateFormated: dayjs(order.created_at).format('DD/MM/YYYY - HH:mm'),
+            totalPriceFormated: currencyFormat(Number(order.totalPrice)),
+            orderProducts: order.orderProducts.map((orderProduct) => ({
+              ...orderProduct,
+              totalPriceFormated: currencyFormat(getTotalPriceFromOrderProduct(orderProduct)),
+              product: {
+                ...orderProduct.product,
+                priceFormated: currencyFormat(orderProduct.product.price),
+              },
+              pickedOptions: orderProduct.pickedOptions.map((pickedOption) => ({
+                ...pickedOption,
+                optionAdditionals: pickedOption.optionAdditionals.map((optionAdditional) => ({
+                  ...optionAdditional,
+                  priceFormated: currencyFormat(Number(optionAdditional.price)),
+                })),
+              })),
+            })),
+          },
+          ...results,
+        ],
+      }))
+
+      await clearCart()
     },
-    [addToast, clearCart, client, company, eventUpdateOrderStatus, orderTotalPrice]
+    [clearCart, client, company, eventUpdateOrderStatus, orderTotalPrice, setOrders]
   )
 
   return (

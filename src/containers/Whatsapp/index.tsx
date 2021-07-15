@@ -10,7 +10,6 @@ export const WhatsAppContainer = () => {
     connectWhatsapp,
     wppConnectionData,
     isWppConnected,
-    qrCode,
     wppConnIsLoading,
     disconnectWhatsApp,
     isSocketConnected,

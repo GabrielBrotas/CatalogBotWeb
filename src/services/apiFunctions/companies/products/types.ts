@@ -31,6 +31,7 @@ export type UpdateProductDTO = {
   categoryId: string
   description?: string
   options?: ProductOption[]
+  removeImage?: boolean
 }
 
 export type Product = {

@@ -8,9 +8,8 @@ import { useDisclosure } from '@chakra-ui/react'
 import { useWebSockets } from '../hooks/useWebSocket'
 import { IPaginatedNotifications } from '../services/apiFunctions/clients/notifications/types'
 import { getClientNotifications } from '../services/apiFunctions/clients/notifications'
-import { useCart } from './Cart'
+import { Notification } from '../services/apiFunctions/clients/notifications/types'
 import { useRouter } from 'next/router'
-// import { emmitEvent } from '../services/socket'
 
 type SignInCredentials = {
   user: string
@@ -18,7 +17,7 @@ type SignInCredentials = {
 }
 
 type AuthContextData = {
-  signOutClient(): void
+  signOut(): void
   loginClient(credentials: SignInCredentials): Promise<void>
   isAuthenticated: boolean
   client: Client
@@ -29,12 +28,13 @@ type AuthContextData = {
   closeModal: () => void
   clientsNotifications: IPaginatedNotifications
   setClientsNotifications: React.Dispatch<React.SetStateAction<IPaginatedNotifications>>
+  newNotification: Notification
 }
 
 const AuthContext = createContext({} as AuthContextData)
 
 export function signOutClient() {
-  destroyCookie(undefined, COOKIE_CLIENT_TOKEN)
+  destroyCookie(undefined, COOKIE_CLIENT_TOKEN, { path: '/' })
 }
 
 export const AuthClientProvider: React.FC = ({ children }) => {
@@ -85,6 +85,7 @@ export const AuthClientProvider: React.FC = ({ children }) => {
   useEffect(() => {
     if (newNotification && String(newNotification.Receiver) === String(client._id)) {
       new Audio(NOTIFICATION_SOUND).play()
+
       setClientsNotifications(({ results, total, next, previous }) => ({
         results: [newNotification, ...results],
         total,
@@ -93,7 +94,7 @@ export const AuthClientProvider: React.FC = ({ children }) => {
       }))
       setNewNotification(null)
     }
-  }, [client, newNotification, setNewNotification])
+  }, [client, newNotification, setNewNotification, setClientsNotifications])
 
   async function loginClient({ user, password }: SignInCredentials) {
     const { client, token } = await signInClient({ user, password })
@@ -116,11 +117,16 @@ export const AuthClientProvider: React.FC = ({ children }) => {
     closeRegisterModal()
   }
 
+  const signOut = () => {
+    signOutClient()
+    setClient(null)
+  }
+
   return (
     <AuthContext.Provider
       value={{
         loginClient,
-        signOutClient,
+        signOut,
         isAuthenticated,
         client,
         isModalOpen,
@@ -130,6 +136,7 @@ export const AuthClientProvider: React.FC = ({ children }) => {
         setFormType,
         clientsNotifications,
         setClientsNotifications,
+        newNotification,
       }}
     >
       {children}

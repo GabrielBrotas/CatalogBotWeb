@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import {
   Avatar,
   Box,
@@ -11,6 +11,7 @@ import {
   Divider,
 } from '@chakra-ui/react'
 import { CatalogProps } from '../../pages/catalog/[companyId]'
+import { InView, useInView } from 'react-intersection-observer'
 
 import { CompanyBenefitsTag } from '../../components/Tags/companyBenefitsTag'
 import { useCart } from '../../contexts/Cart'
@@ -52,6 +53,22 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
     return open
   }, [company.workTime])
 
+  const [categoriesData, setCategoriesData] = React.useState(
+    productsAgrupedByCategory.map((group) => ({ name: group.category, isActive: false }))
+  )
+
+  const [showNavCategories, setShowNavCategories] = React.useState(false)
+
+  const handleElementInView = (category: string, inView: boolean) => {
+    setCategoriesData((prevState) =>
+      prevState.map((data) => (category === data.name ? { ...data, isActive: inView } : data))
+    )
+  }
+
+  const isCompanyNameInScreen = (inView: boolean) => {
+    setShowNavCategories(!inView)
+  }
+
   useEffect(() => {
     setCompany(company)
   }, [company, setCompany])
@@ -73,14 +90,16 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
       maxW="800px"
       p="0"
     >
-      <CatalogHeader />
+      <CatalogHeader categoriesData={categoriesData} showNavCategories={showNavCategories} />
 
-      <Box padding="4" flex={1} display="flex" flexDir="column" mt={6} w="full">
+      <Box padding="4" flex={1} display="flex" flexDir="column" mt={20} w="full">
         <Flex alignItems="flex-start" justifyContent="space-between">
           <Box>
-            <Heading as="h4" fontSize="x-large" isTruncated>
-              {company.name}
-            </Heading>
+            <InView rootMargin="-30px 0px 0px 0px" onChange={isCompanyNameInScreen}>
+              <Heading as="h4" fontSize="x-large" isTruncated>
+                {company.name}
+              </Heading>
+            </InView>
             <Text mt="1" maxW="40rem">
               {company.shortDescription}
             </Text>
@@ -104,6 +123,7 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
             Shopping
           </Text>
         </Flex>
+
         <Box
           bg="whiteAlpha.900"
           px="8"
@@ -111,8 +131,13 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
           pb={cart ? (cart.orderProducts.length > 0 ? '5rem' : '2') : '2'}
         >
           {productsAgrupedByCategory.map((productGroup) => (
-            <Fragment key={productGroup.category}>
-              <Box display="Flex" flexDir="column" mt="4">
+            <InView
+              key={productGroup.category}
+              rootMargin="-135px 0px 0px 0px"
+              onChange={(inView) => handleElementInView(productGroup.category, inView)}
+            >
+              <Box display="Flex" flexDir="column" mt="4" position="relative">
+                <Box position="absolute" mt="-130px" id={`${productGroup.category}`} />
                 <Heading as="h4" fontSize="x-large" isTruncated mb="2">
                   {productGroup.category}
                 </Heading>
@@ -122,7 +147,7 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
                   <CatalogProduct key={product._id} product={product} />
                 ))}
               </Box>
-            </Fragment>
+            </InView>
           ))}
         </Box>
       </Box>

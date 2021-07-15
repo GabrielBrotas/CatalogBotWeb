@@ -8,6 +8,15 @@ import { getCompanyToken } from './getToken'
 export function withCompanySSRAuth<P>(fn: GetServerSideProps<P>): GetServerSideProps {
   return async (ctx: GetServerSidePropsContext): Promise<GetServerSidePropsResult<P>> => {
     const token = getCompanyToken(ctx)
+    // se nao tiver cookie vai redirecionar
+    if (!token) {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      }
+    }
 
     const { roles } = jwtDecode(token) as any
 
@@ -24,6 +33,7 @@ export function withCompanySSRAuth<P>(fn: GetServerSideProps<P>): GetServerSideP
     try {
       return await fn(ctx)
     } catch (err) {
+      console.log('err here = ', err)
       console.log(err instanceof AuthTokenError)
 
       if (err instanceof AuthTokenError) {

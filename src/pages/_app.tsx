@@ -1,7 +1,9 @@
 import React from 'react'
 import { ThemeProps } from '../styles/theme'
 
+import 'keen-slider/keen-slider.min.css'
 import '../styles/global.css'
+
 import { AppProvider } from '../contexts'
 
 function handleGlobalStyles(pageProps) {

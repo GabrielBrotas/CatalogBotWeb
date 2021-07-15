@@ -13,7 +13,10 @@ import Upload, { UploadedImages } from '../../../components/Upload'
 import { EditProductFormData, editProductFormSchema } from './types'
 import { ProductMainData } from '../forms/main-data.form.'
 import { ProductOptionForm } from '../forms/product-options.form'
-import { updateProduct } from '../../../services/apiFunctions/companies/products'
+import {
+  updateProduct,
+  updateProductImage,
+} from '../../../services/apiFunctions/companies/products'
 import { removeIdFromProductOptions } from '../../../utils/dataFormat'
 
 export const EditProductContainer = ({ product, categories }: EditProductProps) => {
@@ -82,7 +85,12 @@ export const EditProductContainer = ({ product, categories }: EditProductProps) 
         description,
         options: removeIdFromProductOptions(options),
         productId: product._id,
+        removeImage: !uploadedImages[0] ? true : false,
       })
+
+      if (uploadedImages[0] && uploadedImages[0].file) {
+        await updateProductImage({ productId: product._id, image: uploadedImages[0].file })
+      }
 
       addToast({
         status: 'success',

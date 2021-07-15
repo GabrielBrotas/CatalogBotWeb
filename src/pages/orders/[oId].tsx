@@ -1,14 +1,16 @@
 import React from 'react'
 import { GetServerSideProps } from 'next'
-import { withCompanySSRAuth } from '../../utils/withSSRAuth'
-import { getOrder } from '../../services/apiFunctions/companies/orders'
-import { Section } from '../../components/Section'
-import { Order } from '../../services/apiFunctions/companies/orders/types'
-import { OrderContainer } from '../../containers/Orders/Order'
 import dayjs from 'dayjs'
-import { getTotalPriceFromOrderProduct } from '../../utils/maths'
-import { AlertDialog } from '../../components/Modals/AlertDialog'
+
+import { getOrder } from '../../services/apiFunctions/companies/orders'
+import { Order } from '../../services/apiFunctions/companies/orders/types'
 import { useCompanyAuth } from '../../contexts/AuthCompany'
+import { withCompanySSRAuth } from '../../utils/withSSRAuth'
+import { getTotalPriceFromOrderProduct } from '../../utils/maths'
+
+import { OrderContainer } from '../../containers/Orders/Order'
+import { AlertDialog } from '../../components/Modals/AlertDialog'
+import { Section } from '../../components/Section'
 import { AuthCompanySEO } from '../../components/SEO/auth-company-seo'
 
 export interface OrderFormated extends Order {

@@ -12,6 +12,13 @@ export type LoginDTO = {
 export type SignInCompanyResponse = {
   company: Company
   token: string
+  refreshToken: {
+    company: string
+    client: null
+    created_at: string
+    _id: string
+    expiresIn: number
+  }
 }
 
 export type CompanyWorkTime = {

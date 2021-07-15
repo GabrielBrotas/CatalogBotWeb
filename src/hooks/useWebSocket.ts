@@ -41,7 +41,7 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
 
   const eventUpdateOrderStatus = ({ Receiver, Sender, status, Order }: EventUpdateOrderStatus) => {
     ref.current?.emit('updateOrderStatus', { userID: Receiver, status })
-
+    console.log('here 2')
     if (status === 'pending') {
       ref.current?.emit('sendNotification', {
         Receiver,
@@ -49,6 +49,7 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
         Order,
         Text: "Um cliente acabou de solicitar um pedido!'",
         Type: 'order',
+        Status: status,
       })
       return
     }
@@ -60,6 +61,7 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
         Order,
         Text: 'Parabens, seu pedido foi confirmado pelo fornecedor!',
         Type: 'order',
+        Status: status,
       })
       return
     }
@@ -71,6 +73,7 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
         Order,
         Text: 'Parabens, seu pedido foi entregue!',
         Type: 'order',
+        Status: status,
       })
       return
     }
@@ -82,6 +85,7 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
         Order,
         Text: 'Oh não, você teve um pedido cancelado :( !',
         Type: 'order',
+        Status: status,
       })
       return
     }
@@ -92,7 +96,7 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
   }
 
   const connectToWhatsApp = () => {
-    if (isSocketConnected) {
+    if (isSocketConnected && !isWppConnected) {
       console.log('connecting whatsapp..')
       setIsWppConnected(false)
       setWppConnIsLoading(true)
@@ -102,7 +106,8 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
 
   const disconnectWhatsApp = () => {
     console.log('disconnecting whatsapp..')
-    ref.current?.emit('disconnectWhatsapp')
+    ref.current?.emit('disconnectWhatsapp', userId)
+    window.location.reload()
   }
 
   useEffect(() => {

@@ -3,11 +3,11 @@ import { Avatar, Flex, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/r
 import { useClientAuth } from '../../../contexts/AuthClient'
 
 export function ClientNav() {
-  const { client, signOutClient, isAuthenticated, openModal } = useClientAuth()
+  const { client, signOut, isAuthenticated, openModal } = useClientAuth()
 
   const handleLogout = useCallback(() => {
-    signOutClient()
-  }, [signOutClient])
+    signOut()
+  }, [signOut])
 
   const openLoginModal = () => {
     openModal({ type: 'login' })

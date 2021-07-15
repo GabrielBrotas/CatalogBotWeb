@@ -5,6 +5,7 @@ export const getClientNotifications = async ({
   Sender,
   ctx = false,
 }: IGetNotificationsDTO): Promise<IPaginatedNotifications> => {
+  if (!Sender) return
   if (!ctx) return await apiClient.get(`/notifications?Sender=${Sender}`).then(({ data }) => data)
   return apiClientSSR(ctx)
     .get(`/notifications?Sender=${Sender}`)

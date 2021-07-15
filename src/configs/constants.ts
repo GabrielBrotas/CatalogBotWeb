@@ -1,4 +1,5 @@
-export const API_URL = 'http://localhost:4000'
+export const API_URL = process.env.NEXT_PUBLIC_API_URL
 export const COOKIE_COMPANY_TOKEN = '@CatalogBot.token.company'
+export const COOKIE_COMPANY_REFRESH_TOKEN = '@CatalogBot.refreshtokenid.company'
 export const COOKIE_CLIENT_TOKEN = '@CatalogBot.token.client'
-export const NOTIFICATION_SOUND = 'http://localhost:4000/files/notification.mp3'
+export const NOTIFICATION_SOUND = process.env.NEXT_PUBLIC_NOTIFICATION_SOUND
