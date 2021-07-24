@@ -151,7 +151,7 @@ export const AddressForm = ({
         Endereço de entrega
       </Text>
 
-      {client.defaultAddress && (
+      {client.defaultAddress && Object.keys(client.defaultAddress).length > 0 && (
         <HStack mb="4">
           <Box
             display="flex"

@@ -13,7 +13,7 @@ export const ProductModal = () => {
 
   return (
     <>
-      <Drawer placement="bottom" onClose={onClose} isOpen={isProductModalOpen}>
+      <Drawer placement="bottom" onClose={onClose} isOpen={isProductModalOpen} autoFocus={false}>
         <DrawerOverlay />
         <DrawerContent h="90%" borderTopRadius="2xl">
           <ProductModalHeader

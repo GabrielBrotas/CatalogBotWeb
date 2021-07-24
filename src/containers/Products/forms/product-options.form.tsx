@@ -78,6 +78,7 @@ export const ProductOptionForm = ({
             errors.options[productOptionIndex].name
           }
           defaultValue={defaultOptionName}
+          maxLength={30}
         />
         <FormSelect
           name="isRequired"

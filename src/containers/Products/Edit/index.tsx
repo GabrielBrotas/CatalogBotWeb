@@ -106,6 +106,8 @@ export const EditProductContainer = ({ product, categories }: EditProductProps) 
     }
   }
 
+  console.log(product)
+
   return (
     <Box>
       <CompanyHeader />
@@ -134,7 +136,7 @@ export const EditProductContainer = ({ product, categories }: EditProductProps) 
               categories={categories}
               errors={errors}
               register={register}
-              defaultCategory={product.category && product.category.name}
+              defaultCategory={product.category && product.category._id}
               defaultDescription={product.description}
               defaultName={product.name}
               defaultPrice={product.price}

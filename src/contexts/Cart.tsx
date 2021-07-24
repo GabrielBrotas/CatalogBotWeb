@@ -84,6 +84,7 @@ const CartProvider: React.FC = ({ children }) => {
   useEffect(() => {
     if (!client) return
     if (!company) return
+
     getCart({ companyId: company._id }).then((response) => {
       if (response) {
         console.log(response)

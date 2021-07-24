@@ -45,7 +45,7 @@ export const LoginForm = ({ register, errors, isSubmitting }: LoginFormProps) =>
       </FormButton>
 
       <Text cursor="pointer" fontSize="lg" mt={4} w="100%" onClick={() => setFormType('register')}>
-        Não tennho uma conta
+        Não tenho uma conta
       </Text>
     </>
   )

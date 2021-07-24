@@ -36,6 +36,7 @@ export const RegisterOrLoginClient = () => {
     register: registerSignUp,
     handleSubmit: handleSubmitSignUp,
     formState: { errors: signUpErrors, isSubmitting: isSubmittingSignUp },
+    reset: resetSignUp,
   } = useForm({
     resolver: yupResolver(signUpClientFormSchema),
   })
@@ -44,6 +45,7 @@ export const RegisterOrLoginClient = () => {
     register: registerSignIn,
     handleSubmit: handleSubmitSignin,
     formState: { errors: signInErrors, isSubmitting: isSubmittingSignIn },
+    reset: resetSignIn,
   } = useForm({
     resolver: yupResolver(signInClientFormSchema),
   })
@@ -73,12 +75,13 @@ export const RegisterOrLoginClient = () => {
         status: 'success',
       })
 
+      resetSignUp()
+      resetSignIn()
       closeRegisterModal()
     } catch (err) {
-      console.log(err.response)
       addToast({
         title: 'Error',
-        description: err.response.data,
+        description: err.response.data.message,
         status: 'error',
       })
     }
@@ -87,10 +90,8 @@ export const RegisterOrLoginClient = () => {
   const handleSignInClient: SubmitHandler<SignInClientFormData> = async (data, event) => {
     event.preventDefault()
     const { user, password } = data
-
     try {
-      const userFormated = removeSpeciaCaracteresAndLetters(user).trim()
-      await loginClient({ user: userFormated, password })
+      await loginClient({ user, password })
 
       addToast({
         title: 'Autenticado com sucesso!',
@@ -98,6 +99,8 @@ export const RegisterOrLoginClient = () => {
         status: 'success',
       })
 
+      resetSignUp()
+      resetSignIn()
       closeRegisterModal()
     } catch (err) {
       addToast({

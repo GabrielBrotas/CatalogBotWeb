@@ -66,7 +66,7 @@ export const CartModal = () => {
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
 
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethods>('money')
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethods>()
 
   useEffect(() => {
     if (cart) {
@@ -89,9 +89,12 @@ export const CartModal = () => {
       setStep(1)
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
-        console.log(err.response)
+        console.log(err.response.data)
         addToast({
-          title: err.response.data.message.message,
+          title:
+            err.response.data.message === 'celebrate request validation failed'
+              ? 'Por favor, preencha os campos corretamente'
+              : err.response.data.message,
           status: 'error',
         })
       } else {
