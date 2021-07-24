@@ -130,6 +130,8 @@ export function apiClientSSR(ctx = undefined) {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       Authorization: `Bearer ${cookies[COOKIE_CLIENT_TOKEN]}`,
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
     },
   })
 

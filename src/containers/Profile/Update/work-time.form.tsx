@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, Flex, Text } from '@chakra-ui/react'
+import { Box, Button, Flex, Text, useBreakpointValue } from '@chakra-ui/react'
 import { UseFormRegister } from 'react-hook-form'
 import { FormSelect } from '../../../components/Form/select'
 import {
@@ -26,6 +26,12 @@ export const CompanyWorkTimeForm = ({
   handleAddNewWorkTime,
   handleRemoveWorkTime,
 }: CompanyWorkTimeFormProps) => {
+  const isMobileView = useBreakpointValue({
+    base: true,
+    md: false,
+    lg: false,
+  })
+
   return (
     <Flex w="100%" flexDir="column" mt={10}>
       <Flex justify="space-between" mb={4}>
@@ -52,16 +58,18 @@ export const CompanyWorkTimeForm = ({
           bg="gray.600"
           borderRadius="lg"
           mb={1}
+          flexDirection={isMobileView ? 'column' : 'row'}
         >
           <FormSelect
             name={`${workDay.day}${index}`}
             options={weekDays}
             defaultValue={workDay.day}
-            maxW="12rem"
+            maxW={!isMobileView ? '12rem' : null}
+            mb={isMobileView ? '2' : '0'}
             {...register(`workTime.${index}.day` as const)}
           />
 
-          <Flex>
+          <Flex w={isMobileView ? '100%' : null} mb={isMobileView ? '2' : null}>
             <FormSelect
               minW="7rem"
               name={`${workDay.from}${index}`}
@@ -75,7 +83,7 @@ export const CompanyWorkTimeForm = ({
               name={`${workDay.to}${index}`}
               options={hours}
               defaultValue={workDay.to}
-              containerStyle={{ mr: '4' }}
+              containerStyle={{ mr: isMobileView ? '0' : '4' }}
               {...register(`workTime.${index}.to` as const)}
             />
           </Flex>
@@ -83,7 +91,8 @@ export const CompanyWorkTimeForm = ({
           <Button
             type="button"
             colorScheme="red"
-            w="3"
+            w={isMobileView ? '24' : '3'}
+            ml={isMobileView ? 'auto' : '0'}
             justifySelf="flex-end"
             onClick={() => handleRemoveWorkTime(index)}
           >

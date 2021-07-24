@@ -69,7 +69,6 @@ export const CreateProductContainer = ({ categories }: CreateProductProps) => {
       })
 
       if (uploadedImages[0] && uploadedImages[0].file) {
-        console.log('upload')
         await updateProductImage({ productId: product._id, image: uploadedImages[0].file })
       }
 

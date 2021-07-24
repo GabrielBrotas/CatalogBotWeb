@@ -36,7 +36,7 @@ export const SignUpContainer = () => {
 
   const { addToast } = useToast()
 
-  const handleSignIn = useCallback(
+  const handleSignUp = useCallback(
     async (data: SignUpFormData) => {
       const { email, name, password } = data
       try {
@@ -50,7 +50,7 @@ export const SignUpContainer = () => {
       } catch (err) {
         addToast({
           title: 'Error',
-          description: err.message,
+          description: err.response.data.message,
           status: 'error',
         })
       }
@@ -72,7 +72,7 @@ export const SignUpContainer = () => {
         <Flex flexDir="column" alignItems="center" justify="center">
           <Image src="/svgs/logo.svg" alt="logo" />
 
-          <form onSubmit={handleSubmit(handleSignIn)}>
+          <form onSubmit={handleSubmit(handleSignUp)}>
             <Text fontSize="lg" my="4" textAlign="center">
               Faça seu cadastro
             </Text>

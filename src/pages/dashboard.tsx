@@ -27,6 +27,7 @@ export interface DashboardProps {
 
 export default function Dashboard({ dataAnalysis }: DashboardProps) {
   const { company } = useCompanyAuth()
+
   return (
     <>
       {company && <AuthCompanySEO company={company} page="Dashboard" />}

@@ -36,7 +36,7 @@ export const AdditionalProductOptionForm = ({
         {...register(
           `options.${productOptionIndex}.additionals.${additionalProductOptionIndex}.name` as const
         )}
-        maxLength={20}
+        maxLength={25}
         error={
           errors.options &&
           errors.options[productOptionIndex] &&

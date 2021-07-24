@@ -11,7 +11,7 @@ import {
   Divider,
 } from '@chakra-ui/react'
 import { CatalogProps } from '../../pages/catalog/[companyId]'
-import { InView, useInView } from 'react-intersection-observer'
+import { InView } from 'react-intersection-observer'
 
 import { CompanyBenefitsTag } from '../../components/Tags/companyBenefitsTag'
 import { useCart } from '../../contexts/Cart'

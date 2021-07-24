@@ -40,7 +40,8 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': ['warn'],
 
         'prettier/prettier': ['error', {}, { usePrettierrc: true }],
-        "@typescript-eslint/explicit-module-boundary-types": ["off"]
+        "@typescript-eslint/explicit-module-boundary-types": ["off"],
+        'jsx-a11y/no-autofocus': 'off'
       },
     },
   ],
