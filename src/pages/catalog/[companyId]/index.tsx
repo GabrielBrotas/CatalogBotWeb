@@ -102,7 +102,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
           destination: '/404',
           permanent: false,
         },
-        revalidate: 60 * 60 * 24,
+        revalidate: 30, //30s
       }
     }
 
@@ -115,7 +115,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
           color: '#444150',
         },
       },
-      revalidate: 60 * 60 * 1, // 1 hora
+      revalidate: 30, //30s
     }
   } catch (err) {
     console.log({ err })
@@ -124,7 +124,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
         destination: '/404',
         permanent: false,
       },
-      revalidate: 60 * 60 * 24,
+      revalidate: 30, //30s
     }
   }
 }

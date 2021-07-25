@@ -71,7 +71,7 @@ export const OrdersContainer = (props: OrdersContainerProps) => {
     }
   )
   return (
-    <Box>
+    <Box w={['max-content', '100%']}>
       <CompanyHeader />
 
       <Flex w="100%" my="6" maxWidth="1480" mx="auto" px="6">
