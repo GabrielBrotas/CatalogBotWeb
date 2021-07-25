@@ -19,6 +19,8 @@ export function NotificationsNav() {
   const { companyNotifications, setCompanyNotifications } = useCompanyAuth()
   const router = useRouter()
 
+  const [isOpen, setIsOpen] = React.useState(false)
+
   const navigateToOrder = (orderId: string) => {
     if (orderId) {
       router.push(`/orders/${orderId}`)
@@ -62,7 +64,7 @@ export function NotificationsNav() {
       borderRightWidth={1}
       borderColor="gray.700"
     >
-      <Menu onClose={markNotificationsAsViewd}>
+      <Menu onClose={markNotificationsAsViewd} isOpen={isOpen}>
         <MenuButton
           bg="transparent"
           _hover={{ bg: 'transparent' }}
@@ -70,6 +72,7 @@ export function NotificationsNav() {
           as={Button}
           spacing={['6', '8']}
           position="relative"
+          onClick={() => setIsOpen(!isOpen)}
         >
           <Icon as={RiNotificationLine} fontSize="20" />
 
@@ -95,7 +98,7 @@ export function NotificationsNav() {
             </Box>
           )}
         </MenuButton>
-        <MenuList bg="gray.700" textColor="gray.50">
+        <MenuList bg="gray.700" textColor="gray.50" display={!isOpen ? 'none' : 'block'}>
           {companyNotifications && companyNotifications.results.length > 0 ? (
             companyNotifications.results.map((notification) => (
               <MenuItem

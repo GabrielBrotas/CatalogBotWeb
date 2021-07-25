@@ -17,7 +17,17 @@ export function CompanyHeader() {
   })
 
   return (
-    <Flex as="header" w="100%" maxWidth={1480} h="20" mx="auto" mt="4" px="6" align="center">
+    <Flex
+      as="header"
+      // w="100%"
+      w={['fit-content', '100%']}
+      maxWidth={1480}
+      h="20"
+      mx="auto"
+      mt="4"
+      px="6"
+      align="center"
+    >
       {isMobileView && (
         <IconButton
           icon={<Icon as={RiMenuLine} />}
