@@ -3,8 +3,10 @@ import {
   Company,
   DataAnalysis,
   GetCompanyDTO,
+  ICompanyFlow,
   IGetMyDataAnalysisDTO,
   IUpdateCompanyDTO,
+  IUpdateCompanyFlowDTO,
   IUploadedFile,
   IUploadFile,
   LoginDTO,
@@ -48,6 +50,10 @@ export const updateCompany = async ({
   return await apiCompany
     .put('/companies', { name, benefits, shortDescription, workTime, acceptedPaymentMethods })
     .then(({ data }) => data)
+}
+
+export const updateCompanyFlow = async ({ flow }: IUpdateCompanyFlowDTO): Promise<ICompanyFlow> => {
+  return await apiCompany.put('/companies/flow', { flow }).then(({ data }) => data)
 }
 
 export const updateCompanyImage = async ({

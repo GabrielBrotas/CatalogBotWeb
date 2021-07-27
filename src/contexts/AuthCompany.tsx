@@ -32,6 +32,7 @@ type AuthContextData = {
   wppConnIsLoading: boolean
   disconnectWhatsApp: () => void
   isSocketConnected: boolean
+  setCompany: React.Dispatch<React.SetStateAction<Company>>
 }
 
 const AuthContext = createContext({} as AuthContextData)
@@ -70,30 +71,7 @@ export const AuthCompanyProvider: React.FC = ({ children }) => {
     if (token) {
       Promise.all([getMyCompany({}), getCompanyNotifications({})])
         .then(([companyResponse, notificationsResponse]) => {
-          const {
-            _id,
-            email,
-            name,
-            benefits,
-            mainImageUrl,
-            shortDescription,
-            workTime,
-            acceptedPaymentMethods,
-            Views,
-          } = companyResponse
-
-          setCompany({
-            _id,
-            email,
-            name,
-            benefits,
-            mainImageUrl,
-            shortDescription,
-            workTime,
-            acceptedPaymentMethods,
-            Views,
-          })
-
+          setCompany(companyResponse)
           setCompanyNotifications(notificationsResponse)
         })
         .catch(() => {
@@ -105,7 +83,7 @@ export const AuthCompanyProvider: React.FC = ({ children }) => {
   useEffect(() => {
     if (newNotification && String(newNotification.Receiver) === String(company._id)) {
       new Audio(NOTIFICATION_SOUND).play()
-      setCompanyNotifications(({ results, total, next, previous }) => ({
+      setCompanyNotifications(({ results = [], total, next, previous }) => ({
         results: [newNotification, ...results],
         total,
         next,
@@ -157,6 +135,7 @@ export const AuthCompanyProvider: React.FC = ({ children }) => {
         wppConnIsLoading,
         disconnectWhatsApp,
         isSocketConnected,
+        setCompany,
       }}
     >
       {children}

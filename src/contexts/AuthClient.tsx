@@ -85,8 +85,8 @@ export const AuthClientProvider: React.FC = ({ children }) => {
   useEffect(() => {
     if (newNotification && String(newNotification.Receiver) === String(client._id)) {
       new Audio(NOTIFICATION_SOUND).play()
-
-      setClientsNotifications(({ results, total, next, previous }) => ({
+      console.log({ clientsNotifications })
+      setClientsNotifications(({ results = [], total, next, previous }) => ({
         results: [newNotification, ...results],
         total,
         next,
@@ -94,7 +94,7 @@ export const AuthClientProvider: React.FC = ({ children }) => {
       }))
       setNewNotification(null)
     }
-  }, [client, newNotification, setNewNotification, setClientsNotifications])
+  }, [client, newNotification, setNewNotification, setClientsNotifications, clientsNotifications])
 
   async function loginClient({ user, password }: SignInCredentials) {
     const { client, token } = await signInClient({ user, password })

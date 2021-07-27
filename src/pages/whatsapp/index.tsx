@@ -1,9 +1,9 @@
 import React from 'react'
-import { withCompanySSRAuth } from '../utils/withSSRAuth'
+import { withCompanySSRAuth } from '../../utils/withSSRAuth'
 
-import { useCompanyAuth } from '../contexts/AuthCompany'
-import { AuthCompanySEO } from '../components/SEO/auth-company-seo'
-import { WhatsAppContainer } from '../containers/Whatsapp'
+import { useCompanyAuth } from '../../contexts/AuthCompany'
+import { AuthCompanySEO } from '../../components/SEO/auth-company-seo'
+import { WhatsAppContainer } from '../../containers/Whatsapp/index/index'
 
 export default function Whatsapp() {
   const { company } = useCompanyAuth()

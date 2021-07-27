@@ -35,6 +35,9 @@ export const SingleOrder = () => {
     md: false,
     lg: false,
   })
+
+  console.log(isMobileView)
+
   const handleCancelOrder = async () => {
     try {
       handleOpenAlertModal({
@@ -162,12 +165,17 @@ export const SingleOrder = () => {
                 )}
                 {orderProduct.pickedOptions &&
                   orderProduct.pickedOptions.map((pickedOption) => (
-                    <Flex key={pickedOption._id} mb="4" flexDir={isMobileView ? 'column' : 'row'}>
+                    <Flex key={pickedOption._id} mb="4" flexDir="column">
                       <Text w="32">{pickedOption.productOptionName}:</Text>
-                      <Flex w="full">
+                      <Flex w="full" flexDir="column">
                         {pickedOption.optionAdditionals &&
                           pickedOption.optionAdditionals.map((optionAdditional) => (
-                            <Fragment key={optionAdditional._id}>
+                            <Box
+                              key={optionAdditional._id}
+                              display="flex"
+                              py="1"
+                              alignItems="center"
+                            >
                               <Flex flex="1" alignItems="center">
                                 <Text
                                   fontSize="small"
@@ -194,7 +202,7 @@ export const SingleOrder = () => {
                                     )
                                   )}
                               </Text>
-                            </Fragment>
+                            </Box>
                           ))}
                       </Flex>
                     </Flex>

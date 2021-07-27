@@ -20,7 +20,7 @@ export const WorkTime = ({ workTime }: WorkTimeProps) => {
           alignItems="center"
           justifyContent="space-between"
           p="3"
-          bg="gray.600"
+          bg="gray.700"
           marginRight={4}
           borderRadius="lg"
           mb={1}

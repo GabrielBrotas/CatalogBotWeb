@@ -29,7 +29,6 @@ export const ProductMainData = ({
   defaultName,
   defaultPrice,
 }: ProductMainData) => {
-  console.log(defaultCategory)
   return (
     <>
       <FormInput

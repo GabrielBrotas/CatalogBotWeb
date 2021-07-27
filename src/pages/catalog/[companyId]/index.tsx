@@ -1,5 +1,5 @@
 import React from 'react'
-import { GetStaticPaths, GetStaticProps } from 'next'
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next'
 
 import { useProductModal } from '../../../contexts/Modals/ProductModal'
 import { getCategories } from '../../../services/apiFunctions/companies/categories'
@@ -45,14 +45,7 @@ export default function Catalog({ company, productsAgrupedByCategory }: CatalogP
   )
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: [],
-    fallback: 'blocking',
-  }
-}
-
-export const getStaticProps: GetStaticProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   try {
     const { companyId } = ctx.params
 
@@ -102,7 +95,6 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
           destination: '/404',
           permanent: false,
         },
-        revalidate: 30, //30s
       }
     }
 
@@ -115,7 +107,6 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
           color: '#444150',
         },
       },
-      revalidate: 30, //30s
     }
   } catch (err) {
     console.log({ err })
@@ -124,7 +115,6 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
         destination: '/404',
         permanent: false,
       },
-      revalidate: 30, //30s
     }
   }
 }

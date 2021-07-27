@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Button,
   Modal,
@@ -10,12 +10,15 @@ import {
   ModalOverlay,
   useDisclosure,
   Image,
+  Flex,
+  Spinner,
 } from '@chakra-ui/react'
-import { useCompanyAuth } from '../../contexts/AuthCompany'
-import { useEffect } from 'react'
+import { useCompanyAuth } from '../../../contexts/AuthCompany'
 
 export const WhatsAppModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const [loading, setLoading] = useState(false)
 
   const { isSocketConnected, isWppConnected, wppConnIsLoading, connectWhatsapp, qrCode } =
     useCompanyAuth()
@@ -24,6 +27,7 @@ export const WhatsAppModal = () => {
     onOpen()
     if (!isWppConnected && !wppConnIsLoading && isSocketConnected) {
       console.log('call func')
+      setLoading(true)
       connectWhatsapp()
     }
   }
@@ -31,8 +35,14 @@ export const WhatsAppModal = () => {
   useEffect(() => {
     if (isWppConnected) {
       onClose()
+      setLoading(false)
     }
   }, [isWppConnected, onClose])
+
+  useEffect(() => {
+    if (qrCode) setLoading(false)
+  }, [qrCode])
+
   return (
     <>
       {!isWppConnected && (
@@ -47,8 +57,14 @@ export const WhatsAppModal = () => {
           <ModalHeader>Qr Code</ModalHeader>
           <ModalCloseButton />
           <ModalBody background="gray.700">
-            {qrCode && (
-              <Image src={`data:image/png;charset=utf-8;base64,${qrCode}`} alt="qr-code" />
+            {loading ? (
+              <Flex flex="1" align="center" justifyContent="center">
+                <Spinner size="xl" />
+              </Flex>
+            ) : (
+              qrCode && (
+                <Image src={`data:image/png;charset=utf-8;base64,${qrCode}`} alt="qr-code" />
+              )
             )}
           </ModalBody>
 
