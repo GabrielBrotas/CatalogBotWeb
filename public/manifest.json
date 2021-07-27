@@ -6,8 +6,8 @@
   "background_color": "#FFFFFF",
   "display": "standalone",
   "lang": "pt-BR",
-  "scope": "/",
-  "start_url": "/",
+  "scope": "/catalog",
+  "start_url": "/catalog",
   "orientation": "portrait",
   "icons": [
     {

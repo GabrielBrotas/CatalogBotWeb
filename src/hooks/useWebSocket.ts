@@ -100,14 +100,13 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
       console.log('connecting whatsapp..')
       setIsWppConnected(false)
       setWppConnIsLoading(true)
-      ref.current?.emit('connectWhatsapp', userId)
+      ref.current?.emit('connectWhatsapp', { userId })
     }
   }
 
   const disconnectWhatsApp = () => {
     console.log('disconnecting whatsapp..')
-    ref.current?.emit('disconnectWhatsapp', userId)
-    window.location.reload()
+    ref.current?.emit('disconnectWhatsapp', { userId })
   }
 
   useEffect(() => {
@@ -118,17 +117,20 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
     const socket = socketIoClient(API_URL)
 
     socket.on('connect', () => {
-      console.log('connected')
+      console.log('socket connected')
       eventLoggedUser(userId)
+      setWppConnIsLoading(false)
       setIsSocketConnected(true)
     })
 
     socket.on('reconnect', () => {
       console.log('reconnected')
+      setIsSocketConnected(true)
     })
 
     socket.on('disconnect', () => {
-      console.log('disconnected')
+      console.log('socket disconnected')
+      setIsSocketConnected(false)
     })
 
     socket.on('updatedOrderStatus', (data) => {

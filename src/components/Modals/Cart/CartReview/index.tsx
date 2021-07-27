@@ -1,4 +1,9 @@
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { object, string, boolean } from 'yup'
+import { AiOutlineArrowLeft } from 'react-icons/ai'
+import { RiShoppingCart2Line } from 'react-icons/ri'
 import {
   VStack,
   Flex,
@@ -12,39 +17,36 @@ import {
   Box,
   Spinner,
 } from '@chakra-ui/react'
-import * as yup from 'yup'
+
 import { useCart } from '../../../../contexts/Cart'
-import { CartProducts } from './CartProducts'
-import { PaymentMethod } from './PaymentMethod'
-import { AddressForm } from './AddressForm'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { Address } from '../../../../services/apiFunctions/clients/client/types'
 import { useToast } from '../../../../contexts/Modals/Toast'
-import { FormButton } from '../../../Form/button'
+import { Address } from '../../../../services/apiFunctions/clients/client/types'
 import { PaymentMethods } from '../../../../services/apiFunctions/clients/orders/types'
-import { RiShoppingCart2Line } from 'react-icons/ri'
-import { PriceReview } from './PriceReview'
-import { AiOutlineArrowLeft } from 'react-icons/ai'
 import { CartOrderProduct } from '../../../../services/apiFunctions/clients/cart/types'
 import { getTotalPriceFromCartOrderProduct } from '../../../../utils/maths'
 import { currencyFormat } from '../../../../utils/dataFormat'
+
+import { CartProducts } from './CartProducts'
+import { PaymentMethod } from './PaymentMethod'
+import { AddressForm } from './AddressForm'
+import { FormButton } from '../../../Form/button'
+import { PriceReview } from './PriceReview'
 
 interface HandleBuyProductsProps {
   deliveryAddress: Address
   saveAddressAsDefault?: boolean
 }
 
-const buyProductsFormSchema = yup.object().shape({
-  deliveryAddress: yup.object().shape({
-    state: yup.string().required('Estádo obrigatório'),
-    city: yup.string().required('Cidade obrigatório'),
-    street: yup.string().required('Endereço obrigatório'),
-    neighborhood: yup.string().required('Bairro obrigatório'),
-    number: yup.string().required('Número da casa obrigatório'),
-    cep: yup.string().required('CEP obrigatório'),
+const buyProductsFormSchema = object().shape({
+  deliveryAddress: object().shape({
+    state: string().required('Estádo obrigatório'),
+    city: string().required('Cidade obrigatório'),
+    street: string().required('Endereço obrigatório'),
+    neighborhood: string().required('Bairro obrigatório'),
+    number: string().required('Número da casa obrigatório'),
+    cep: string().required('CEP obrigatório'),
   }),
-  saveAddressAsDefault: yup.boolean().optional(),
+  saveAddressAsDefault: boolean().optional(),
 })
 
 export const CartModal = () => {

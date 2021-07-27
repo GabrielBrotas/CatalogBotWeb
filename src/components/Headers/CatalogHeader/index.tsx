@@ -10,7 +10,7 @@ import { OrdersNav } from './OrdersNav'
 import { useClientAuth } from '../../../contexts/AuthClient'
 import { ClientNav } from './ClientNav'
 import { LogoutNav } from './LogoutNav'
-import { useInView } from 'react-intersection-observer'
+
 interface CatalogHeaderProps {
   categoriesData: {
     name: string

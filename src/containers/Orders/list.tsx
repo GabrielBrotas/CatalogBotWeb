@@ -39,6 +39,7 @@ export const OrdersContainer = (props: OrdersContainerProps) => {
   })
 
   const [page, setPage] = useState(1)
+  // const [isLoading, setIsLoading] = useState(false)
 
   const {
     data: { orders, total, next, previous },
@@ -70,6 +71,7 @@ export const OrdersContainer = (props: OrdersContainerProps) => {
       },
     }
   )
+
   return (
     <Box w={['max-content', '100%']}>
       <CompanyHeader />

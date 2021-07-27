@@ -33,6 +33,7 @@ export const CartProducts = ({ orderProducts, setCartOrderProducts }: CartProduc
       }))
     )
   }
+
   return (
     <>
       {orderProducts.map((orderProduct) => (
@@ -50,23 +51,26 @@ export const CartProducts = ({ orderProducts, setCartOrderProducts }: CartProduc
             </Text>
 
             {orderProduct.pickedOptions.map((pickedOption) =>
-              pickedOption.optionAdditionals.map((optionAdditional) => (
-                <Flex fontSize="md" alignItems="center" mb="1" key={optionAdditional._id}>
-                  <Text
-                    fontSize="small"
-                    bg="gray.50"
-                    textColor="gray.500"
-                    px="2"
-                    py="1"
-                    mr="2"
-                    fontWeight="bold"
-                    borderRadius="md"
-                  >
-                    {optionAdditional.amount}
-                  </Text>
-                  <Text textColor="gray.700">{optionAdditional.name}</Text>
-                </Flex>
-              ))
+              pickedOption.optionAdditionals.map(
+                (optionAdditional) =>
+                  optionAdditional.name !== 'sim' && (
+                    <Flex fontSize="md" alignItems="center" mb="1" key={optionAdditional._id}>
+                      <Text
+                        fontSize="small"
+                        bg="gray.50"
+                        textColor="gray.500"
+                        px="2"
+                        py="1"
+                        mr="2"
+                        fontWeight="bold"
+                        borderRadius="md"
+                      >
+                        {optionAdditional.amount}
+                      </Text>
+                      <Text textColor="gray.700">{optionAdditional.name}</Text>
+                    </Flex>
+                  )
+              )
             )}
             <Text fontSize="xl" fontWeight="medium" my="4">
               {currencyFormat(orderProduct.product.price * orderProduct.amount)}

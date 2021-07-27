@@ -61,8 +61,13 @@ export const OrderData = ({ order }: OrderDataProps) => {
 
         {order.orderProducts.map((orderProduct) => (
           <VStack key={orderProduct._id} w="full" px="4" mb="5" alignItems="flex-start">
-            <Flex w="full" justifyContent="space-between" mb="2">
-              <Flex alignItems="center">
+            <Flex
+              w="full"
+              justifyContent="space-between"
+              mb="2"
+              flexDir={isMobileView ? 'column' : 'row'}
+            >
+              <Flex alignItems="center" mb={isMobileView ? '5' : '0'}>
                 <Image
                   src={orderProduct.product?.imageUrl}
                   alt={orderProduct.product.name}

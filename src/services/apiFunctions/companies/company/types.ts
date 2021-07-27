@@ -45,6 +45,23 @@ export type Company = {
   acceptedPaymentMethods: CompanyPaymentMethods
   benefits?: string[]
   Views: Array<{ client: string; date: Date }>
+  flow: ICompanyFlow
+}
+
+export type ICompanyFlow = {
+  '1': string
+  '2': string
+  '2-1-1': string
+  '2-1-2': string
+  '2-2-1': string
+  '2-2-2': string
+  '2-3-1': string
+  '2-3-2': string
+  '2-4': string
+}
+
+export type IUpdateCompanyFlowDTO = {
+  flow: ICompanyFlow
 }
 
 export type IUpdateCompanyDTO = {
