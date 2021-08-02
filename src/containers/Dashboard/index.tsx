@@ -90,7 +90,7 @@ export const DashboardContainer = ({ dataAnalysis }: DashboardProps) => {
   }, [dataAnalysis])
 
   return (
-    <Flex direction="column" h="100vh" w={['max-content', '100%']}>
+    <Flex direction="column" h="100vh" w={['100%']}>
       <CompanyHeader />
 
       <Section>

@@ -28,7 +28,7 @@ export const WhatsAppContainer = () => {
   }, [isSocketConnected])
 
   return (
-    <Box w={['max-content', '100%']}>
+    <Box>
       <CompanyHeader />
 
       <Flex w="100%" my="6" maxWidth="1480" mx="auto" px="6">
