@@ -120,6 +120,7 @@ export function OrderModalProvider({ children }: OrderModalProps) {
         status: 'canceled',
         Sender: client._id,
         Order: order._id,
+        clientWhatsapp: order.client.cellphone,
       })
 
       setOrders(({ results, total, next, previous }) => ({

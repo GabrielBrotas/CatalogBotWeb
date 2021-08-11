@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   AlertDialog as ChakraAlertDialog,
   AlertDialogBody,
@@ -5,16 +6,25 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
+  Box,
   Button,
+  Input,
 } from '@chakra-ui/react'
-import React from 'react'
 import { useAlertModal } from '../../contexts/Modals/AlertModal'
 
 export const AlertDialog = () => {
   const { isAlertModalOpen, handleCloseAlertModal, alertModalContent } = useAlertModal()
 
+  const [value, setValue] = React.useState<string>()
+
   const onClose = () => handleCloseAlertModal()
   const cancelRef = React.useRef()
+
+  const handleSubmit = () => {
+    alertModalContent?.onConfirm(value)
+    handleCloseAlertModal()
+    setValue(null)
+  }
 
   return (
     <ChakraAlertDialog isOpen={isAlertModalOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
@@ -26,16 +36,20 @@ export const AlertDialog = () => {
 
           <AlertDialogBody color="gray.700">{alertModalContent?.description}</AlertDialogBody>
 
+          {alertModalContent?.showInput && (
+            <Box paddingX="6" marginY="2">
+              <Input value={value} onChange={(e) => setValue(e.target.value)} color="gray.700" />
+            </Box>
+          )}
+
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={onClose}>
               Voltar
             </Button>
+
             <Button
-              colorScheme="red"
-              onClick={() => {
-                alertModalContent?.onConfirm()
-                handleCloseAlertModal()
-              }}
+              colorScheme={alertModalContent?.showInput ? 'blue' : 'red'}
+              onClick={handleSubmit}
               ml={3}
             >
               {alertModalContent?.submitButtonText}

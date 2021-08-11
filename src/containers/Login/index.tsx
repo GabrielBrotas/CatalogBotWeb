@@ -57,7 +57,7 @@ export const LoginContainer = () => {
 
           <form onSubmit={handleSubmit(handleSignIn)}>
             <Text fontSize="lg" my="4" textAlign="center">
-              Faça seu logon
+              Faça seu login
             </Text>
             <FormControl isInvalid={errors.name}>
               <FormInput
@@ -83,7 +83,7 @@ export const LoginContainer = () => {
             </FormButton>
           </form>
 
-          <Link href="/forgot-password" passHref>
+          {/* <Link href="/forgot-password" passHref>
             <Text fontSize="md" my="4" textAlign="center" cursor="pointer">
               Esqueci minha senha
             </Text>
@@ -96,17 +96,12 @@ export const LoginContainer = () => {
                 Criar conta
               </Text>
             </Flex>
-          </Link>
+          </Link> */}
         </Flex>
       </Flex>
 
       <Flex flex="1" height="100vh">
-        <img
-          src="/images/sign-in-background.png"
-          alt="welcome"
-          height="100%"
-          style={{ objectFit: 'cover', marginLeft: 'auto' }}
-        />
+        <img src="/svgs/login.svg" alt="welcome" height="100%" style={{ marginLeft: 'auto' }} />
       </Flex>
     </Box>
   )

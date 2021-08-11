@@ -58,6 +58,10 @@ export type ICompanyFlow = {
   '2-3-1': string
   '2-3-2': string
   '2-4': string
+  '3-1': string
+  '3-2': string
+  '3-3': string
+  '3-4': string
 }
 
 export type IUpdateCompanyFlowDTO = {

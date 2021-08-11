@@ -73,4 +73,5 @@ export type IOrderToUpdateDTO = {
 export type IUpdateOrderDTO = {
   orderId: string
   data: IOrderToUpdateDTO
+  deliveryTime?: string
 }

@@ -16,7 +16,6 @@ import { ClientData } from './client-data'
 import { OrderData } from './order-data'
 import { useCompanyAuth } from '../../../contexts/AuthCompany'
 import { useWebSockets } from '../../../hooks/useWebSocket'
-// import { emmitEvent } from '../../../services/socket'
 
 export const OrderContainer = ({ order }: OrderContainerProps) => {
   const router = useRouter()
@@ -49,6 +48,7 @@ export const OrderContainer = ({ order }: OrderContainerProps) => {
             status: 'canceled',
             Sender: company._id,
             Order: order._id,
+            clientWhatsapp: order.client.cellphone,
           })
 
           addToast({
@@ -83,7 +83,9 @@ export const OrderContainer = ({ order }: OrderContainerProps) => {
         Receiver: order.client._id,
         Sender: company._id,
         Order: order._id,
+        clientWhatsapp: order.client.cellphone,
       })
+
       addToast({
         title: 'Ordem confirmada com sucesso',
         status: 'success',
@@ -114,6 +116,7 @@ export const OrderContainer = ({ order }: OrderContainerProps) => {
         Receiver: order.client._id,
         Sender: company._id,
         Order: order._id,
+        clientWhatsapp: order.client.cellphone,
       })
 
       addToast({
@@ -131,6 +134,51 @@ export const OrderContainer = ({ order }: OrderContainerProps) => {
     }
   }
 
+  const handleOrderSent = async () => {
+    try {
+      handleOpenAlertModal({
+        title: 'Tempo de Entrega',
+        description: `Qual o tempo previsto para a entrega desta ordem?
+        Exemplo: 30 minutos, 1 hora, 1 dia, 1 mês...
+        Se você deixar sem preenchar não será enviado a mensagem para o cliente.
+        `,
+        submitButtonText: 'Enviar Mensagem',
+        showInput: true,
+        onConfirm: async (value: string) => {
+          await updateOrder({
+            orderId: order._id,
+            data: {
+              ...tranformOrderFormatedInOrderToUpdate(order),
+              status: 'sent',
+            },
+            deliveryTime: value,
+          })
+
+          eventUpdateOrderStatus({
+            status: 'sent',
+            Receiver: order.client._id,
+            Sender: company._id,
+            Order: order._id,
+            clientWhatsapp: order.client.cellphone,
+            deliveryTime: value,
+          })
+
+          addToast({
+            status: 'info',
+            title: 'Mensagem enviada',
+          })
+          queryClient.invalidateQueries('orders')
+          router.push('/orders')
+        },
+      })
+    } catch (err) {
+      addToast({
+        status: 'error',
+        title: 'Desculpe, algo deu errado!',
+        description: 'Tente novamente mais tarde',
+      })
+    }
+  }
   return (
     <Box w={['max-content', '100%']}>
       <CompanyHeader />
@@ -189,10 +237,18 @@ export const OrderContainer = ({ order }: OrderContainerProps) => {
                     h="12"
                     cursor="pointer"
                     onClick={
-                      order.status === 'confirmed' ? handleOrderReceived : handleConfirmOrder
+                      order.status === 'pending'
+                        ? handleConfirmOrder
+                        : order.status === 'confirmed'
+                        ? handleOrderSent
+                        : handleOrderReceived
                     }
                   >
-                    {order.status === 'confirmed' ? 'Pedido entregue' : 'Aceitar pedido'}
+                    {order.status === 'pending'
+                      ? 'Aceitar pedido'
+                      : order.status === 'confirmed'
+                      ? 'Saiu para entrega'
+                      : 'Pedido Entregue'}
                   </Button>
                 </>
               )}

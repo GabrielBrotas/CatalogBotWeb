@@ -31,7 +31,7 @@ export function apiCompanySSR(ctx = undefined) {
     },
     (error: AxiosError) => {
       // resposta deu erro
-      if (error.response.status === 429) {
+      if (error.response && error.response.status === 429) {
         if (error.response.data?.message === 'token.expired') {
           // renovar token
           cookies = parseCookies(ctx)

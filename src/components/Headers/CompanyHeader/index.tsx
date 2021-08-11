@@ -6,6 +6,7 @@ import { NotificationsNav } from './NotificationsNav'
 import { Profile } from './Profile'
 import { useSidebarDrawer } from '../../../contexts/Modals/SidebarDrawerContext'
 import { RiMenuLine } from 'react-icons/ri'
+import { LinkNav } from './LinkNav'
 
 export function CompanyHeader() {
   const { onOpen } = useSidebarDrawer()
@@ -30,6 +31,8 @@ export function CompanyHeader() {
       <Logo />
 
       <Flex align="center" ml="auto">
+        <LinkNav />
+
         <NotificationsNav />
 
         <Profile mobileView={isMobileView} />

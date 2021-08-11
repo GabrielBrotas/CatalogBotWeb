@@ -22,6 +22,10 @@ type ConversationFormType = {
   '2-3-1': string
   '2-3-2': string
   '2-4': string
+  '3-1': string
+  '3-2': string
+  '3-3': string
+  '3-4': string
 }
 
 const ConversationFormSchema = object().shape({
@@ -34,6 +38,10 @@ const ConversationFormSchema = object().shape({
   '2-3-1': string().required('Campo obrigatório'),
   '2-3-2': string().required('Campo obrigatório'),
   '2-4': string().required('Campo obrigatório'),
+  '3-1': string().required('Campo obrigatório'),
+  '3-2': string().required('Campo obrigatório'),
+  '3-3': string().required('Campo obrigatório'),
+  '3-4': string().required('Campo obrigatório'),
 })
 
 export const EditWhatsAppContainer = () => {
@@ -81,6 +89,10 @@ export const EditWhatsAppContainer = () => {
       setValue('2-3-1', company.flow['2-3-1'])
       setValue('2-3-2', company.flow['2-3-2'])
       setValue('2-4', company.flow['2-4'])
+      setValue('3-1', company.flow['3-1'])
+      setValue('3-2', company.flow['3-2'])
+      setValue('3-3', company.flow['3-3'])
+      setValue('3-4', company.flow['3-4'])
     }
   }, [company, setValue])
 
@@ -103,6 +115,8 @@ export const EditWhatsAppContainer = () => {
 
             <UnorderedList>
               <ListItem>{`{{name}} = Nome da Empresa`}</ListItem>
+              <ListItem>{`{{link}} = Link para o catálogo`}</ListItem>
+              <ListItem>{`{{DeliveryTime}} = Tempo para chegar na casa do cliente (Só pode ser utilzada na 3-2)`}</ListItem>
             </UnorderedList>
           </Box>
 
@@ -114,6 +128,7 @@ export const EditWhatsAppContainer = () => {
               register={register}
               errors={errors}
             />
+
             <CardMessage
               index="2"
               readOnly={false}
@@ -121,12 +136,15 @@ export const EditWhatsAppContainer = () => {
               register={register}
               errors={errors}
             />
+
             <CardMessage
               index="2-1-1"
-              text={`{{Link Do Catálogo}}`}
-              readOnly
+              readOnly={false}
               title="Mensagem automatica para a opção 1 (Catálogo/Pedido)."
+              register={register}
+              errors={errors}
             />
+
             <CardMessage
               index="2-1-2"
               readOnly={false}
@@ -134,6 +152,7 @@ export const EditWhatsAppContainer = () => {
               register={register}
               errors={errors}
             />
+
             <CardMessage
               index="2-2-1"
               readOnly={false}
@@ -141,6 +160,7 @@ export const EditWhatsAppContainer = () => {
               register={register}
               errors={errors}
             />
+
             <CardMessage
               index="2-2-2"
               readOnly={false}
@@ -148,6 +168,7 @@ export const EditWhatsAppContainer = () => {
               register={register}
               errors={errors}
             />
+
             <CardMessage
               index="2-3-1"
               readOnly={false}
@@ -155,6 +176,7 @@ export const EditWhatsAppContainer = () => {
               register={register}
               errors={errors}
             />
+
             <CardMessage
               index="2-3-2"
               readOnly={false}
@@ -162,10 +184,35 @@ export const EditWhatsAppContainer = () => {
               register={register}
               errors={errors}
             />
+
             <CardMessage
-              index="2-4"
+              index="3-1"
               readOnly={false}
-              title="Resposta de encerramento."
+              title="Mensagem enviada após confirmar pedido"
+              register={register}
+              errors={errors}
+            />
+
+            <CardMessage
+              index="3-2"
+              readOnly={false}
+              title="Mensagem enviada após enviar pedido"
+              register={register}
+              errors={errors}
+            />
+
+            <CardMessage
+              index="3-3"
+              readOnly={false}
+              title="Mensagem enviada após entregar pedido"
+              register={register}
+              errors={errors}
+            />
+
+            <CardMessage
+              index="3-4"
+              readOnly={false}
+              title="Mensagem enviada após cancelar pedido"
               register={register}
               errors={errors}
             />
