@@ -1,9 +1,9 @@
+import { ICompanyFlow } from './../services/apiFunctions/companies/company/types'
 import { useEffect, useRef, useState } from 'react'
 import { API_URL } from '../configs/constants'
 import socketIoClient, { Socket } from 'socket.io-client'
 import { useToast } from '../contexts/Modals/Toast'
 import { Notification } from '../services/apiFunctions/clients/notifications/types'
-import { useCompanyAuth } from '../contexts/AuthCompany'
 import { toBase64 } from '../utils/dataFormat'
 
 type Props = {
@@ -16,6 +16,8 @@ type EventUpdateOrderStatus = {
   Receiver: string
   Order?: string
   status: string
+  deliveryTime?: string
+  clientWhatsapp?: string
 }
 
 export type WppConnectionData = {
@@ -39,9 +41,22 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
   const [isWppConnected, setIsWppConnected] = useState(false)
   const [wppConnIsLoading, setWppConnIsLoading] = useState(false)
 
-  const eventUpdateOrderStatus = ({ Receiver, Sender, status, Order }: EventUpdateOrderStatus) => {
-    ref.current?.emit('updateOrderStatus', { userID: Receiver, status })
-    console.log('here 2')
+  const eventUpdateOrderStatus = ({
+    Receiver,
+    Sender,
+    status,
+    Order,
+    deliveryTime,
+    clientWhatsapp,
+  }: EventUpdateOrderStatus) => {
+    ref.current?.emit('updateOrderStatus', {
+      ReceiverID: Receiver,
+      SenderID: Sender,
+      status,
+      deliveryTime,
+      clientWhatsapp,
+    })
+
     if (status === 'pending') {
       ref.current?.emit('sendNotification', {
         Receiver,
@@ -50,6 +65,7 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
         Text: "Um cliente acabou de solicitar um pedido!'",
         Type: 'order',
         Status: status,
+        clientWhatsapp,
       })
       return
     }
@@ -62,6 +78,7 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
         Text: 'Parabens, seu pedido foi confirmado pelo fornecedor!',
         Type: 'order',
         Status: status,
+        clientWhatsapp,
       })
       return
     }
@@ -74,6 +91,7 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
         Text: 'Parabens, seu pedido foi entregue!',
         Type: 'order',
         Status: status,
+        clientWhatsapp,
       })
       return
     }
@@ -86,6 +104,21 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
         Text: 'Oh não, você teve um pedido cancelado :( !',
         Type: 'order',
         Status: status,
+        clientWhatsapp,
+      })
+      return
+    }
+
+    if (status === 'sent') {
+      ref.current?.emit('sendNotification', {
+        Receiver,
+        Sender,
+        Order,
+        Text: 'Seu pedido esta a caminho!',
+        Type: 'order',
+        Status: status,
+        deliveryTime,
+        clientWhatsapp,
       })
       return
     }
@@ -117,7 +150,6 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
     const socket = socketIoClient(API_URL)
 
     socket.on('connect', () => {
-      console.log('socket connected')
       eventLoggedUser(userId)
       setWppConnIsLoading(false)
       setIsSocketConnected(true)
@@ -134,7 +166,8 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
     })
 
     socket.on('updatedOrderStatus', (data) => {
-      const { status } = data
+      const { status, deliveryTime } = data
+
       if (status === 'pending') {
         addToast({
           title: 'Um cliente acabou de solicitar um pedido!',
@@ -154,7 +187,7 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
 
       if (status === 'received') {
         addToast({
-          title: 'Parabens, seu peidido foi entregue!',
+          title: 'Parabens, seu pedido foi entregue!',
           status: 'success',
         })
         return
@@ -163,6 +196,15 @@ export const useWebSockets = ({ userId, enabled }: Props) => {
       if (status === 'canceled') {
         addToast({
           title: 'Oh não, você teve um pedido cancelado :( !',
+          status: 'info',
+        })
+        return
+      }
+
+      if (status === 'sent') {
+        addToast({
+          title: 'Seu pedido saiu para entrega!',
+          description: deliveryTime && `Tempo previsto de ${deliveryTime}`,
           status: 'info',
         })
         return

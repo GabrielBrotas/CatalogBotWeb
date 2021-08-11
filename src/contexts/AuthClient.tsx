@@ -85,13 +85,16 @@ export const AuthClientProvider: React.FC = ({ children }) => {
   useEffect(() => {
     if (newNotification && String(newNotification.Receiver) === String(client._id)) {
       new Audio(NOTIFICATION_SOUND).play()
-      console.log({ clientsNotifications })
+
+      console.log({ newNotification, clientsNotifications })
+
       setClientsNotifications(({ results = [], total, next, previous }) => ({
         results: [newNotification, ...results],
         total,
         next,
         previous,
       }))
+
       setNewNotification(null)
     }
   }, [client, newNotification, setNewNotification, setClientsNotifications, clientsNotifications])

@@ -216,7 +216,9 @@ export const SingleOrder = () => {
           ))}
         </Box>
       </VStack>
-      {(selectedOrder.status === 'pending' || selectedOrder.status === 'confirmed') && (
+      {(selectedOrder.status === 'pending' ||
+        selectedOrder.status === 'confirmed' ||
+        selectedOrder.status === 'sent') && (
         <Flex w="full" justifyContent="flex-end" alignItems="center" mt="8">
           <Button
             as="a"

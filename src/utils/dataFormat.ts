@@ -25,7 +25,7 @@ export const FORMAT_ORDER_STATUS = {
 export const ORDER_STATUS_COLOR = {
   pending: 'yellow.300',
   confirmed: 'green.300',
-  sent: 'blue.300',
+  sent: 'blue.100',
   received: 'blue.300',
   canceled: 'red.500',
 }
@@ -33,7 +33,7 @@ export const ORDER_STATUS_COLOR = {
 export const ORDER_STATUS_COLOR_SECONDARY = {
   pending: 'yellow.500',
   confirmed: 'green.500',
-  sent: 'blue.500',
+  sent: 'blue.800',
   received: 'blue.500',
   canceled: 'red.500',
 }

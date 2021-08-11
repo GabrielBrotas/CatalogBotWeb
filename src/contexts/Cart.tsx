@@ -222,6 +222,7 @@ const CartProvider: React.FC = ({ children }) => {
         Receiver: company._id,
         Sender: client._id,
         Order: order._id,
+        clientWhatsapp: order.client.cellphone,
       })
 
       setOrders(({ results, total, next, previous }) => ({
