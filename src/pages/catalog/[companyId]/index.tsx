@@ -24,15 +24,25 @@ export interface CatalogProps {
     category: string
     products: Product[]
   }>
+  queryOrderID?: string
 }
 
-export default function Catalog({ company, productsAgrupedByCategory }: CatalogProps) {
+export default function Catalog({
+  company,
+  productsAgrupedByCategory,
+  queryOrderID,
+}: CatalogProps) {
   const { isProductModalOpen } = useProductModal()
+
   return (
     <>
       {company && <AuthCompanySEO company={company} page="Catálogo" />}
       <Section>
-        <CatalogContainer company={company} productsAgrupedByCategory={productsAgrupedByCategory} />
+        <CatalogContainer
+          company={company}
+          productsAgrupedByCategory={productsAgrupedByCategory}
+          queryOrderID={queryOrderID}
+        />
 
         {isProductModalOpen && <ProductModal />}
         <FloatCart />
@@ -48,6 +58,7 @@ export default function Catalog({ company, productsAgrupedByCategory }: CatalogP
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   try {
     const { companyId } = ctx.params
+    const { o: queryOrderID } = ctx.query
 
     const [company, categories, products] = await Promise.all([
       getCompany({ ctx, companyId: String(companyId) }),
@@ -106,6 +117,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
           bg: '#f8fafb',
           color: '#444150',
         },
+        queryOrderID: queryOrderID ? queryOrderID : null,
       },
     }
   } catch (err) {

@@ -82,7 +82,7 @@ export function OrderModalProvider({ children }: OrderModalProps) {
   useEffect(() => {
     if (newNotification) {
       if (newNotification.Order && newNotification.Status) {
-        setOrders(({ results, total, next, previous }) => ({
+        setOrders(({ results = [], total, next, previous }) => ({
           total,
           next,
           previous,

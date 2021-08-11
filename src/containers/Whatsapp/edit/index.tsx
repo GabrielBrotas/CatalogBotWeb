@@ -117,6 +117,7 @@ export const EditWhatsAppContainer = () => {
               <ListItem>{`{{name}} = Nome da Empresa`}</ListItem>
               <ListItem>{`{{link}} = Link para o catálogo`}</ListItem>
               <ListItem>{`{{DeliveryTime}} = Tempo para chegar na casa do cliente (Só pode ser utilzada na 3-2)`}</ListItem>
+              <ListItem>{`{{OrderUrl}} = Link para abrir o pedido (Só pode ser utilzada no grupo 3)`}</ListItem>
             </UnorderedList>
           </Box>
 
