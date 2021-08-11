@@ -21,10 +21,10 @@ import { CatalogProduct } from '../../components/CatalogProduct'
 import { addCompanyData } from '../../services/apiFunctions/clients/client'
 import { useClientAuth } from '../../contexts/AuthClient'
 import { useOrderModal } from '../../contexts/Modals/OrderModal'
-import { getOrder } from '../../services/apiFunctions/companies/orders'
 import dayjs from 'dayjs'
 import { currencyFormat } from '../../utils/dataFormat'
 import { getTotalPriceFromOrderProduct } from '../../utils/maths'
+import { getOrder } from '../../services/apiFunctions/clients/orders'
 
 export const CatalogContainer = ({
   company,
