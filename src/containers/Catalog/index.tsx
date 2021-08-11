@@ -20,10 +20,20 @@ import { AiOutlineShop } from 'react-icons/ai'
 import { CatalogProduct } from '../../components/CatalogProduct'
 import { addCompanyData } from '../../services/apiFunctions/clients/client'
 import { useClientAuth } from '../../contexts/AuthClient'
+import { useOrderModal } from '../../contexts/Modals/OrderModal'
+import { getOrder } from '../../services/apiFunctions/companies/orders'
+import dayjs from 'dayjs'
+import { currencyFormat } from '../../utils/dataFormat'
+import { getTotalPriceFromOrderProduct } from '../../utils/maths'
 
-export const CatalogContainer = ({ company, productsAgrupedByCategory }: CatalogProps) => {
+export const CatalogContainer = ({
+  company,
+  productsAgrupedByCategory,
+  queryOrderID,
+}: CatalogProps) => {
   const { setCompany, cart } = useCart()
-  const { client } = useClientAuth()
+  const { client, isAuthenticated, openModal } = useClientAuth()
+  const { openOrderModal, setSelectedOrder } = useOrderModal()
 
   const isCompanyOpen = useMemo(() => {
     let open = false
@@ -80,6 +90,42 @@ export const CatalogContainer = ({ company, productsAgrupedByCategory }: Catalog
       ...(client && { clientId: client._id }),
     })
   }, [client, company._id])
+
+  useEffect(() => {
+    if (queryOrderID && isAuthenticated) {
+      getOrder({ orderId: queryOrderID })
+        .then((order) => {
+          setSelectedOrder({
+            ...order,
+            dateFormated: dayjs(order.created_at).format('DD/MM/YYYY - HH:mm'),
+            totalPriceFormated: currencyFormat(Number(order.totalPrice)),
+            orderProducts: order.orderProducts.map((orderProduct) => ({
+              ...orderProduct,
+              totalPriceFormated: currencyFormat(getTotalPriceFromOrderProduct(orderProduct)),
+              product: {
+                ...orderProduct.product,
+                priceFormated: currencyFormat(orderProduct.product.price),
+              },
+              pickedOptions: orderProduct.pickedOptions.map((pickedOption) => ({
+                ...pickedOption,
+                optionAdditionals: pickedOption.optionAdditionals.map((optionAdditional) => ({
+                  ...optionAdditional,
+                  priceFormated: currencyFormat(Number(optionAdditional.price)),
+                })),
+              })),
+            })),
+          })
+          openOrderModal()
+        })
+        .catch((err) => {
+          console.log('get order err = ', err)
+        })
+    }
+    if (queryOrderID && !isAuthenticated) {
+      openModal({ type: 'login' })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openOrderModal, queryOrderID, isAuthenticated, setSelectedOrder])
 
   return (
     <Container
