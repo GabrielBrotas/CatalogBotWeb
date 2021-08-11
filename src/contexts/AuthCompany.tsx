@@ -40,13 +40,15 @@ const AuthContext = createContext({} as AuthContextData)
 export function signOutCompany() {
   destroyCookie(undefined, COOKIE_COMPANY_TOKEN)
   destroyCookie(undefined, COOKIE_COMPANY_REFRESH_TOKEN)
-  console.log('destroy')
   Router.push('/')
 }
 
 export const AuthCompanyProvider: React.FC = ({ children }) => {
   const [company, setCompany] = useState<Company>()
-  const [companyNotifications, setCompanyNotifications] = useState<IPaginatedNotifications>()
+  const [companyNotifications, setCompanyNotifications] = useState<IPaginatedNotifications>({
+    results: [],
+    total: 0,
+  })
 
   const isAuthenticated = !!company
 
@@ -69,16 +71,28 @@ export const AuthCompanyProvider: React.FC = ({ children }) => {
     const { '@CatalogBot.token.company': token } = parseCookies()
 
     if (token) {
-      Promise.all([getMyCompany({}), getCompanyNotifications({})])
-        .then(([companyResponse, notificationsResponse]) => {
+      getMyCompany({})
+        .then((companyResponse) => {
           setCompany(companyResponse)
-          setCompanyNotifications(notificationsResponse)
         })
         .catch(() => {
           signOutCompany()
         })
     }
   }, [])
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      console.log('get company notifications')
+      getCompanyNotifications({})
+        .then((notificationsResponse) => {
+          setCompanyNotifications(notificationsResponse)
+        })
+        .catch(() => {
+          signOutCompany()
+        })
+    }
+  }, [isAuthenticated])
 
   useEffect(() => {
     if (newNotification && String(newNotification.Receiver) === String(company._id)) {

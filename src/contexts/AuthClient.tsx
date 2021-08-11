@@ -47,7 +47,11 @@ export const AuthClientProvider: React.FC = ({ children }) => {
   const router = useRouter()
 
   const [client, setClient] = useState<Client>()
-  const [clientsNotifications, setClientsNotifications] = useState<IPaginatedNotifications>()
+  const [clientsNotifications, setClientsNotifications] = useState<IPaginatedNotifications>({
+    results: [],
+    total: 0,
+  })
+
   const isAuthenticated = !!client
 
   const { newNotification, setNewNotification } = useWebSockets({
@@ -55,15 +59,14 @@ export const AuthClientProvider: React.FC = ({ children }) => {
     enabled: !!client,
   })
 
+  console.log({ newNotification, clientsNotifications })
+
   useEffect(() => {
     const { '@CatalogBot.token.client': token } = parseCookies()
 
     if (token) {
-      Promise.all([
-        getMyClient({}),
-        getClientNotifications({ Sender: String(router.query.companyId) }),
-      ])
-        .then(([clientResponse, notificationsResponse]) => {
+      getMyClient({})
+        .then((clientResponse) => {
           const { _id, email, cellphone, name, defaultAddress } = clientResponse
 
           setClient({
@@ -73,16 +76,25 @@ export const AuthClientProvider: React.FC = ({ children }) => {
             name,
             defaultAddress,
           })
-
-          if (notificationsResponse) {
-            setClientsNotifications(notificationsResponse)
-          }
         })
         .catch(() => {
           signOutClient()
         })
     }
-  }, [router, router.query.companyId])
+  }, [])
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      console.log('get notifications')
+      getClientNotifications({ Sender: String(router.query.companyId) })
+        .then((notificationsResponse) => {
+          setClientsNotifications(notificationsResponse)
+        })
+        .catch(() => {
+          signOutClient()
+        })
+    }
+  }, [isAuthenticated, router.query.companyId])
 
   useEffect(() => {
     if (newNotification && String(newNotification.Receiver) === String(client._id)) {
