@@ -32,7 +32,7 @@ export const CatalogContainer = ({
   queryOrderID,
 }: CatalogProps) => {
   const { setCompany, cart } = useCart()
-  const { client, isAuthenticated, openModal } = useClientAuth()
+  const { client, isAuthenticated, openModal, closeModal } = useClientAuth()
   const { openOrderModal, setSelectedOrder } = useOrderModal()
 
   const isCompanyOpen = useMemo(() => {
@@ -93,6 +93,7 @@ export const CatalogContainer = ({
 
   useEffect(() => {
     if (queryOrderID && isAuthenticated) {
+      closeModal()
       getOrder({ orderId: queryOrderID })
         .then((order) => {
           setSelectedOrder({
