@@ -74,19 +74,19 @@ export const AuthClientProvider: React.FC = ({ children }) => {
             defaultAddress,
           })
 
-          setClientsNotifications(notificationsResponse)
+          if (notificationsResponse) {
+            setClientsNotifications(notificationsResponse)
+          }
         })
         .catch(() => {
           signOutClient()
         })
     }
-  }, [router.query.companyId])
+  }, [router, router.query.companyId])
 
   useEffect(() => {
     if (newNotification && String(newNotification.Receiver) === String(client._id)) {
       new Audio(NOTIFICATION_SOUND).play()
-
-      console.log({ newNotification, clientsNotifications })
 
       setClientsNotifications(({ results = [], total, next, previous }) => ({
         results: [newNotification, ...results],

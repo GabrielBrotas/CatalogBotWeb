@@ -1,5 +1,5 @@
 import React from 'react'
-import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next'
+import { GetServerSideProps } from 'next'
 
 import { useProductModal } from '../../../contexts/Modals/ProductModal'
 import { getCategories } from '../../../services/apiFunctions/companies/categories'
