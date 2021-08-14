@@ -19,6 +19,7 @@ import { CreateProductFormData, createProductFormSchema } from './types'
 import { ProductMainData } from '../forms/main-data.form.'
 import { ProductOptionForm } from '../forms/product-options.form'
 import { removeIdFromProductOptions } from '../../../utils/dataFormat'
+import { dataURLtoFile } from '../../../utils/upload'
 
 export const CreateProductContainer = ({ categories }: CreateProductProps) => {
   const {
@@ -69,7 +70,8 @@ export const CreateProductContainer = ({ categories }: CreateProductProps) => {
       })
 
       if (uploadedImages[0] && uploadedImages[0].file) {
-        await updateProductImage({ productId: product._id, image: uploadedImages[0].file })
+        const file = dataURLtoFile(uploadedImages[0].file, uploadedImages[0].name)
+        await updateProductImage({ productId: product._id, image: file })
       }
 
       addToast({

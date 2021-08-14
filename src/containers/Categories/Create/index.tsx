@@ -2,7 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+import { string, object } from 'yup'
 
 import { Box, Button, Divider, Flex, Heading, HStack, SimpleGrid, VStack } from '@chakra-ui/react'
 import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
@@ -17,8 +17,8 @@ type CreatCategoryFormData = {
   name: string
 }
 
-const createCategoryFormSchema = yup.object().shape({
-  name: yup.string().required('Nome obrigatório'),
+const createCategoryFormSchema = object().shape({
+  name: string().required('Nome obrigatório'),
 })
 
 export const CreateCategoryContainer = () => {

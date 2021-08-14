@@ -1,9 +1,7 @@
 import React, { useCallback } from 'react'
-import Link from 'next/link'
-import { FiLogIn } from 'react-icons/fi'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+import { string, object } from 'yup'
 
 import { Box, Flex, FormControl, Image, Text } from '@chakra-ui/react'
 import { FormInput } from '../../components/Form/input'
@@ -16,9 +14,9 @@ type SignInFormData = {
   password: string
 }
 
-const signInFormSchema = yup.object().shape({
-  email: yup.string().required('e-mail obrigatório').email('Insira um e-mail válido'),
-  password: yup.string().required('senha obrigatória'),
+const signInFormSchema = object().shape({
+  email: string().required('e-mail obrigatório').email('Insira um e-mail válido'),
+  password: string().required('senha obrigatória'),
 })
 
 export const LoginContainer = () => {

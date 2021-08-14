@@ -1,9 +1,10 @@
-import { Flex, Image, Box } from '@chakra-ui/react'
-import React, { ReactNode, useCallback, useEffect, useState } from 'react'
+import { Flex, Image, Box, useDisclosure, AspectRatio } from '@chakra-ui/react'
+import React, { ReactNode, useCallback, useState } from 'react'
+import { v4 as uuidV4 } from 'uuid'
 
 import Dropzone from 'react-dropzone'
 import { BsTrash } from 'react-icons/bs'
-// import { uploadPublicFile } from '../../services/apiFunctions/uploads'
+import { CropModal } from './CropModal'
 
 interface UploadProps {
   uploadedImages: UploadedImages[]
@@ -11,18 +12,27 @@ interface UploadProps {
 }
 
 export type UploadedImages = {
-  file?: File
+  file?: string
   id: string
-  name: string | null
-  size: number | null
-  preview: string | null
+  name: string
+  aspectRadio: number
+  width?: number
+  height?: number
+  preview: string
   progress: number
   uploaded: boolean
   error: boolean
-  url: string | undefined | null
+  url: string | null
+}
+
+interface OnFinishCropProps {
+  base64: string
+  data: { width: number; height: number; x: number; y: number }
 }
 
 const Upload: React.FC<UploadProps> = ({ setUploadedImages, uploadedImages }: UploadProps) => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
   function renderDragMessage(isDragActive: boolean, isDragRejest: boolean): ReactNode {
     if (!isDragActive) {
       return (
@@ -47,81 +57,41 @@ const Upload: React.FC<UploadProps> = ({ setUploadedImages, uploadedImages }: Up
     )
   }
 
-  // const [newImages, setNewImages] = useState<Array<UploadedImages>>([])
-  // const [changeProgress, setChangeProgress] = useState<[number, string] | []>([])
-  // const [uploadFinish, setUploadFinish] = useState<[string, string, boolean] | []>([])
+  const [src, setSrc] = useState(null)
+  const [extension, setExtension] = useState(null)
 
-  function submitImages(files: File[]): void {
-    const newUploadedImages = files.map((file) => ({
-      file,
-      id: `${new Date().getTime()}-${file.name}`,
-      name: file.name,
-      size: file.size,
-      preview: URL.createObjectURL(file),
+  // React crop ---
+  const onSelectFile = (e: File[]) => {
+    const reader = new FileReader()
+    reader.addEventListener('load', () => setSrc(reader.result))
+    reader.readAsDataURL(e[0])
+    setExtension(e[0].type.split('/')[1])
+    onOpen()
+  }
+
+  const cancelCrop = () => {
+    setSrc(null)
+    onClose()
+  }
+
+  const onFinishCrop = ({ base64, data }: OnFinishCropProps) => {
+    const newImage = {
+      file: base64,
+      id: uuidV4(),
+      name: `${uuidV4()}.${extension}`,
+      aspectRadio: 4 / 3,
+      width: data.width,
+      height: data.height,
+      preview: base64,
       progress: 0,
       uploaded: false,
       error: false,
       url: null,
-    }))
+    }
 
-    setUploadedImages(uploadedImages.concat(newUploadedImages))
-    // setNewImages([...newUploadedImages])
+    setUploadedImages(uploadedImages.concat(newImage))
+    onClose()
   }
-
-  // useEffect(() => {
-  //   newImages.forEach((file) => {
-  //     if (!file.file) return
-  //     // uploadPublicFile({ file: file.file, id: file.id, setChangeProgress })
-  //     //   .then((response) => {
-  //     //     setUploadFinish([file.id, response.url, true])
-  //     //     setNewImages([])
-  //     //   })
-  //     //   .catch((err) => {
-  //     //     alert(err)
-  //     //     if (!file.preview) return
-  //     //     setUploadFinish([file.id, file.preview, false])
-  //     //     setNewImages([])
-  //     //   })
-  //   })
-  // }, [newImages])
-
-  // useEffect(() => {
-  //   const id = changeProgress[1]
-  //   const progress = changeProgress[0]
-
-  //   if (!progress) return
-
-  //   if (progress !== 100) {
-  //     setUploadedImages(
-  //       uploadedImages.map((file) => {
-  //         return file.id === id ? { ...file, progress } : { ...file }
-  //       })
-  //     )
-  //   }
-  //   // eslint-disable-next-line
-  // }, [changeProgress])
-
-  // useEffect(() => {
-  //   const uploadedFileId = uploadFinish[0]
-  //   const url = uploadFinish[1]
-  //   const uploadSuccess = uploadFinish[2]
-
-  //   if (uploadSuccess) {
-  //     setUploadedImages(
-  //       uploadedImages.map((file) => {
-  //         return file.id === uploadedFileId ? { ...file, url, uploaded: true } : { ...file }
-  //       })
-  //     )
-  //   } else {
-  //     setUploadedImages(
-  //       uploadedImages.map((file) => {
-  //         return file.id === uploadedFileId ? { ...file, error: true } : { ...file }
-  //       })
-  //     )
-  //   }
-
-  //   // eslint-disable-next-line
-  // }, [uploadFinish])
 
   const handleRemoveImage = useCallback(
     (indexToRemove) => {
@@ -145,12 +115,18 @@ const Upload: React.FC<UploadProps> = ({ setUploadedImages, uploadedImages }: Up
       {uploadedImages.length > 0 ? (
         uploadedImages.map((image, index) => (
           <Box position="relative" key={image.id}>
-            <Image
-              boxSize="200px"
-              objectFit="cover"
-              src={image.url ? image.url : image.preview}
-              alt={image.url}
-            />
+            <AspectRatio
+              ratio={image.aspectRadio}
+              key={image.id}
+              w={image.width ? image.width : '20rem'}
+              maxW="20rem"
+            >
+              <Image
+                objectFit="cover"
+                src={image.url ? image.url : image.preview}
+                alt={image.url}
+              />
+            </AspectRatio>
             <Box
               bg="white"
               position="absolute"
@@ -172,7 +148,8 @@ const Upload: React.FC<UploadProps> = ({ setUploadedImages, uploadedImages }: Up
           </Box>
         ))
       ) : (
-        <Dropzone accept="image/*" onDropAccepted={(files) => submitImages(files)} multiple={false}>
+        // <Dropzone accept="image/*" onDropAccepted={(files) => submitImages(files)} multiple={false}>
+        <Dropzone accept="image/*" onDropAccepted={(files) => onSelectFile(files)} multiple={false}>
           {({ getRootProps, getInputProps, isDragActive, isDragReject }): any => (
             <Box
               cursor="pointer"
@@ -191,6 +168,8 @@ const Upload: React.FC<UploadProps> = ({ setUploadedImages, uploadedImages }: Up
           )}
         </Dropzone>
       )}
+
+      <CropModal src={src} isOpen={isOpen} onClose={cancelCrop} onFinishCrop={onFinishCrop} />
     </>
   )
 }

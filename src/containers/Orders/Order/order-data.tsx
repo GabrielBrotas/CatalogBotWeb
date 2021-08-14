@@ -14,6 +14,7 @@ import {
   Td,
   Divider,
   useBreakpointValue,
+  AspectRatio,
 } from '@chakra-ui/react'
 import { FORMAT_ORDER_STATUS, FORMAT_PAYMENT, ORDER_STATUS_COLOR } from '../../../utils/dataFormat'
 import { OrderFormated } from '../../../pages/orders/[oId]'
@@ -68,14 +69,20 @@ export const OrderData = ({ order }: OrderDataProps) => {
               flexDir={isMobileView ? 'column' : 'row'}
             >
               <Flex alignItems="center" mb={isMobileView ? '5' : '0'}>
-                <Image
-                  src={orderProduct.product?.imageUrl}
-                  alt={orderProduct.product.name}
-                  boxSize="50px"
-                  objectFit="cover"
-                  fallbackSrc="https://via.placeholder.com/150"
-                />
-                <Text fontWeight="bold" ml="4">
+                <AspectRatio ratio={4 / 3} w={'8rem'} mr="2">
+                  <Image
+                    objectFit="cover"
+                    alt={orderProduct.product.name}
+                    name={orderProduct.product.name}
+                    src={
+                      orderProduct.product?.imageUrl
+                        ? orderProduct.product?.imageUrl
+                        : '/images/default-picture.jpg'
+                    }
+                  />
+                </AspectRatio>
+
+                <Text fontWeight="bold" ml="2">
                   {orderProduct.product.name}
                 </Text>
               </Flex>

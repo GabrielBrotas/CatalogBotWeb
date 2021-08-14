@@ -103,6 +103,7 @@ export const ProductModalBody = ({ activeProduct }: ProductModalBodyProps) => {
 
     try {
       await addToCart(formatedOption)
+
       addToast({
         title: 'Produto adicionado ao carrinho',
         status: 'success',

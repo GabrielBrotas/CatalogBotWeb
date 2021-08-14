@@ -26,7 +26,6 @@ export const WhatsAppModal = () => {
   const handleOpenModal = () => {
     onOpen()
     if (!isWppConnected && !wppConnIsLoading && isSocketConnected) {
-      console.log('call func')
       setLoading(true)
       connectWhatsapp()
     }

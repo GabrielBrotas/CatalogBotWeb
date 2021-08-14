@@ -91,7 +91,6 @@ export const CartModal = () => {
       setStep(1)
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
-        console.log(err.response.data)
         addToast({
           title:
             err.response.data.message === 'celebrate request validation failed'
