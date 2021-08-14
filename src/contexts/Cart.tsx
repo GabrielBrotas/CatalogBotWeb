@@ -87,7 +87,6 @@ const CartProvider: React.FC = ({ children }) => {
 
     getCart({ companyId: company._id }).then((response) => {
       if (response) {
-        console.log(response)
         setCart({
           ...response,
           cartTotalPrice: getTotalPriceFromCartOrderProduct(response.orderProducts),

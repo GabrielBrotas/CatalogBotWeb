@@ -11,6 +11,7 @@ import {
   Divider,
   useBreakpointValue,
   Button,
+  AspectRatio,
 } from '@chakra-ui/react'
 
 import {
@@ -35,8 +36,6 @@ export const SingleOrder = () => {
     md: false,
     lg: false,
   })
-
-  console.log(isMobileView)
 
   const handleCancelOrder = async () => {
     try {
@@ -141,16 +140,21 @@ export const SingleOrder = () => {
           </Text>
 
           {selectedOrder.orderProducts.map((orderProduct) => (
-            <VStack key={orderProduct._id} w="full" px="4" mb="5" alignItems="flex-start">
+            <VStack key={orderProduct._id} w="full" mb="5" alignItems="flex-start">
               <Flex w="full" justifyContent="space-between" mb="2">
                 <Flex alignItems="flex-start">
-                  <Image
-                    src={orderProduct.product?.imageUrl}
-                    alt={orderProduct.product.name}
-                    boxSize="50px"
-                    objectFit="cover"
-                    fallbackSrc="https://via.placeholder.com/150"
-                  />
+                  <AspectRatio ratio={4 / 3} w={'7rem'}>
+                    <Image
+                      objectFit="cover"
+                      src={
+                        orderProduct.product.imageUrl
+                          ? orderProduct.product.imageUrl
+                          : '/images/default-picture.jpg'
+                      }
+                      alt={orderProduct.product.name}
+                      name={orderProduct.product.name}
+                    />
+                  </AspectRatio>
                   <Text ml="4">{orderProduct.product.name}</Text>
                 </Flex>
                 <Flex>

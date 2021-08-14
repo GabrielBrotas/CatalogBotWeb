@@ -1,11 +1,22 @@
-import React, { ChangeEvent, useCallback, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { AiOutlineCamera } from 'react-icons/ai'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
-import * as yup from 'yup'
+import { string, object, array, number, boolean } from 'yup'
 
-import { Box, Flex, Heading, Avatar, VStack, useBreakpointValue, Button } from '@chakra-ui/react'
+import { v4 as uuidV4 } from 'uuid'
+
+import {
+  Box,
+  Flex,
+  Heading,
+  Avatar,
+  VStack,
+  useBreakpointValue,
+  Button,
+  useDisclosure,
+} from '@chakra-ui/react'
 import { Sidebar } from '../../../components/Sidebar'
 import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
 import { FormButton } from '../../../components/Form/button'
@@ -17,23 +28,30 @@ import { CompanyMainDataForm } from './main-data.form'
 import { CompanyWorkTimeForm } from './work-time.form'
 import { CompanyPaymentMethodsForm } from './payments-method.form'
 import Link from 'next/link'
+import { dataURLtoFile, readFile } from '../../../utils/upload'
+import { CropModal } from '../../../components/Upload/CropModal'
 
-const updateCompanySchema = yup.object().shape({
-  name: yup.string().required('Nome obrigatório'),
-  shortDescription: yup.string(),
-  workTime: yup.array(
-    yup.object().shape({
-      day: yup.number().required('Dia obrigatório'),
-      from: yup.string().required('Horário de início obrigatório'),
-      to: yup.string().required('Horário de fechamento obrigatório'),
+interface OnFinishCropProps {
+  base64: string
+  data: { width: number; height: number; x: number; y: number }
+}
+
+const updateCompanySchema = object().shape({
+  name: string().required('Nome obrigatório'),
+  shortDescription: string(),
+  workTime: array(
+    object().shape({
+      day: number().required('Dia obrigatório'),
+      from: string().required('Horário de início obrigatório'),
+      to: string().required('Horário de fechamento obrigatório'),
     })
   ),
-  acceptedPaymentMethods: yup.object().shape({
-    boleto: yup.boolean().optional(),
-    creditCard: yup.boolean().optional(),
-    pix: yup.boolean().optional(),
-    money: yup.boolean().optional(),
-    debit: yup.boolean().optional(),
+  acceptedPaymentMethods: object().shape({
+    boleto: boolean().optional(),
+    creditCard: boolean().optional(),
+    pix: boolean().optional(),
+    money: boolean().optional(),
+    debit: boolean().optional(),
   }),
 })
 
@@ -43,6 +61,10 @@ export const UpdateProfileContainer = ({ company }: UpdateProfileProps) => {
     base: true,
     lg: false,
   })
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [src, setSrc] = useState(null)
+  const [extension, setExtension] = useState(null)
 
   const {
     register,
@@ -122,111 +144,136 @@ export const UpdateProfileContainer = ({ company }: UpdateProfileProps) => {
     [addToast, companyBenefits, router]
   )
 
-  const handleAvatarChange = useCallback(
-    async (e: ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files) {
-        await updateCompanyImage({
-          file: e.target.files[0],
-        })
+  // avatar ---
+  const onSelectFile = async (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0]
+      const imageDataUrl = await readFile(file)
 
-        addToast({
-          status: 'success',
-          title: 'Avatar atualizado!',
-          description: 'Seu avatar foi atualizado com sucesso!',
-        })
-        router.push('/profile')
-      }
+      setSrc(imageDataUrl)
+      setExtension(file.type.split('/')[1])
+      onOpen()
+    }
+  }
+
+  const cancelCrop = () => {
+    setSrc(null)
+    onClose()
+  }
+
+  const onFinishCrop = ({ base64 }: OnFinishCropProps) => {
+    const file = dataURLtoFile(base64, `${uuidV4()}.${extension}`)
+    handleAvatarChange(file)
+    onClose()
+  }
+
+  const handleAvatarChange = useCallback(
+    async (file: File) => {
+      await updateCompanyImage({
+        file,
+      })
+
+      addToast({
+        status: 'success',
+        title: 'Avatar atualizado!',
+        description: 'Seu avatar foi atualizado com sucesso!',
+      })
+      router.push('/profile')
     },
     [addToast, router]
   )
 
   return (
-    <Box w={['max-content', '100%']}>
-      <CompanyHeader />
+    <>
+      <Box w={['max-content', '100%']}>
+        <CompanyHeader />
 
-      <Flex w="100%" my="6" maxWidth="1480" mx="auto" px="6">
-        <Sidebar />
+        <Flex w="100%" my="6" maxWidth="1480" mx="auto" px="6">
+          <Sidebar />
 
-        <Box flex="1" borderRadius={8} bg="gray.800" p="8">
-          <Flex mb="8" justify="space-between" align="center">
-            <Heading size="lg" fontWeight="normal">
-              Meu perfil
-            </Heading>
-          </Flex>
+          <Box flex="1" borderRadius={8} bg="gray.800" p="8">
+            <Flex mb="8" justify="space-between" align="center">
+              <Heading size="lg" fontWeight="normal">
+                Meu perfil
+              </Heading>
+            </Flex>
 
-          <Box>
-            <Box position="relative" w="8rem">
-              <Avatar size="2xl" name={company.name} src={company.mainImageUrl} />
+            <Box>
+              <Box position="relative" w="8rem">
+                <Avatar size="2xl" name={company.name} src={company.mainImageUrl} />
 
-              <Box
-                as="label"
-                htmlFor="image"
-                bg="gray.300"
-                borderRadius="full"
-                p="3"
-                position="absolute"
-                bottom="0"
-                right="0"
-                cursor="pointer"
-              >
-                <AiOutlineCamera size={24} />
-                <input
-                  style={{ display: 'none' }}
-                  type="file"
-                  id="image"
-                  onChange={handleAvatarChange}
-                />
+                <Box
+                  as="label"
+                  htmlFor="image"
+                  bg="gray.300"
+                  borderRadius="full"
+                  p="3"
+                  position="absolute"
+                  bottom="0"
+                  right="0"
+                  cursor="pointer"
+                >
+                  <AiOutlineCamera size={24} />
+                  <input
+                    style={{ display: 'none' }}
+                    type="file"
+                    id="image"
+                    onChange={(files) => onSelectFile(files)}
+                  />
+                </Box>
               </Box>
-            </Box>
 
-            <VStack as="form" onSubmit={handleSubmit(handleUpdate)} spacing="6" mt={6}>
-              <CompanyMainDataForm
-                register={register}
-                errors={errors}
-                benefit={benefit}
-                setBenefit={setBenefit}
-                companyBenefits={companyBenefits}
-                handleAddNewBenefit={handleAddNewBenefit}
-                handleRemoveBenefit={handleRemoveBenefit}
-              />
+              <VStack as="form" onSubmit={handleSubmit(handleUpdate)} spacing="6" mt={6}>
+                <CompanyMainDataForm
+                  register={register}
+                  errors={errors}
+                  benefit={benefit}
+                  setBenefit={setBenefit}
+                  companyBenefits={companyBenefits}
+                  handleAddNewBenefit={handleAddNewBenefit}
+                  handleRemoveBenefit={handleRemoveBenefit}
+                />
 
-              <CompanyWorkTimeForm
-                companyWorkTime={companyWorkTime}
-                handleAddNewWorkTime={handleAddNewWorkTime}
-                handleRemoveWorkTime={handleRemoveWorkTime}
-                register={register}
-              />
+                <CompanyWorkTimeForm
+                  companyWorkTime={companyWorkTime}
+                  handleAddNewWorkTime={handleAddNewWorkTime}
+                  handleRemoveWorkTime={handleRemoveWorkTime}
+                  register={register}
+                />
 
-              <CompanyPaymentMethodsForm register={register} />
+                <CompanyPaymentMethodsForm register={register} />
 
-              <Flex justifyContent="flex-end" w="full">
-                <Link href="/profile" passHref>
-                  <Button
-                    colorScheme="whiteAlpha"
-                    type="button"
+                <Flex justifyContent="flex-end" w="full">
+                  <Link href="/profile" passHref>
+                    <Button
+                      colorScheme="whiteAlpha"
+                      type="button"
+                      alignSelf="flex-end"
+                      w={isMobileView ? '100%' : '10rem'}
+                      isLoading={isSubmitting}
+                      mr="6"
+                    >
+                      Cancelar
+                    </Button>
+                  </Link>
+
+                  <FormButton
+                    type="submit"
                     alignSelf="flex-end"
                     w={isMobileView ? '100%' : '10rem'}
                     isLoading={isSubmitting}
-                    mr="6"
+                    colorScheme="pink"
                   >
-                    Cancelar
-                  </Button>
-                </Link>
-
-                <FormButton
-                  type="submit"
-                  alignSelf="flex-end"
-                  w={isMobileView ? '100%' : '10rem'}
-                  isLoading={isSubmitting}
-                  colorScheme="pink"
-                >
-                  Atualizar
-                </FormButton>
-              </Flex>
-            </VStack>
+                    Atualizar
+                  </FormButton>
+                </Flex>
+              </VStack>
+            </Box>
           </Box>
-        </Box>
-      </Flex>
-    </Box>
+        </Flex>
+      </Box>
+
+      <CropModal src={src} isOpen={isOpen} onClose={cancelCrop} onFinishCrop={onFinishCrop} />
+    </>
   )
 }

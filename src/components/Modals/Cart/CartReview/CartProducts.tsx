@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Image, HStack, Input } from '@chakra-ui/react'
+import { Box, Flex, Text, Image, HStack, Input, AspectRatio } from '@chakra-ui/react'
 import React from 'react'
 import { AiOutlineLine, AiOutlinePlus } from 'react-icons/ai'
 import { CartOrderProduct } from '../../../../services/apiFunctions/clients/cart/types'
@@ -77,7 +77,7 @@ export const CartProducts = ({ orderProducts, setCartOrderProducts }: CartProduc
             </Text>
           </Box>
           <Flex flexDir="column" alignItems="center" mt="2">
-            <Image
+            {/* <Image
               boxSize="100px"
               objectFit="contain"
               src={
@@ -86,7 +86,20 @@ export const CartProducts = ({ orderProducts, setCartOrderProducts }: CartProduc
                   : '/images/default-picture.jpg'
               }
               alt={orderProduct.product.name}
-            />
+            /> */}
+
+            <AspectRatio ratio={4 / 3} w={'9rem'}>
+              <Image
+                objectFit="cover"
+                src={
+                  orderProduct.product.imageUrl
+                    ? orderProduct.product.imageUrl
+                    : '/images/default-picture.jpg'
+                }
+                alt={orderProduct.product.name}
+                name={orderProduct.product.name}
+              />
+            </AspectRatio>
 
             <HStack border="1px" borderColor="gray.100" px="2" my="4">
               <AiOutlineLine

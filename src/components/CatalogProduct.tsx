@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 
-import { Box, Flex, Heading, Text, Image, useMediaQuery } from '@chakra-ui/react'
+import { Box, Flex, Heading, Text, Image, useMediaQuery, AspectRatio } from '@chakra-ui/react'
 
 import { Product } from '../services/apiFunctions/companies/products/types'
 import { useProductModal } from '../contexts/Modals/ProductModal'
@@ -34,12 +34,13 @@ export const CatalogProduct = ({ product }: CatalogProductProps) => {
       w="full"
       _hover={{ bg: '#f8fafb' }}
     >
-      <Image
-        boxSize="5rem"
-        name={product.name}
-        src={product.imageUrl ? product.imageUrl : '/images/default-picture.jpg'}
-        mr="4"
-      />
+      <AspectRatio ratio={4 / 3} w={'7rem'} mr="4">
+        <Image
+          objectFit="cover"
+          name={product.name}
+          src={product.imageUrl ? product.imageUrl : '/images/default-picture.jpg'}
+        />
+      </AspectRatio>
 
       <Box display="flex" flexDir="column" justifyContent="space-between" flex={1} h="5rem">
         <Heading as="h5" size="sm" isTruncated>

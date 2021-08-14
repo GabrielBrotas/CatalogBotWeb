@@ -72,12 +72,12 @@ export const updateProductImage = async ({
       headers: {
         'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
       },
-      onUploadProgress: (e) => {
-        const progress = Number(Math.round((e.loaded * 100) / e.total))
-        if (setChangeProgress && id) {
-          setChangeProgress([progress, id])
-        }
-      },
+      // onUploadProgress: (e) => {
+      //   // const progress = Number(Math.round((e.loaded * 100) / e.total))
+      //   // if (setChangeProgress && id) {
+      //   //   setChangeProgress([progress, id])
+      //   // }
+      // },
     })
     .then(({ data }) => data)
 }

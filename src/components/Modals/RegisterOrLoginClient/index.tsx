@@ -15,7 +15,6 @@ import { useClientAuth } from '../../../contexts/AuthClient'
 import { Address } from '../../../services/apiFunctions/clients/client/types'
 import { RegisterForm } from './RegisterForm'
 import { LoginForm } from './LoginForm'
-import { removeSpeciaCaracteresAndLetters } from '../../../utils/removeSpecialCaracters'
 import { signInClientFormSchema, signUpClientFormSchema } from './schemas'
 
 type SignUpClienFormData = {

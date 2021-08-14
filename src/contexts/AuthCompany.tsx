@@ -83,7 +83,6 @@ export const AuthCompanyProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      console.log('get company notifications')
       getCompanyNotifications({})
         .then((notificationsResponse) => {
           setCompanyNotifications(notificationsResponse)

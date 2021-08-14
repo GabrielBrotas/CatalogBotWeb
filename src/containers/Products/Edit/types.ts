@@ -1,4 +1,4 @@
-import * as yup from 'yup'
+import { string, array, object, boolean } from 'yup'
 import { ProductOption } from '../../../services/apiFunctions/companies/products/types'
 
 export type EditProductFormData = {
@@ -10,21 +10,21 @@ export type EditProductFormData = {
   categoryId: string
 }
 
-export const editProductFormSchema = yup.object().shape({
-  name: yup.string().required('Nome obrigatório'),
-  price: yup.string().required('Valor obrigatório'),
-  description: yup.string(),
-  categoryId: yup.string().required('Categoria obrigatória'),
-  options: yup.array(
-    yup.object({
-      name: yup.string().required('Nome da opção obrigatório'),
-      isRequired: yup.boolean(),
-      maxQuantity: yup.string().required('Quantidade maxima obrigatório'),
-      minQuantity: yup.string().required('Quantidade mínima obrigatório'),
-      additionals: yup.array(
-        yup.object({
-          name: yup.string().required('Nome obrigatório'),
-          price: yup.string().required('Valor obrigatório'),
+export const editProductFormSchema = object().shape({
+  name: string().required('Nome obrigatório'),
+  price: string().required('Valor obrigatório'),
+  description: string(),
+  categoryId: string().required('Categoria obrigatória'),
+  options: array(
+    object({
+      name: string().required('Nome da opção obrigatório'),
+      isRequired: boolean(),
+      maxQuantity: string().required('Quantidade maxima obrigatório'),
+      minQuantity: string().required('Quantidade mínima obrigatório'),
+      additionals: array(
+        object({
+          name: string().required('Nome obrigatório'),
+          price: string().required('Valor obrigatório'),
         })
       ),
     })

@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { FiLogIn } from 'react-icons/fi'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+import { string, object } from 'yup'
 
 import { Box, Flex, FormControl, Image, Text } from '@chakra-ui/react'
 import { FormInput } from '../../components/Form/input'
@@ -18,10 +18,10 @@ type SignUpFormData = {
   password: string
 }
 
-const signUpFormSchema = yup.object().shape({
-  name: yup.string().required('Nome obrigatório'),
-  email: yup.string().required('e-mail obrigatório').email('Insira um e-mail válido'),
-  password: yup.string().required('senha obrigatória'),
+const signUpFormSchema = object().shape({
+  name: string().required('Nome obrigatório'),
+  email: string().required('e-mail obrigatório').email('Insira um e-mail válido'),
+  password: string().required('senha obrigatória'),
 })
 
 export const SignUpContainer = () => {

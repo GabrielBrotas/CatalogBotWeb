@@ -29,6 +29,7 @@
     "react-currency-masked-input": "^2.5.0",
     "react-dom": "17.0.2",
     "react-dropzone": "^11.3.2",
+    "react-easy-crop": "^3.5.2",
     "react-hook-form": "^7.7.0",
     "react-icons": "^4.2.0",
     "react-input-mask": "^2.0.4",
@@ -36,6 +37,7 @@
     "react-query": "^3.16.0",
     "react-scrollspy": "^3.4.3",
     "socket.io-client": "^4.1.2",
+    "uuid": "^8.3.2",
     "yarn": "^1.22.10",
     "yup": "^0.32.9"
   },
@@ -43,6 +45,7 @@
     "@types/node": "^15.0.1",
     "@types/react": "^17.0.4",
     "@types/react-scrollspy": "^3.3.3",
+    "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.26.0",
     "@typescript-eslint/parser": "^4.26.0",
     "eslint": "^7.27.0",

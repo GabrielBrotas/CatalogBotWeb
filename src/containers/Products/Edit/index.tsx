@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { v4 as uuidV4 } from 'uuid'
 
 import { Box, Button, Divider, Flex, Heading, HStack, Tooltip, VStack } from '@chakra-ui/react'
 import { CompanyHeader } from '../../../components/Headers/CompanyHeader'
@@ -18,6 +19,7 @@ import {
   updateProductImage,
 } from '../../../services/apiFunctions/companies/products'
 import { removeIdFromProductOptions } from '../../../utils/dataFormat'
+import { dataURLtoFile } from '../../../utils/upload'
 
 export const EditProductContainer = ({ product, categories }: EditProductProps) => {
   const {
@@ -46,9 +48,9 @@ export const EditProductContainer = ({ product, categories }: EditProductProps) 
     product.imageUrl
       ? [
           {
-            id: `${new Date().toString()}-${product.name}`,
+            id: uuidV4(),
             name: null,
-            size: null,
+            aspectRadio: 4 / 3,
             preview: null,
             progress: 100,
             uploaded: true,
@@ -89,7 +91,8 @@ export const EditProductContainer = ({ product, categories }: EditProductProps) 
       })
 
       if (uploadedImages[0] && uploadedImages[0].file) {
-        await updateProductImage({ productId: product._id, image: uploadedImages[0].file })
+        const file = dataURLtoFile(uploadedImages[0].file, uploadedImages[0].name)
+        await updateProductImage({ productId: product._id, image: file })
       }
 
       addToast({
@@ -105,8 +108,6 @@ export const EditProductContainer = ({ product, categories }: EditProductProps) 
       })
     }
   }
-
-  console.log(product)
 
   return (
     <Box w={['max-content', '100%']}>

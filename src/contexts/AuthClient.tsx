@@ -59,8 +59,6 @@ export const AuthClientProvider: React.FC = ({ children }) => {
     enabled: !!client,
   })
 
-  console.log({ newNotification, clientsNotifications })
-
   useEffect(() => {
     const { '@CatalogBot.token.client': token } = parseCookies()
 
@@ -85,7 +83,6 @@ export const AuthClientProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      console.log('get notifications')
       getClientNotifications({ Sender: String(router.query.companyId) })
         .then((notificationsResponse) => {
           setClientsNotifications(notificationsResponse)
