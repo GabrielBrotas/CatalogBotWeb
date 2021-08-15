@@ -28,7 +28,9 @@ export const CartProducts = ({ orderProducts, setCartOrderProducts }: CartProduc
         ...orderProduct,
         amount:
           String(productId) === String(orderProduct._id)
-            ? orderProduct.amount - 1
+            ? Number(orderProduct.amount) <= 1
+              ? orderProduct.amount
+              : orderProduct.amount - 1
             : orderProduct.amount,
       }))
     )
@@ -73,21 +75,11 @@ export const CartProducts = ({ orderProducts, setCartOrderProducts }: CartProduc
               )
             )}
             <Text fontSize="xl" fontWeight="medium" my="4">
-              {currencyFormat(orderProduct.product.price * orderProduct.amount)}
+              {currencyFormat(orderProduct.TotalPrice * orderProduct.amount)}
             </Text>
           </Box>
-          <Flex flexDir="column" alignItems="center" mt="2">
-            {/* <Image
-              boxSize="100px"
-              objectFit="contain"
-              src={
-                orderProduct.product.imageUrl
-                  ? orderProduct.product.imageUrl
-                  : '/images/default-picture.jpg'
-              }
-              alt={orderProduct.product.name}
-            /> */}
 
+          <Flex flexDir="column" alignItems="center" mt="2">
             <AspectRatio ratio={4 / 3} w={'9rem'}>
               <Image
                 objectFit="cover"

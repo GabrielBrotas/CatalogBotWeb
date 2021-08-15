@@ -70,6 +70,7 @@ export const ProductModalBody = ({ activeProduct }: ProductModalBodyProps) => {
     }
 
     const errors: AddToastProps[] = []
+
     // validate
     selectedOptions.map((option) => {
       if (option.isRequired) {

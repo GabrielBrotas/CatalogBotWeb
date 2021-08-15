@@ -2,20 +2,21 @@ import { CartOrderProduct } from './../services/apiFunctions/clients/cart/types'
 import { OrderProduct } from '../services/apiFunctions/clients/orders/types'
 
 export function getTotalPriceFromOrderProduct(orderProduct: OrderProduct) {
-  const total =
-    Number(orderProduct.product.price) * orderProduct.amount +
-    orderProduct.pickedOptions.reduce(
-      (acc, currentOption) =>
-        acc +
-        currentOption.optionAdditionals.reduce(
-          (acc, currentOptionAdditional) =>
-            acc + Number(currentOptionAdditional.price) * currentOptionAdditional.amount,
-          0
-        ),
-      0
-    )
+  const ProductPickedOptionsTotalPrice = orderProduct.pickedOptions.reduce(
+    (acc, currentPickedOption) =>
+      acc +
+      currentPickedOption.optionAdditionals.reduce(
+        (acc, currentOptional) =>
+          acc + Number(currentOptional.amount) * Number(currentOptional.price),
+        0
+      ),
+    0
+  )
 
-  return total
+  const TotalPrice =
+    (Number(orderProduct.product.price) + ProductPickedOptionsTotalPrice) * orderProduct.amount
+
+  return TotalPrice
 }
 
 export function getTotalPriceFromCartOrderProduct(cartOrderProducts: CartOrderProduct[]) {

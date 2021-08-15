@@ -24,7 +24,7 @@ import { Address } from '../../../../services/apiFunctions/clients/client/types'
 import { PaymentMethods } from '../../../../services/apiFunctions/clients/orders/types'
 import { CartOrderProduct } from '../../../../services/apiFunctions/clients/cart/types'
 import { getTotalPriceFromCartOrderProduct } from '../../../../utils/maths'
-import { currencyFormat } from '../../../../utils/dataFormat'
+import { currencyFormat, formatCartOrderProduct } from '../../../../utils/dataFormat'
 
 import { CartProducts } from './CartProducts'
 import { PaymentMethod } from './PaymentMethod'
@@ -72,7 +72,7 @@ export const CartModal = () => {
 
   useEffect(() => {
     if (cart) {
-      setCartOrderProducts(cart.orderProducts)
+      setCartOrderProducts(cart.orderProducts.map((op) => formatCartOrderProduct(op)) as any)
     }
   }, [cart])
 

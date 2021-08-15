@@ -7,6 +7,8 @@ type OrderOptionsAdditionals = {
   name: string
   price: number | string
   amount: number
+  TotalPrice?: number
+  TotalPriceFormated?: number
 }
 
 export type PickedOptions = {
