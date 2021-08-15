@@ -80,6 +80,7 @@ export const EditProductContainer = ({ product, categories }: EditProductProps) 
     event.preventDefault()
     try {
       const { name, price, description, categoryId, options } = values
+
       await updateProduct({
         name,
         categoryId,

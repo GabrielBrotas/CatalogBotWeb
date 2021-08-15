@@ -7,6 +7,8 @@ export type CartOrderProduct = {
   amount: number
   pickedOptions: PickedOptions[]
   comment?: string
+  TotalPrice: number
+  TotalPriceFormated: string
 }
 
 export type Cart = {

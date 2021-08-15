@@ -1,5 +1,8 @@
 import dayjs from 'dayjs'
-import { StoreCartOrderProductDTO } from './../services/apiFunctions/clients/cart/types'
+import {
+  CartOrderProduct,
+  StoreCartOrderProductDTO,
+} from './../services/apiFunctions/clients/cart/types'
 import { OptionAdditional, Product } from './../services/apiFunctions/companies/products/types'
 import { OrderFormated } from '../pages/orders/[oId]'
 import { IOrderToUpdateDTO } from '../services/apiFunctions/companies/orders/types'
@@ -195,4 +198,38 @@ export function groupDataAnalysisByDate({ data, type }: GroupDataAnalysisByDate)
 
 export function toBase64(arr: Uint8Array) {
   return btoa(arr.reduce((data, byte) => data + String.fromCharCode(byte), ''))
+}
+
+export function formatCartOrderProduct(cartOrderProduct: CartOrderProduct) {
+  const pickedOptionsTotalPrice = cartOrderProduct.pickedOptions.reduce(
+    (acc, currentPickedOption) =>
+      acc +
+      currentPickedOption.optionAdditionals.reduce(
+        (acc, currentOptional) =>
+          acc + Number(currentOptional.amount) * Number(currentOptional.price),
+        0
+      ),
+    0
+  )
+
+  return {
+    _id: cartOrderProduct._id,
+    amount: cartOrderProduct.amount,
+    comment: cartOrderProduct.comment,
+    product: cartOrderProduct.product,
+    pickedOptions: cartOrderProduct.pickedOptions.map((pickedOption) => ({
+      ...pickedOption,
+      optionAdditionals: pickedOption.optionAdditionals.map((optionAdditional) => ({
+        ...optionAdditional,
+        TotalPrice: Number(optionAdditional.price) * Number(optionAdditional.amount),
+        TotalPriceFormated: currencyFormat(
+          Number(optionAdditional.price) * Number(optionAdditional.amount)
+        ),
+      })),
+    })),
+    TotalPrice: cartOrderProduct.product.price * cartOrderProduct.amount + pickedOptionsTotalPrice,
+    TotalPriceFormated: currencyFormat(
+      cartOrderProduct.product.price * cartOrderProduct.amount + pickedOptionsTotalPrice
+    ),
+  }
 }

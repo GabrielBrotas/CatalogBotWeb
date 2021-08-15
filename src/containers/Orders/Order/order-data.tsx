@@ -30,6 +30,7 @@ export const OrderData = ({ order }: OrderDataProps) => {
     lg: false,
   })
 
+  console.log(order)
   return (
     <VStack w="full" alignItems="flex-start">
       <Heading as="h3" fontWeight="normal" size="lg">
